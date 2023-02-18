@@ -2,6 +2,7 @@ package com.wooringpang.userservice.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -50,4 +51,45 @@ public class User {
     @Column(length = 100)
     private String naverId;
 
+    @Builder(builderMethodName = "createBuilder")
+    public User(String userId, String username, String email, String password, Role role,
+                String userStateCode, String googleId, String kakaoId, String naverId) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.userStateCode = userStateCode;
+        this.googleId = googleId;
+        this.kakaoId = kakaoId;
+        this.naverId = naverId;
+    }
+
+    /**
+     * 사용자명과 이메일 등을 수정
+     */
+    public User update(String username, String email, String password, Role role, String userStateCode) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.userStateCode = userStateCode;
+        return this;
+    }
+
+    /**
+     * 사용자 refresh token 정보를 필드에 입력
+     */
+    public User updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+        return this;
+    }
+
+    /**
+     * 사용자 비밀번호를 필드에 입력
+     */
+    public User updatePassword(String password) {
+        this.password = password;
+        return this;
+    }
 }
