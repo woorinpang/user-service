@@ -50,7 +50,7 @@ public class UserQueryRepository {
                                 user.username,
                                 user.email,
                                 user.role,
-                                user.userState,
+                                user.userStateCode,
                                 user.lastLoginDate,
                                 user.loginFailCount
                         )
