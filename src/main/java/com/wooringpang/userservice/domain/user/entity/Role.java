@@ -12,6 +12,6 @@ public enum Role {
     EMPLOYEE("ROLE_EMPLOYEE", "내부 사용자"),
     ADMIN("ROLE_ADMIN", "시스템 관리자");
 
-    private final String roleType;
+    private final String code;
     private final String description;
 }

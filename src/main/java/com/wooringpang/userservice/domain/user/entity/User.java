@@ -1,5 +1,6 @@
 package com.wooringpang.userservice.domain.user.entity;
 
+import com.wooringpang.userservice.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_no")
@@ -33,8 +34,9 @@ public class User {
 
     private String refreshToken;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20, columnDefinition = "varchar(20) default '00'")
-    private String userStateCode;
+    private UserStateCode userStateCode;
 
     @Column
     private LocalDateTime lastLoginDate;
@@ -53,7 +55,7 @@ public class User {
 
     @Builder(builderMethodName = "createBuilder")
     public User(String userId, String username, String email, String password, Role role,
-                String userStateCode, String googleId, String kakaoId, String naverId) {
+                UserStateCode userStateCode, String googleId, String kakaoId, String naverId) {
         this.userId = userId;
         this.username = username;
         this.email = email;
@@ -68,7 +70,7 @@ public class User {
     /**
      * 사용자명과 이메일 등을 수정
      */
-    public User update(String username, String email, String password, Role role, String userStateCode) {
+    public User update(String username, String email, String password, Role role, UserStateCode userStateCode) {
         this.username = username;
         this.email = email;
         this.password = password;
