@@ -1,5 +1,6 @@
 package com.wooringpang.userservice.domain.user.service;
 
+import com.wooringpang.userservice.domain.user.dto.UserListDto;
 import com.wooringpang.userservice.domain.user.dto.UserSearchCondition;
 import com.wooringpang.userservice.domain.user.entity.User;
 import com.wooringpang.userservice.domain.user.repository.UserQueryRepository;
@@ -23,8 +24,17 @@ public class UserService {
     /**
      * 유저 목록 조회
      */
-    public Page<User> findUsers(UserSearchCondition condition, Pageable pageable) {
+    public Page<UserListDto> findUsers(UserSearchCondition condition, Pageable pageable) {
         return userQueryRepository.findUsers(condition, pageable);
+    }
+
+    /**
+     * 유저 단건 조회
+     */
+    public User findUser(String userId) {
+        User findUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException());
+        return findUser;
     }
 
 }

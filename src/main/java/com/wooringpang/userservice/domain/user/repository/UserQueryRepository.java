@@ -1,17 +1,16 @@
 package com.wooringpang.userservice.domain.user.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.wooringpang.userservice.common.dto.KeywordType;
+import com.wooringpang.userservice.domain.user.dto.UserListDto;
 import com.wooringpang.userservice.domain.user.dto.UserSearchCondition;
-import com.wooringpang.userservice.domain.user.entity.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -30,9 +29,9 @@ public class UserQueryRepository {
     /**
      * 유저 목록 조회
      */
-    public Page<User> findUsers(UserSearchCondition condition, Pageable pageable) {
+    public Page<UserListDto> findUsers(UserSearchCondition condition, Pageable pageable) {
 
-        List<User> content = getUserList(condition, pageable);
+        List<UserListDto> content = getUserList(condition, pageable);
 
         JPAQuery<Long> count = getUserListCount(condition);
 
@@ -42,9 +41,20 @@ public class UserQueryRepository {
     /**
      * 유저 목록
      */
-    private List<User> getUserList(UserSearchCondition condition, Pageable pageable) {
+    private List<UserListDto> getUserList(UserSearchCondition condition, Pageable pageable) {
         return queryFactory
-                .select(user)
+                .select(
+                        Projections.constructor(
+                                UserListDto.class,
+                                user.userId,
+                                user.username,
+                                user.email,
+                                user.role,
+                                user.userStateCode,
+                                user.lastLoginDate,
+                                user.loginFailCount
+                        )
+                )
                 .from(user)
                 .where(searchKeywordContains(condition))
                 .orderBy(user.id.desc())
