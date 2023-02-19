@@ -34,9 +34,8 @@ public class User extends BaseEntity {
 
     private String refreshToken;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20, columnDefinition = "varchar(20) default '00'")
-    private UserState userState;
+    private String userStateCode;
 
     @Column
     private LocalDateTime lastLoginDate;
@@ -55,13 +54,13 @@ public class User extends BaseEntity {
 
     @Builder(builderMethodName = "createBuilder")
     public User(String userId, String username, String email, String password, Role role,
-                UserState userState, String googleId, String kakaoId, String naverId) {
+                String userStateCode, String googleId, String kakaoId, String naverId) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.userState = userState;
+        this.userStateCode = userStateCode;
         this.googleId = googleId;
         this.kakaoId = kakaoId;
         this.naverId = naverId;
@@ -70,12 +69,12 @@ public class User extends BaseEntity {
     /**
      * 사용자명과 이메일 등을 수정
      */
-    public User update(String username, String email, String password, Role role, UserState userState) {
+    public User update(String username, String email, String password, Role role, String  userStateCode) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.userState = userState;
+        this.userStateCode = userStateCode;
         return this;
     }
 

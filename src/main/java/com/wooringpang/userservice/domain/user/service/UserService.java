@@ -37,4 +37,11 @@ public class UserService {
         return findUser;
     }
 
+    /**
+     * 사용자 등록
+     */
+    @Transactional
+    public Long save(User user) {
+        return userRepository.save(user).getId();
+    }
 }
