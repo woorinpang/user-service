@@ -50,7 +50,7 @@ public class UserQueryRepository {
                                 user.username,
                                 user.email,
                                 user.role,
-                                user.userStateCode,
+                                user.userState,
                                 user.lastLoginDate,
                                 user.loginFailCount
                         )
@@ -80,15 +80,9 @@ public class UserQueryRepository {
         if (condition.getSearchKeywordType() == null || !hasText(condition.getSearchKeyword())) return null;
 
         switch (condition.getSearchKeywordType()) {
-            case NAME -> {
-                return user.username.containsIgnoreCase(condition.getSearchKeyword());
-            }
-            case EMAIL -> {
-                return user.email.containsIgnoreCase(condition.getSearchKeyword());
-            }
-            default -> {
-                return null;
-            }
+            case NAME -> { return user.username.containsIgnoreCase(condition.getSearchKeyword()); }
+            case EMAIL -> { return user.email.containsIgnoreCase(condition.getSearchKeyword()); }
+            default -> { return null; }
         }
     }
 }

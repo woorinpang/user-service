@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum UserStateCode {
+public enum UserState {
 
     WAIT("00", "대기"),
     NORMAL("01", "정상"),
