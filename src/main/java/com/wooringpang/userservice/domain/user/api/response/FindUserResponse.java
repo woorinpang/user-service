@@ -27,7 +27,7 @@ public class FindUserResponse {
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.roleType = user.getRole().getDescription();
-        this.userStateCode = user.getUserStateCode();
+        this.userStateCode = user.getUserStateCode().getCode();
         this.googleId = user.getGoogleId();
         this.kakaoId = user.getKakaoId();
         this.naverId = user.getNaverId();

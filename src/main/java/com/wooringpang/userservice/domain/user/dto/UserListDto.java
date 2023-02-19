@@ -31,9 +31,9 @@ public class UserListDto {
         this.username = username;
         this.email = email;
         this.roleType = role.getCode();
-        this.roleName = role.getDescription();
+        this.roleName = role.name();
         this.userStateCode = userStateCode.getCode();
-        this.userStateCodeName = userStateCode.getDescription();
+        this.userStateCodeName = userStateCode.name();
         this.lastLoginDate = lastLoginDate;
         this.loginFailCount = loginFailCount;
     }
