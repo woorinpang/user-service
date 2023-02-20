@@ -34,14 +34,14 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     /**
-     * 유저 목록 조회
+     * 유저 목록을 조회하여 페이지와 함께 반환한다.
      */
     public Page<UserListDto> findUsers(UserSearchCondition condition, Pageable pageable) {
         return userQueryRepository.findUsers(condition, pageable);
     }
 
     /**
-     * 유저 단건 조회
+     * 유저 단건 조회하여 반환한다.
      */
     public User findUser(Long userId) {
         return userRepository.findById(userId)
@@ -49,7 +49,7 @@ public class UserService {
     }
 
     /**
-     * 사용자 등록
+     * 사용자 정보를 받아 등록하고 userId를 반환한다.
      */
     @Transactional
     public Long save(SaveUserParam param) {
@@ -57,7 +57,7 @@ public class UserService {
     }
 
     /**
-     * 사용자 수정
+     * 사용자 정보를 받아 수정한다.
      */
     public void update(Long userId, UpdateUserParam param) {
         User findUser = userRepository.findById(userId)
@@ -69,7 +69,7 @@ public class UserService {
     }
 
     /**
-     * 사용자 refresh token 정보를 필드에 입력
+     * 사용자 refresh token 정보를 받아 수정하고 권한 정보를 반환한다.
      */
     @Transactional
     public String updateRefreshToken(Long userId, String updateRefreshToken) {
