@@ -2,6 +2,7 @@ package com.wooringpang.userservice.domain.user.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.wooringpang.userservice.domain.user.entity.Role;
+import com.wooringpang.userservice.domain.user.entity.User;
 import com.wooringpang.userservice.domain.user.entity.UserState;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,6 +26,13 @@ public class UserListDto {
     private String userStateDescription;
     private LocalDateTime lastLoginDate;
     private Integer loginFailCount;
+
+    public UserListDto(User user) {
+        this.userId = user.getId();
+        this.signId = user.getSignId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+    }
 
     @QueryProjection
     public UserListDto(Long userId, String signId, String username, String email, Role role, UserState userState, LocalDateTime lastLoginDate, Integer loginFailCount) {
