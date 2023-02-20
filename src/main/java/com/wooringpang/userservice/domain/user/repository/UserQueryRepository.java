@@ -46,11 +46,12 @@ public class UserQueryRepository {
                 .select(
                         Projections.constructor(
                                 UserListDto.class,
-                                user.userId,
+                                user.id,
+                                user.signId,
                                 user.username,
                                 user.email,
                                 user.role,
-                                user.userStateCode,
+                                user.userState,
                                 user.lastLoginDate,
                                 user.loginFailCount
                         )
