@@ -1,8 +1,10 @@
 package com.wooringpang.userservice.domain.user.api;
 
 import com.wooringpang.userservice.domain.user.api.request.SaveUserRequest;
+import com.wooringpang.userservice.domain.user.api.request.UpdateUserRequest;
 import com.wooringpang.userservice.domain.user.api.response.FindUserResponse;
 import com.wooringpang.userservice.domain.user.api.response.SaveUserResponse;
+import com.wooringpang.userservice.domain.user.api.response.UpdateUserResponse;
 import com.wooringpang.userservice.domain.user.dto.UserListDto;
 import com.wooringpang.userservice.domain.user.dto.UserSearchCondition;
 import com.wooringpang.userservice.domain.user.service.UserService;
@@ -37,7 +39,7 @@ public class UserApiController {
      * 유저 단건 조회
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<FindUserResponse> findUser(@PathVariable("userId") String userId) {
+    public ResponseEntity<FindUserResponse> findUser(@PathVariable("userId") Long userId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new FindUserResponse(userService.findUser(userId)));
@@ -48,9 +50,23 @@ public class UserApiController {
      */
     @PostMapping
     public ResponseEntity<SaveUserResponse> saveUser(@RequestBody @Validated SaveUserRequest request) {
+        //validate
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new SaveUserResponse(1L));
+                .body(new SaveUserResponse(userService.save(request.toParam())));
+    }
 
+    /**
+     * 유저 정보 수정
+     */
+    @PutMapping("/{userId}")
+    public ResponseEntity<UpdateUserResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody @Validated UpdateUserRequest request) {
+        //validate
+        userService.update(userId, request.toParam());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new UpdateUserResponse(userService.findUser(userId).getId()));
     }
 }

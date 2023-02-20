@@ -1,6 +1,7 @@
 package com.wooringpang.userservice.domain.user.entity;
 
 import com.wooringpang.userservice.common.entity.BaseEntity;
+import com.wooringpang.userservice.domain.user.dto.UpdateUserParam;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,11 +17,11 @@ import java.time.LocalDateTime;
 public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_no")
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String userId;
+    private String signId;
     @Column(nullable = false, length = 60)
     private String username;
     @Column(nullable = false, length = 100, unique = true)
@@ -34,8 +35,9 @@ public class User extends BaseEntity {
 
     private String refreshToken;
 
-    @Column(nullable = false, length = 20, columnDefinition = "varchar(20) default '00'")
-    private String userStateCode;
+    @Enumerated(EnumType.STRING)
+    @Column
+    private UserState userState;
 
     @Column
     private LocalDateTime lastLoginDate;
@@ -53,29 +55,28 @@ public class User extends BaseEntity {
     private String naverId;
 
     @Builder(builderMethodName = "createBuilder")
-    public User(String userId, String username, String email, String password, Role role,
-                String userStateCode, String googleId, String kakaoId, String naverId) {
-        this.userId = userId;
+    public User(String signId, String username, String email, String password, Role role,
+                UserState userState, String googleId, String kakaoId, String naverId) {
+        this.signId = signId;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.userStateCode = userStateCode;
+        this.userState = userState;
         this.googleId = googleId;
         this.kakaoId = kakaoId;
         this.naverId = naverId;
     }
 
     /**
-     * 사용자명과 이메일 등을 수정
+     * 유저 수정
      */
-    public User update(String username, String email, String password, Role role, String  userStateCode) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.userStateCode = userStateCode;
-        return this;
+    public void update(UpdateUserParam param) {
+        this.username = param.getUsername();
+        this.email = param.getEmail();
+        this.password = param.getPassword();
+        this.role = param.getRole();
+        this.userState = param.getUserState();
     }
 
     /**

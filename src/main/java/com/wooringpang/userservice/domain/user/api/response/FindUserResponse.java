@@ -11,10 +11,11 @@ import static org.springframework.util.StringUtils.hasText;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FindUserResponse {
 
-    private String userId;
+    private Long userId;
+    private String signId;
     private String username;
     private String email;
-    private String roleId;
+    private String roleCode;
     private String userStateCode;
     private String googleId;
     private String kakaoId;
@@ -23,11 +24,12 @@ public class FindUserResponse {
     private Boolean hasPassword;
 
     public FindUserResponse(User user) {
-        this.userId = user.getUserId();
+        this.userId = user.getId();
+        this.signId = user.getSignId();
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.roleId = user.getRole().name();
-        this.userStateCode = user.getUserStateCode();
+        this.roleCode = user.getRole().getCode();
+        this.userStateCode = user.getUserState().getCode();
         this.googleId = user.getGoogleId();
         this.kakaoId = user.getKakaoId();
         this.naverId = user.getNaverId();
