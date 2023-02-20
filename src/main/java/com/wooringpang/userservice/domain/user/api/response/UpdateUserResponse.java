@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class SaveUserResponse {
+public class UpdateUserResponse {
 
     private Long userId;
 }

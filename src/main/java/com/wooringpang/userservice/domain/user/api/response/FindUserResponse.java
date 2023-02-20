@@ -23,11 +23,11 @@ public class FindUserResponse {
     private Boolean hasPassword;
 
     public FindUserResponse(User user) {
-        this.userId = user.getUserId();
+        this.userId = user.getSignId();
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.roleId = user.getRole().name();
-        this.userStateCode = user.getUserStateCode();
+        this.userStateCode = user.getUserState();
         this.googleId = user.getGoogleId();
         this.kakaoId = user.getKakaoId();
         this.naverId = user.getNaverId();

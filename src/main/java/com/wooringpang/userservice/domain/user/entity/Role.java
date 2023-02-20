@@ -3,6 +3,8 @@ package com.wooringpang.userservice.domain.user.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 @AllArgsConstructor
 public enum Role {
@@ -14,4 +16,11 @@ public enum Role {
 
     private final String code;
     private final String description;
+
+    public static Role findByCode(String code) {
+        return Arrays.stream(Role.values())
+                .filter(role -> role.getCode().equals(code))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(code + "은 없는 권한코드입니다."));
+    }
 }
