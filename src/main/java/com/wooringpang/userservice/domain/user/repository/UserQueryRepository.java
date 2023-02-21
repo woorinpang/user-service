@@ -48,7 +48,7 @@ public class UserQueryRepository {
                                 UserListDto.class,
                                 user.id,
                                 user.signId,
-                                user.username,
+                                user.name,
                                 user.email,
                                 user.role,
                                 user.userState,
@@ -81,7 +81,7 @@ public class UserQueryRepository {
         if (condition.getSearchKeywordType() == null || !hasText(condition.getSearchKeyword())) return null;
 
         switch (condition.getSearchKeywordType()) {
-            case NAME -> { return user.username.containsIgnoreCase(condition.getSearchKeyword()); }
+            case NAME -> { return user.name.containsIgnoreCase(condition.getSearchKeyword()); }
             case EMAIL -> { return user.email.containsIgnoreCase(condition.getSearchKeyword()); }
             default -> { return null; }
         }

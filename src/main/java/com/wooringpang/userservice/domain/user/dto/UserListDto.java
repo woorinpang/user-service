@@ -18,7 +18,7 @@ public class UserListDto {
 
     private Long userId;
     private String signId;
-    private String username;
+    private String name;
     private String email;
     private String roleCode;
     private String roleDescription;
@@ -30,15 +30,15 @@ public class UserListDto {
     public UserListDto(User user) {
         this.userId = user.getId();
         this.signId = user.getSignId();
-        this.username = user.getUsername();
+        this.name = user.getName();
         this.email = user.getEmail();
     }
 
     @QueryProjection
-    public UserListDto(Long userId, String signId, String username, String email, Role role, UserState userState, LocalDateTime lastLoginDate, Integer loginFailCount) {
+    public UserListDto(Long userId, String signId, String name, String email, Role role, UserState userState, LocalDateTime lastLoginDate, Integer loginFailCount) {
         this.userId = userId;
         this.signId = signId;
-        this.username = username;
+        this.name = name;
         this.email = email;
         this.roleCode = role.getCode();
         this.roleDescription = role.getDescription();

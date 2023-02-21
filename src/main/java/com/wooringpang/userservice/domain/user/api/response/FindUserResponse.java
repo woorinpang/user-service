@@ -13,7 +13,7 @@ public class FindUserResponse {
 
     private Long userId;
     private String signId;
-    private String username;
+    private String name;
     private String email;
     private String roleCode;
     private String userStateCode;
@@ -26,7 +26,7 @@ public class FindUserResponse {
     public FindUserResponse(User user) {
         this.userId = user.getId();
         this.signId = user.getSignId();
-        this.username = user.getUsername();
+        this.name = user.getName();
         this.email = user.getEmail();
         this.roleCode = user.getRole().getCode();
         this.userStateCode = user.getUserState().getCode();

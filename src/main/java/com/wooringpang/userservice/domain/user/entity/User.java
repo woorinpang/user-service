@@ -22,8 +22,8 @@ public class User extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String signId;
-    @Column(nullable = false, length = 60)
-    private String username;
+    @Column(name = "user_name", nullable = false, length = 60)
+    private String name;
     @Column(nullable = false, length = 100, unique = true)
     private String email;
     @Column(length = 100)
@@ -55,10 +55,10 @@ public class User extends BaseEntity {
     private String naverId;
 
     @Builder(builderMethodName = "createBuilder")
-    public User(String signId, String username, String email, String password, Role role,
+    public User(String signId, String name, String email, String password, Role role,
                 UserState userState, String googleId, String kakaoId, String naverId) {
         this.signId = signId;
-        this.username = username;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -72,7 +72,7 @@ public class User extends BaseEntity {
      * 유저 수정
      */
     public void update(UpdateUserParam param) {
-        this.username = param.getUsername();
+        this.name = param.getName();
         this.email = param.getEmail();
         this.password = param.getPassword();
         this.role = param.getRole();
@@ -93,5 +93,21 @@ public class User extends BaseEntity {
     public User updatePassword(String password) {
         this.password = password;
         return this;
+    }
+
+    /**
+     * 로그인 성공 시 로그인 실패수와 마지막 로그인 일지 정보를 갱신한다.
+     */
+    public void successLogin() {
+        this.loginFailCount = 0;
+        this.lastLoginDate = LocalDateTime.now();
+    }
+
+    /**
+     * 로그인 실패 시 로그인 실패수를 증가시키고 5회 이상 실패한 경우 회원상태를 정지로 변경
+     */
+    public void failLogin() {
+        this.loginFailCount++;
+        if (this.loginFailCount >= 5) this.userState = UserState.HALT;
     }
 }
