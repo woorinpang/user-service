@@ -82,8 +82,8 @@ public class UserService implements UserDetailsService {
      * 사용자 refresh token 정보를 받아 수정하고 권한 정보를 반환한다.
      */
     @Transactional
-    public String updateRefreshToken(Long userId, String updateRefreshToken) {
-        User findUser = userRepository.findById(userId)
+    public String updateRefreshToken(String  signId, String updateRefreshToken) {
+        User findUser = userRepository.findBySignId(signId)
                 .orElseThrow(() -> new UsernameNotFoundException("없음"));
 
         findUser.updateRefreshToken(updateRefreshToken);

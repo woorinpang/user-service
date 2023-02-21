@@ -1,1 +1,29 @@
+server:
+  port: 8080 # random port
 
+spring:
+  application:
+    name: user-service
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+#        dialect: org.hibernate.dialect.MySQL570Dialect
+#        storage_engine: innodb
+        format_sql: true
+        default_batch_fetch_size: 1000
+        jdbc:
+          batch_size: 1000
+        order_inserts: true
+        order_updates: true
+    show-sql: true
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+
+# 2시간(7,200,000), 1일(86,400,000) jwt token
+token:
+  expiration_time: 7200000
+  refresh_time: 86400000
+  secret: 'token_secret'
