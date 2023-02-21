@@ -1,36 +1,46 @@
 package com.wooringpang.userservice.domain.user.service;
 
-import com.wooringpang.userservice.domain.user.dto.SaveUserParam;
-import com.wooringpang.userservice.domain.user.dto.UpdateUserParam;
-import com.wooringpang.userservice.domain.user.dto.UserListDto;
-import com.wooringpang.userservice.domain.user.dto.UserSearchCondition;
+import com.wooringpang.userservice.domain.log.repository.LoginLogRepository;
+import com.wooringpang.userservice.domain.user.api.request.JoinUserRequest;
+import com.wooringpang.userservice.domain.user.api.request.SaveUserRequest;
+import com.wooringpang.userservice.domain.user.dto.*;
 import com.wooringpang.userservice.domain.user.entity.User;
+import com.wooringpang.userservice.domain.user.entity.UserState;
 import com.wooringpang.userservice.domain.user.repository.UserQueryRepository;
 import com.wooringpang.userservice.domain.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.util.StringUtils.*;
+import static com.wooringpang.userservice.domain.user.entity.QUser.user;
+import static org.springframework.util.StringUtils.hasText;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
+    private final LoginLogRepository loginLogRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     /**
@@ -72,8 +82,8 @@ public class UserService {
      * 사용자 refresh token 정보를 받아 수정하고 권한 정보를 반환한다.
      */
     @Transactional
-    public String updateRefreshToken(Long userId, String updateRefreshToken) {
-        User findUser = userRepository.findById(userId)
+    public String updateRefreshToken(String  signId, String updateRefreshToken) {
+        User findUser = userRepository.findBySignId(signId)
                 .orElseThrow(() -> new UsernameNotFoundException("없음"));
 
         findUser.updateRefreshToken(updateRefreshToken);
@@ -111,5 +121,97 @@ public class UserService {
         return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate")).stream()
                 .map(UserListDto::new)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * SecurityConfig > configure > UserDetailsService 메소드에서 호출된다.
+     * 스프링 시큐리티에 의해 로그인 대상 사용자의 패스워드와 권한 정보를 DB 에서 조회하여 UserDetails 를 반환한다.
+     */
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        log.info("loadUserByUsername! email = {}", email);
+        //로그인 실패시 이메일 계정을 로그에 남기기 위해 세팅하고 unsuccessfulAuthentication 메소드에서 받아서 로그에 입력한다.
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        request.setAttribute("email", email);
+
+        //UsernameNotFoundException 을 던지면 AbstractUserDetailsAuthenticationProvider 에서 BadCredentialsException 으로 처리하기 때문에 IllegalArgumentException 을 발생시킨다.
+        //사용자가 없는 것인지 패스워드가 잘못된 것인지 구분하기 위함이다.
+        User findUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        log.info("{} 사용자 존재함", findUser);
+
+        if (!UserState.NORMAL.equals(findUser.getUserState())) {
+            throw new IllegalArgumentException("로그인할수 없습니다.");
+        }
+
+        //로그인 유저의 권한 목록 주입
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(findUser.getRole().getCode()));
+
+//        if (findUser.isSocialUser() && !hasText(findUser.getPassword())) {
+//            //소셜 회원이고 비밀번호가 등록되지 않은 경우
+//            return new SocialUser(findUser.getEmail(), authorities);
+//        } else {
+//            return new org.springframework.security.core.userdetails.User(findUser.getEmail(), findUser.getPassword(), authorities);
+//        }
+        return new org.springframework.security.core.userdetails.User(findUser.getEmail(), findUser.getPassword(), authorities);
+    }
+
+    /**
+     * 로그인 후처리
+     */
+    @Transactional
+    public void loginCallback(String email, Boolean isSuccess, String failContent) {
+        User findUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("없음"));
+
+        if (Boolean.TRUE.equals(isSuccess)) {
+            findUser.successLogin();
+        } else {
+            findUser.failLogin();
+        }
+    }
+
+    /**
+     * 이메일 중복 확인
+     */
+    public Boolean existsEmail(String email, String signId) {
+        if (!hasText(email)) {
+            throw new IllegalArgumentException("이메일 없음");
+        }
+
+        if (!hasText(signId)) {
+            return userRepository.findByEmail(email).isPresent();
+        } else {
+            return userRepository.findByEmailAndSignIdNot(email, signId).isPresent();
+        }
+    }
+
+    /**
+     * 사용자 회원 가입
+     */
+    @Transactional
+    public Long join(JoinUserParam param) {
+        Boolean exists = this.existsEmail(param.getEmail(), null);
+        if (exists) {
+            throw new IllegalArgumentException("이미 이메일이 존재함");
+        }
+
+//        if (param.isProvider()) {
+//
+//        }
+        return userRepository.save(param.toEntity(passwordEncoder)).getId();
+    }
+
+    /**
+     * 사용자 비밀번호 찾기 유효성 확인
+     */
+    @Transactional
+    public Boolean validPassword(String tokenValue) {
+        if (!hasText(tokenValue)) {
+            throw new IllegalArgumentException("invalid");
+        }
+        //TODO 하던중
+        return false;
     }
 }

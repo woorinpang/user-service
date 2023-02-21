@@ -15,13 +15,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SaveUserParam {
+public class JoinUserParam {
 
     private String name;
     private String email;
     private String password;
-    private Role role;
-    private UserState userState;
+    private String provider;
+    private String token;
+    private boolean isProvider;
 
     public User toEntity(BCryptPasswordEncoder passwordEncoder) {
         return User.createBuilder()
@@ -29,8 +30,8 @@ public class SaveUserParam {
                 .name(this.name)
                 .email(this.email)
                 .password(passwordEncoder.encode(this.password))
-                .role(this.role)
-                .userState(this.userState)
+                .role(Role.USER)
+                .userState(UserState.NORMAL)
                 .build();
     }
 }

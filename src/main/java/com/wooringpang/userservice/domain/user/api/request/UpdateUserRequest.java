@@ -23,7 +23,7 @@ public class UpdateUserRequest {
 
     public UpdateUserParam toParam() {
         return UpdateUserParam.builder()
-                .username(this.username)
+                .name(this.username)
                 .email(this.email)
                 .password(this.password)
                 .role(Role.findByCode(this.RoleCode))

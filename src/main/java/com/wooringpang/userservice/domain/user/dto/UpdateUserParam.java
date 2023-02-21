@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 public class UpdateUserParam {
 
-    private String username;
+    private String name;
     private String email;
     private String password;
     private Role role;
