@@ -1,6 +1,6 @@
 package com.wooringpang.userservice.domain.user.api.request;
 
-import com.wooringpang.userservice.domain.user.dto.UpdateUserParam;
+import com.wooringpang.userservice.domain.user.service.param.UpdateUserParam;
 import com.wooringpang.userservice.domain.user.entity.Role;
 import com.wooringpang.userservice.domain.user.entity.UserState;
 import lombok.*;

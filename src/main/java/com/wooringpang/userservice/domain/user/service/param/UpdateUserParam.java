@@ -1,4 +1,4 @@
-package com.wooringpang.userservice.domain.user.dto;
+package com.wooringpang.userservice.domain.user.service.param;
 
 import com.wooringpang.userservice.domain.user.entity.Role;
 import com.wooringpang.userservice.domain.user.entity.UserState;

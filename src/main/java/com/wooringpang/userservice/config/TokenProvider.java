@@ -1,13 +1,12 @@
 package com.wooringpang.userservice.config;
 
-import brave.http.HttpServerRequest;
-import brave.http.HttpServerResponse;
 import com.wooringpang.userservice.domain.user.entity.User;
 import com.wooringpang.userservice.domain.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -42,7 +41,7 @@ public class TokenProvider {
     /**
      * 로그인 후 토큰을 생성하고 헤더에 정보를 담는다.
      */
-    public void createTokenAndAddHeader(HttpServerRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    public void createTokenAndAddHeader(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
         //로그인 성공 후 토큰 처리
         String email = authentication.getName();
         String authorities = authentication.getAuthorities().stream()
