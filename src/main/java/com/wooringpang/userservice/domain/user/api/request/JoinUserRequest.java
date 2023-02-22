@@ -1,16 +1,12 @@
 package com.wooringpang.userservice.domain.user.api.request;
 
-import com.wooringpang.userservice.domain.user.dto.JoinUserParam;
-import com.wooringpang.userservice.domain.user.entity.Role;
-import com.wooringpang.userservice.domain.user.entity.User;
-import com.wooringpang.userservice.domain.user.entity.UserState;
+import com.wooringpang.userservice.domain.user.service.param.JoinUserParam;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

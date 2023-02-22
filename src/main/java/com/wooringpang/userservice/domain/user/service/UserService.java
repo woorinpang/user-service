@@ -1,13 +1,17 @@
 package com.wooringpang.userservice.domain.user.service;
 
 import com.wooringpang.userservice.domain.log.repository.LoginLogRepository;
-import com.wooringpang.userservice.domain.user.api.request.JoinUserRequest;
-import com.wooringpang.userservice.domain.user.api.request.SaveUserRequest;
+import com.wooringpang.userservice.domain.user.api.request.SocialUserResponse;
+import com.wooringpang.userservice.domain.user.api.request.UserLoginRequest;
+import com.wooringpang.userservice.domain.user.api.response.FindUserResponse;
 import com.wooringpang.userservice.domain.user.dto.*;
 import com.wooringpang.userservice.domain.user.entity.User;
 import com.wooringpang.userservice.domain.user.entity.UserState;
 import com.wooringpang.userservice.domain.user.repository.UserQueryRepository;
 import com.wooringpang.userservice.domain.user.repository.UserRepository;
+import com.wooringpang.userservice.domain.user.service.param.JoinUserParam;
+import com.wooringpang.userservice.domain.user.service.param.SaveUserParam;
+import com.wooringpang.userservice.domain.user.service.param.UpdateUserParam;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +31,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.wooringpang.userservice.domain.user.entity.QUser.user;
 import static org.springframework.util.StringUtils.hasText;
 
 @Slf4j
@@ -213,5 +217,81 @@ public class UserService implements UserDetailsService {
         }
         //TODO 하던중
         return false;
+    }
+
+    /**
+     * OAuth 사용자 검색
+     */
+    public User loadUserBySocial(UserLoginRequest request) {
+        SocialUserResponse response = this.getSocialUserInfo(request.getProvider(), request.getToken());
+
+        User findUser = this.findSocialUser(request.getProvider(), response.getId());
+
+        if (findUser == null) {
+            throw new IllegalArgumentException("없음");
+        }
+        if (!UserState.NORMAL.equals(findUser.getUserState())) {
+            throw new IllegalArgumentException("주의");
+        }
+
+        return findUser;
+    }
+
+    private SocialUserResponse getSocialUserInfo(String provider, String token) {
+        SocialUserResponse social = null;
+        switch (provider) {
+            case "google":
+                social = getGoogleUserInfo(token);
+                break;
+            case "naver":
+                social = getNaverUserInfo(token);
+                break;
+            case "kakao":
+                social = getKakaoUserInfo(token);
+                break;
+            default:
+                break;
+        }
+
+        if (social == null) throw new IllegalArgumentException("소셜 없음");
+
+        return social;
+    }
+
+    private SocialUserResponse getGoogleUserInfo(String token) {
+        return null;
+    }
+
+    private SocialUserResponse getNaverUserInfo(String token) {
+        return null;
+    }
+
+    private SocialUserResponse getKakaoUserInfo(String token) {
+        return null;
+    }
+
+    /**
+     * 소셜 사용자 엔티티 조회
+     */
+    private User findSocialUser(String providerCode, String providerId) {
+        Optional<User> user;
+
+        //공급자 id 로 조회
+        switch (providerCode) {
+            case "google":
+                user = userRepository.findByGoogleId(providerId);
+                break;
+            case "naver":
+                user = userRepository.findByNaverId(providerId);
+                break;
+            case "kakao":
+                user = userRepository.findByKakaoId(providerId);
+                break;
+            default:
+                user = Optional.empty();
+                break;
+        }
+
+        return user.orElse(null);
     }
 }

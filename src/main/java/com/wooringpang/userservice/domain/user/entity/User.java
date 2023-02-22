@@ -1,7 +1,7 @@
 package com.wooringpang.userservice.domain.user.entity;
 
 import com.wooringpang.userservice.common.entity.BaseEntity;
-import com.wooringpang.userservice.domain.user.dto.UpdateUserParam;
+import com.wooringpang.userservice.domain.user.service.param.UpdateUserParam;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
