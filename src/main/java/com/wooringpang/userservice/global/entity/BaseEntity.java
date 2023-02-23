@@ -1,4 +1,4 @@
-package com.wooringpang.userservice.common.entity;
+package com.wooringpang.userservice.global.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

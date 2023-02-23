@@ -1,4 +1,4 @@
-package com.wooringpang.userservice.config;
+package com.wooringpang.userservice.global.config;
 
 import com.wooringpang.userservice.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static com.wooringpang.userservice.config.GlobalConstant.*;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //토큰 사용하기 때문에 세션은 비활성화
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers(SECURITY_PERMITAIL_ANTPATTERNS).permitAll()
+                .requestMatchers(GlobalConstant.SECURITY_PERMITAIL_ANTPATTERNS).permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .build();

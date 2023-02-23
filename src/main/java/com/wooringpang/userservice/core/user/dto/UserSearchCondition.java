@@ -1,6 +1,6 @@
 package com.wooringpang.userservice.core.user.dto;
 
-import com.wooringpang.userservice.common.dto.CommonSearchCondition;
+import com.wooringpang.userservice.global.dto.CommonSearchCondition;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
