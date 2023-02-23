@@ -1,4 +1,4 @@
-package com.wooringpang.userservice.common.dto;
+package com.wooringpang.userservice.global.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

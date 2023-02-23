@@ -1,4 +1,4 @@
-package com.wooringpang.userservice.config;
+package com.wooringpang.userservice.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wooringpang.userservice.core.user.presentation.request.UserLoginRequest;

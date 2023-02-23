@@ -1,4 +1,4 @@
-package com.wooringpang.userservice.config;
+package com.wooringpang.userservice.global.config;
 
 import com.wooringpang.userservice.core.user.domain.User;
 import com.wooringpang.userservice.core.user.service.UserService;

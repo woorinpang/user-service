@@ -1,4 +1,4 @@
-package com.wooringpang.userservice.config;
+package com.wooringpang.userservice.global.config;
 
 public interface GlobalConstant {
     final String HEADER_SITE_ID = "X-Site-Id"; //header 에 어떤 사이트에서 보내는 요청인지 구분하기 위한 정보

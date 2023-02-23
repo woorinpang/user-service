@@ -1,6 +1,6 @@
 package com.wooringpang.userservice.core.log.domain;
 
-import com.wooringpang.userservice.common.entity.BaseEntity;
+import com.wooringpang.userservice.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
