@@ -1,9 +1,9 @@
 package com.wooringpang.userservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wooringpang.userservice.domain.user.api.request.UserLoginRequest;
-import com.wooringpang.userservice.domain.user.entity.User;
-import com.wooringpang.userservice.domain.user.service.UserService;
+import com.wooringpang.userservice.core.user.presentation.request.UserLoginRequest;
+import com.wooringpang.userservice.core.user.domain.User;
+import com.wooringpang.userservice.core.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
