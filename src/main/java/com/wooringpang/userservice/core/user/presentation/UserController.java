@@ -147,7 +147,6 @@ public class UserController {
         return userService.leave(signId, request);
     }
 
-
     /**
      * 사용자 삭제
      */
