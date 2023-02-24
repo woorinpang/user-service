@@ -1,8 +1,7 @@
 package com.wooringpang.userservice.core.user.service;
 
 import com.wooringpang.userservice.core.log.repository.LoginLogRepository;
-import com.wooringpang.userservice.core.user.presentation.request.SocialUserResponse;
-import com.wooringpang.userservice.core.user.presentation.request.UserLoginRequest;
+import com.wooringpang.userservice.core.user.presentation.request.*;
 import com.wooringpang.userservice.core.user.dto.*;
 import com.wooringpang.userservice.core.user.domain.User;
 import com.wooringpang.userservice.core.user.domain.UserState;
@@ -11,6 +10,7 @@ import com.wooringpang.userservice.core.user.repository.UserRepository;
 import com.wooringpang.userservice.core.user.service.param.JoinUserParam;
 import com.wooringpang.userservice.core.user.service.param.SaveUserParam;
 import com.wooringpang.userservice.core.user.service.param.UpdateUserParam;
+import com.wooringpang.userservice.global.exception.BusinessMessageException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +31,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -236,7 +237,7 @@ public class UserService implements UserDetailsService {
         return findUser;
     }
 
-    private SocialUserResponse getSocialUserInfo(String provider, String token) {
+    public SocialUserResponse getSocialUserInfo(String provider, String token) {
         SocialUserResponse social = null;
         switch (provider) {
             case "google":
@@ -292,5 +293,89 @@ public class UserService implements UserDetailsService {
         }
 
         return user.orElse(null);
+    }
+
+    /**
+     * 사용자 비밀번호 찾기
+     */
+    public Boolean findPassword(UserFindPasswordSaveRequest request) {
+        final String email = request.getEmail();
+
+        Optional<User> findUser = userRepository.findByEmailAndName(email, request.getUserName());
+        if (!findUser.isPresent()) {
+            throw new BusinessMessageException("없음");
+        }
+
+        User entity = findUser.get();
+
+        //TODO 이메일 전송
+        /*try {
+            final String mainUrl = request.getMailUrl();
+            String tokenValue = UUID.randomUUID().toString().replaceAll("-", "");
+
+            String subject = "email.user.password.title";
+
+        }*/
+        return true;
+    }
+
+    private User findUserVerifyPassword(String signId, String password) {
+        User entity = this.findBySignId(signId);
+        if (!passwordEncoder.matches(password, entity.getPassword())) {
+            throw new BusinessMessageException("틀려");
+        }
+        return entity;
+    }
+
+    /**
+     * 사용자 정보 수정
+     */
+    @Transactional
+    public String updateInfo(String signId, UserUpdateInfoRequest request) {
+        User user = findUserVerify(signId, request);
+
+        user.updateInfo(request.getUserName(), request.getEmail());
+        return user.getSignId();
+    }
+
+    private User findUserVerify(String signId, UserVerifyRequest request) {
+        if (!hasText(signId)) {
+            throw new BusinessMessageException("에러");
+        }
+
+        User user = null;
+
+        if ("password".equals(request.getProvider())) {
+            user = findUserVerifyPassword(signId, request.getPassword());
+        } else {
+            user = findSocialUserByToken(request.getProvider(), request.getToken());
+
+            if (user == null) {
+                throw new BusinessMessageException("없음");
+            }
+
+            if (!signId.equals(user.getSignId())) {
+                throw new BusinessMessageException("ㄴㄴㄴㄴ");
+            }
+        }
+        return user;
+    }
+
+    private User findSocialUserByToken(String provider, String token) {
+        SocialUserResponse response = getSocialUserInfo(provider, token);
+        return findSocialUser(provider, response.getId());
+    }
+
+    @Transactional
+    public Boolean leave(String signId, UserVerifyRequest request) {
+        User entity = findUserVerify(signId, request);
+        entity.updateUserStateCode(UserState.LEAVE);
+        return true;
+    }
+
+    public Boolean deleteUser(Long userId) {
+        User findUser = this.findUser(userId);
+        findUser.updateUserStateCode(UserState.DELETE);
+        return true;
     }
 }

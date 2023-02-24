@@ -110,4 +110,19 @@ public class User extends BaseEntity {
         this.loginFailCount++;
         if (this.loginFailCount >= 5) this.userState = UserState.HALT;
     }
+
+    /**
+     * 사용자 정보 수정
+     */
+    public void updateInfo(String userName, String email) {
+        this.name = userName;
+        this.email = email;
+    }
+
+    /**
+     * 사용자 상태 코드 수정
+     */
+    public void updateUserStateCode(UserState userState) {
+        this.userState = userState;
+    }
 }
