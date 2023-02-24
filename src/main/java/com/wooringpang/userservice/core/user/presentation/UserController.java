@@ -9,6 +9,7 @@ import com.wooringpang.userservice.core.user.dto.UserListDto;
 import com.wooringpang.userservice.core.user.dto.UserSearchCondition;
 import com.wooringpang.userservice.core.user.service.UserService;
 import com.wooringpang.userservice.global.config.TokenProvider;
+import com.wooringpang.userservice.global.exception.BusinessMessageException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -122,5 +124,36 @@ public class UserController {
     @PostMapping("/password/find")
     public Boolean findPassword(@RequestBody @Validated UserFindPasswordSaveRequest request) {
         return userService.findPassword(request);
+    }
+
+    /**
+     * 사용자 회원정보 변경
+     */
+    @PutMapping("/info/{signId}")
+    public String updateInfo(@PathVariable String signId, @RequestBody @Validated UserUpdateInfoRequest request) {
+        final String authUserId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!authUserId.equals(signId)) {
+            throw new BusinessMessageException("에러");
+        }
+        return userService.updateInfo(signId, request);
+    }
+
+    /**
+     * 사용자 회원탈퇴
+     */
+    @PostMapping("/leave")
+    public Boolean leave(@RequestBody @Validated UserVerifyRequest request) {
+        final String signId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.leave(signId, request);
+    }
+
+
+    /**
+     * 사용자 삭제
+     */
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Boolean delete(@PathVariable("userId") Long userId) {
+        return userService.deleteUser(userId);
     }
 }
