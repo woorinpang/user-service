@@ -20,7 +20,6 @@ public class RoleAuthorizationListDto {
 
     @QueryProjection
     @Builder
-
     public RoleAuthorizationListDto(String roleCode, Long authorizationId, String authorizationName, String urlPatternValue, String httpMethodCode, Integer sort, Boolean createdAt) {
         this.roleCode = roleCode;
         this.authorizationId = authorizationId;
