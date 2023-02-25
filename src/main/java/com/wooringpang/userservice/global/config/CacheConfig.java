@@ -6,6 +6,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
 @EnableCaching
-@EnableAspectJAutoProxy(exposeProxy = true) //AopContext.currentProxy() 사용 옵션
+@EnableAspectJAutoProxy(exposeProxy = true) //AopContext.currentProxy() 사용 옵가
 public class CacheConfig {
 }

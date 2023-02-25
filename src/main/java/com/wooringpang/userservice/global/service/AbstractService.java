@@ -12,7 +12,7 @@ public abstract class AbstractService {
         return messageUtil.getMessage(code);
     }
 
-    private String getMessage(String code, Object[] args) {
+    protected String getMessage(String code, Object[] args) {
         return messageUtil.getMessage(code, args);
     }
 }

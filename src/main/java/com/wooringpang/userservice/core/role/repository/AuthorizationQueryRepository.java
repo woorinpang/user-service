@@ -1,15 +1,12 @@
 package com.wooringpang.userservice.core.role.repository;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.wooringpang.userservice.core.role.domain.QRoleAuthorization;
 import com.wooringpang.userservice.core.role.dto.AuthorizationListDto;
 import com.wooringpang.userservice.core.role.dto.AuthorizationSearchCondition;
-import com.wooringpang.userservice.core.user.domain.QUser;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -82,7 +79,7 @@ public class AuthorizationQueryRepository {
     /**
      * 사용자의 인가 목록 조회
      */
-    public List<AuthorizationListDto> findByUserId(String signId) {
+    public List<AuthorizationListDto> findBySignId(String signId) {
         return getAuthorizationListJPQLQuery()
                 .where(
                         JPAExpressions
