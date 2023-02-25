@@ -73,7 +73,7 @@ public class AuthorizationController {
     /**
      * 인가 단건 조회
      */
-    @GetMapping("/{authorizationId")
+    @GetMapping("/{authorizationId}")
     public ResponseEntity<FindAuthorizationResponse> findAuthorization(@PathVariable("authorizationId") Long authorizationId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -83,7 +83,7 @@ public class AuthorizationController {
     /**
      * 인가 다음 정렬 순서 조회
      */
-    @GetMapping("sort/next")
+    @GetMapping("/sort/next")
     @ResponseStatus(HttpStatus.OK)
     public Integer findNextSort() {
         return authorizationService.findNextSort();

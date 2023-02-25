@@ -2,6 +2,7 @@ package com.wooringpang.userservice.core.role.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
@@ -31,6 +32,7 @@ public class RoleAuthorization {
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
+    @Builder(builderMethodName = "createRoleAuthorization")
     public RoleAuthorization(String roleCode, Long authorizationId) {
         this.roleAuthorizationId = RoleAuthorizationId.builder()
                 .roleCode(roleCode)

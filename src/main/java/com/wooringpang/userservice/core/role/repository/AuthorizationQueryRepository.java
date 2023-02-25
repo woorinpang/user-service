@@ -38,8 +38,8 @@ public class AuthorizationQueryRepository {
         List<AuthorizationListDto> content = getAuthorizationListJPQLQuery()
                 .where(
                         searchKeywordContains(condition),
-                        searchUrlPatternValue(condition.getSearchUrlPatternValue()),
-                        searchHttpMethodCode(condition.getSearchHttpMethodCode())
+                        searchUrlPatternValueContains(condition.getSearchUrlPatternValue()),
+                        searchHttpMethodCodeContains(condition.getSearchHttpMethodCode())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -51,8 +51,8 @@ public class AuthorizationQueryRepository {
                 .from(authorization)
                 .where(
                         searchKeywordContains(condition),
-                        searchUrlPatternValue(condition.getSearchUrlPatternValue()),
-                        searchHttpMethodCode(condition.getSearchHttpMethodCode())
+                        searchUrlPatternValueContains(condition.getSearchUrlPatternValue()),
+                        searchHttpMethodCodeContains(condition.getSearchHttpMethodCode())
                 );
 
         return PageableExecutionUtils.getPage(content, pageable, count::fetchOne);
@@ -154,14 +154,14 @@ public class AuthorizationQueryRepository {
     /**
      * where urlPatternValue like '%searchUrlPatternValue%'
      */
-    private BooleanExpression searchUrlPatternValue(String searchUrlPatternValue) {
+    private BooleanExpression searchUrlPatternValueContains(String searchUrlPatternValue) {
         return hasText(searchUrlPatternValue) ? authorization.urlPatternValue.containsIgnoreCase(searchUrlPatternValue) : null;
     }
 
     /**
      * where httpMethodCode like '%searchHttpMethodCode%'
      */
-    private BooleanExpression searchHttpMethodCode(String searchHttpMethodCode) {
+    private BooleanExpression searchHttpMethodCodeContains(String searchHttpMethodCode) {
         return hasText(searchHttpMethodCode) ? authorization.httpMethodCode.containsIgnoreCase(searchHttpMethodCode) : null;
     }
 
