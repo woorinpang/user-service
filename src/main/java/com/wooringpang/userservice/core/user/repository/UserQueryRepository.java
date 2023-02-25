@@ -81,9 +81,9 @@ public class UserQueryRepository {
         if (condition.getSearchKeywordType() == null || !hasText(condition.getSearchKeyword())) return null;
 
         switch (condition.getSearchKeywordType()) {
-            case NAME -> { return user.name.containsIgnoreCase(condition.getSearchKeyword()); }
-            case EMAIL -> { return user.email.containsIgnoreCase(condition.getSearchKeyword()); }
-            default -> { return null; }
+            case NAME ->  user.name.containsIgnoreCase(condition.getSearchKeyword());
+            case EMAIL -> user.email.containsIgnoreCase(condition.getSearchKeyword());
         }
+        return null;
     }
 }
