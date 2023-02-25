@@ -34,6 +34,11 @@ dependencies {
 //    implementation 'org.springframework.cloud:spring-cloud-starter-config'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
+    //cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.ehcache:ehcache:3.10.6'
+    implementation 'javax.cache:cache-api'
+
     //jwt token
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
