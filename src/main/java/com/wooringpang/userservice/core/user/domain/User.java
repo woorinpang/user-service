@@ -7,11 +7,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
+@DynamicInsert
+@DynamicUpdate
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -24,7 +28,7 @@ public class User extends BaseEntity {
     private String signId;
     @Column(name = "user_name", nullable = false, length = 60)
     private String name;
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, length = 60, unique = true)
     private String email;
     @Column(length = 100)
     private String password;

@@ -14,10 +14,10 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @DynamicUpdate
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserFindPassword extends BaseEntity {
 
     /* 복합키 */
@@ -26,7 +26,7 @@ public class UserFindPassword extends BaseEntity {
 
     @Column(nullable = false, length = 50)
     private String tokenValue;
-    @Column(nullable = false, columnDefinition = "tinyint(1) default '0")
+    @Column(nullable = false, columnDefinition = "tinyint(1) default '0'")
     private Boolean isChange;
 
     /**
