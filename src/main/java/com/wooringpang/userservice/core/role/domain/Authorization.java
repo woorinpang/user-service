@@ -1,5 +1,8 @@
 package com.wooringpang.userservice.core.role.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.wooringpang.userservice.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -14,6 +17,7 @@ import java.util.List;
 
 @Entity
 @Table
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Authorization extends BaseEntity {
