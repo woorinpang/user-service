@@ -1,5 +1,0 @@
-spring:
-  cloud:
-    config:
-      uri: http://localhost:8888
-      name: user-service # user-service.yml 이 있으면 불러오게 된다.
