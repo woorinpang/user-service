@@ -1,6 +1,7 @@
 package com.wooringpang.userservice.core.user.service;
 
 import com.wooringpang.userservice.core.log.repository.LoginLogRepository;
+import com.wooringpang.userservice.core.user.UserNotFoundException;
 import com.wooringpang.userservice.core.user.presentation.request.*;
 import com.wooringpang.userservice.core.user.dto.*;
 import com.wooringpang.userservice.core.user.domain.User;
@@ -11,9 +12,11 @@ import com.wooringpang.userservice.core.user.service.param.JoinUserParam;
 import com.wooringpang.userservice.core.user.service.param.SaveUserParam;
 import com.wooringpang.userservice.core.user.service.param.UpdateUserParam;
 import com.wooringpang.userservice.global.exception.BusinessMessageException;
+import com.wooringpang.userservice.global.service.AbstractService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,7 +43,7 @@ import static org.springframework.util.StringUtils.hasText;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserService implements UserDetailsService {
+public class UserService extends AbstractService implements UserDetailsService {
 
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
@@ -59,7 +62,7 @@ public class UserService implements UserDetailsService {
      */
     public User findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new UserNotFoundException(getMessage("woorinpang.message")));
     }
 
     /**

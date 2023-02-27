@@ -26,12 +26,13 @@ public class MessageSourceConfig {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         System.out.println("messageDirectory = " + messageDirectory);
+        final String MESSAGES = "/messages";
         if ("default".equals(profile)) {
             Path fileStorageLocation = Paths.get(messageDirectory).toAbsolutePath().normalize();
-            String dbMessages = StringUtils.cleanPath("file://" + fileStorageLocation);
+            String dbMessages = StringUtils.cleanPath("file://" + fileStorageLocation + MESSAGES);
             messageSource.setBasenames(dbMessages);
         } else {
-            messageSource.setBasenames(messageDirectory );
+            messageSource.setBasenames(messageDirectory + MESSAGES);
         }
         messageSource.getBasenameSet().forEach(s -> log.info("messageSource getBasenameSet = {}", s));
 
