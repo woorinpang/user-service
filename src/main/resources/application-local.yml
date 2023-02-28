@@ -24,6 +24,9 @@ spring:
   cache:
     jcache:
       config: classpath:ehcache.xml
+#  messages:
+#    basename: messages, errors, ${file.directory}/messages
+#    encoding: UTF-8
 
 # 2시간(7,200,000), 1일(86,400,000) jwt token
 token:

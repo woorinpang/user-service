@@ -49,6 +49,7 @@ public class UserService extends AbstractService implements UserDetailsService {
     private final UserRepository userRepository;
     private final LoginLogRepository loginLogRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final MessageSource messageSource;
 
     /**
      * 유저 목록을 조회하여 페이지와 함께 반환한다.
@@ -62,7 +63,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     public User findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(getMessage("woorinpang.message")));
+                .orElseThrow(() -> new BusinessMessageException(getMessage("foo")));
     }
 
     /**
