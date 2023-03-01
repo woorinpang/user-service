@@ -1,0 +1,50 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/user-service
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+        jdbc:
+          batch_size: 1000
+        order_inserts: true
+        order_updates: true
+    show-sql: true
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+#  messages:
+#    basename: messages, errors, ${file.directory}/messages
+#    encoding: UTF-8
+
+# 2시간(7,200,000), 1일(86,400,000) jwt token
+token:
+  expiration_time: 7200000
+  refresh_time: 86400000
+  secret: 'token_secret'
+
+#file attach location - messages{lang}.properties 도 이 경로에 위치한다.
+file:
+  directory: ${app.home:${user.home}}/workspace/github/woorinpang/attach # url 사용시에는 사용되지 않는다
+  url: http://${file.hostname:localhost}:8080 # nginx 로 파일 다운로드 처리
+messages:
+  directory: ${file.directory}/messages
+
+apigateway:
+  host: http://${apigateway.hostname:localhost}:${server.port}
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false

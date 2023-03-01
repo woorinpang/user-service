@@ -6,7 +6,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -28,13 +27,17 @@ public class MessageSourceConfig {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         System.out.println("messageDirectory = " + messageDirectory);
         final String MESSAGES = "/messages";
-        if ("default".equals(profile)) {
-            Path fileStorageLocation = Paths.get(messageDirectory).toAbsolutePath().normalize();
-            String dbMessages = StringUtils.cleanPath("file://" + fileStorageLocation + MESSAGES);
-            messageSource.setBasenames(dbMessages);
-        } else {
-            messageSource.setBasenames(messageDirectory + MESSAGES);
-        }
+        final String ERRORS = "/errors";
+        messageSource.addBasenames("classpath:" + MESSAGES);
+        messageSource.addBasenames("classpath:" + ERRORS);
+//        if ("default".equals(profile)) {
+//            Path fileStorageLocation = Paths.get(messageDirectory).toAbsolutePath().normalize();
+//            String dbMessages = StringUtils.cleanPath("file://" + fileStorageLocation + MESSAGES);
+//            messageSource.addBasenames(dbMessages);
+//        } else {
+//            messageSource.addBasenames(messageDirectory + MESSAGES);
+//        }
+        messageSource.addBasenames("file:///Users/heechul/workspace/github/woorinpang/attach/messages/messages");
         messageSource.getBasenameSet().forEach(s -> log.info("messageSource getBasenameSet = {}", s));
 
         messageSource.setCacheSeconds(60); //메시지 파일 변경 감지 간격
