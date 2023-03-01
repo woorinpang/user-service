@@ -61,6 +61,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<SaveUserResponse> saveUser(@RequestBody @Validated SaveUserRequest request) {
         //validate
+        request.validate();
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

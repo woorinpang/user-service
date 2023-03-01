@@ -6,6 +6,7 @@ import com.wooringpang.userservice.core.user.domain.UserState;
 import lombok.*;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

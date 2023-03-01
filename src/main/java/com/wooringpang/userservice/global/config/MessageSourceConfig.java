@@ -26,13 +26,18 @@ public class MessageSourceConfig {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         System.out.println("messageDirectory = " + messageDirectory);
-        if ("default".equals(profile)) {
-            Path fileStorageLocation = Paths.get(messageDirectory).toAbsolutePath().normalize();
-            String dbMessages = StringUtils.cleanPath("file://" + fileStorageLocation);
-            messageSource.setBasenames(dbMessages);
-        } else {
-            messageSource.setBasenames(messageDirectory );
-        }
+        final String MESSAGES = "/messages";
+        final String ERRORS = "/errors";
+        messageSource.addBasenames("classpath:" + MESSAGES);
+        messageSource.addBasenames("classpath:" + ERRORS);
+//        if ("default".equals(profile)) {
+//            Path fileStorageLocation = Paths.get(messageDirectory).toAbsolutePath().normalize();
+//            String dbMessages = StringUtils.cleanPath("file://" + fileStorageLocation + MESSAGES);
+//            messageSource.addBasenames(dbMessages);
+//        } else {
+//            messageSource.addBasenames(messageDirectory + MESSAGES);
+//        }
+        messageSource.addBasenames("file:///Users/heechul/workspace/github/woorinpang/attach/messages/messages");
         messageSource.getBasenameSet().forEach(s -> log.info("messageSource getBasenameSet = {}", s));
 
         messageSource.setCacheSeconds(60); //메시지 파일 변경 감지 간격
