@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@ComponentScan({"com.woorinpang.common"})
+@ComponentScan({"com.woorinpang.common", "com.woorinpang.servlet"})
+//@EntityScan({"com.woorinpang.servlet.entity"})
 @EnableDiscoveryClient
 @SpringBootApplication
 public class UserServiceApplication {

@@ -1,6 +1,6 @@
 package com.woorinpang.userservice.core.user.domain;
 
-import com.woorinpang.userservice.global.entity.BaseEntity;
+import com.woorinpang.servlet.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.core.user.domain;
 
+import com.woorinpang.servlet.entity.BaseEntity;
 import com.woorinpang.userservice.core.user.service.param.UpdateUserParam;
-import com.woorinpang.userservice.global.entity.BaseEntity;
 import com.woorinpang.common.entity.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
