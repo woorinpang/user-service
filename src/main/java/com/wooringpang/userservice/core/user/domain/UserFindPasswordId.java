@@ -2,6 +2,7 @@ package com.wooringpang.userservice.core.user.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Getter
-@NoArgsConstructor
 @Embeddable
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserFindPasswordId implements Serializable {
 
     private static final long serialVersionUID = -3548302862478452070L;
