@@ -24,6 +24,9 @@ ext {
 }
 
 dependencies {
+    implementation project(':common')
+//    implementation project(path: ':')
+
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -45,6 +48,7 @@ dependencies {
 
     //jwt token
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
 
     //database
     runtimeOnly 'com.h2database:h2'

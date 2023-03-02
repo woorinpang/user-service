@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 0 #random port
 
 spring:
   application:
@@ -23,3 +23,13 @@ spring:
   cache:
     jcache:
       config: classpath:ehcache.xml
+
+# config server actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, info
+  health:
+    mail:
+      enabled: false
