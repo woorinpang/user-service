@@ -1,0 +1,34 @@
+package com.wooringpang.core.user.presentation.request;
+
+import com.wooringpang.core.user.domain.Role;
+import com.wooringpang.core.user.domain.UserState;
+import com.wooringpang.core.user.service.param.SaveUserParam;
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+public class SaveUserRequest {
+
+    private String username;
+    private String email;
+    private String password;
+    private String roleCode;
+    private String userStateCode;
+
+    public void validate() {
+        //validate
+    }
+
+    public SaveUserParam toParam() {
+        return SaveUserParam.builder()
+                .name(this.username)
+                .email(this.email)
+                .password(this.password)
+                .role(Role.findByCode(this.roleCode))
+                .userState(UserState.findByCode(this.userStateCode))
+                .build();
+    }
+}
