@@ -7,7 +7,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woorinpang.userservice.core.role.dto.AuthorizationListDto;
 import com.woorinpang.userservice.core.role.dto.AuthorizationSearchCondition;
-import com.woorinpang.userservice.global.dto.CommonSearchCondition;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

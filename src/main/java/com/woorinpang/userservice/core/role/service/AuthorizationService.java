@@ -1,14 +1,13 @@
 package com.woorinpang.userservice.core.role.service;
 
+import com.woorinpang.common.config.GlobalConstant;
+import com.woorinpang.userservice.core.role.domain.Authorization;
 import com.woorinpang.userservice.core.role.dto.AuthorizationListDto;
 import com.woorinpang.userservice.core.role.dto.AuthorizationSearchCondition;
-import com.woorinpang.userservice.core.role.repository.AuthorizationQueryRepository;
-import com.woorinpang.userservice.core.role.repository.AuthorizationRepository;
-import com.woorinpang.userservice.core.role.domain.Authorization;
 import com.woorinpang.userservice.core.role.exception.AuthorizationNotFoundException;
 import com.woorinpang.userservice.core.role.presentation.request.UpdateAuthorizationRequest;
-import com.woorinpang.userservice.global.service.AbstractService;
-import com.woorinpang.common.config.GlobalConstant;
+import com.woorinpang.userservice.core.role.repository.AuthorizationQueryRepository;
+import com.woorinpang.userservice.core.role.repository.AuthorizationRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +15,7 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -32,12 +32,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuthorizationService extends AbstractService {
+public class AuthorizationService {
 
     private final AuthorizationQueryRepository authorizationQueryRepository;
     private final AuthorizationRepository authorizationRepository;
     //캐시 관리자
     private final CacheManager cacheManager;
+    private final MessageSource messageSource;
 
     /**
      * 인가 페이지 목록 조회
@@ -213,8 +214,7 @@ public class AuthorizationService extends AbstractService {
      */
     public Authorization findAuthorization(Long authorizationId) {
         return authorizationRepository.findById(authorizationId)
-                .orElseThrow(() -> new AuthorizationNotFoundException(getMessage("valid.notexists.format",
-                        new Object[]{getMessage("authorization")})));
+                .orElseThrow(() -> new AuthorizationNotFoundException(messageSource.getMessage("hello", null, null)));
     }
 
     /**
