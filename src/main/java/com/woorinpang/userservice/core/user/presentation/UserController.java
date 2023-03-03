@@ -1,5 +1,6 @@
 package com.woorinpang.userservice.core.user.presentation;
 
+import com.woorinpang.common.exception.BusinessMessageException;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
 import com.woorinpang.userservice.core.user.presentation.request.*;
@@ -9,7 +10,6 @@ import com.woorinpang.userservice.core.user.presentation.response.SaveUserRespon
 import com.woorinpang.userservice.core.user.presentation.response.UpdateUserResponse;
 import com.woorinpang.userservice.core.user.service.UserService;
 import com.woorinpang.userservice.global.config.TokenProvider;
-import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

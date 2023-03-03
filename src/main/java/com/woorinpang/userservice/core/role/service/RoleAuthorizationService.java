@@ -5,7 +5,6 @@ import com.woorinpang.userservice.core.role.dto.RoleAuthorizationSearchCondition
 import com.woorinpang.userservice.core.role.repository.RoleAuthorizationQueryRepository;
 import com.woorinpang.userservice.core.role.repository.RoleAuthorizationRepository;
 import com.woorinpang.userservice.core.role.domain.RoleAuthorization;
-import com.woorinpang.userservice.global.service.AbstractService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -26,7 +25,7 @@ import static org.springframework.util.StringUtils.hasText;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class RoleAuthorizationService extends AbstractService {
+public class RoleAuthorizationService {
 
     private final RoleAuthorizationQueryRepository roleAuthorizationQueryRepository;
     private final RoleAuthorizationRepository roleAuthorizationRepository;

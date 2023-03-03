@@ -4,7 +4,6 @@ import com.woorinpang.userservice.core.role.dto.RoleListDto;
 import com.woorinpang.userservice.core.role.dto.RoleSearchCondition;
 import com.woorinpang.userservice.core.role.repository.RoleQueryRepository;
 import com.woorinpang.userservice.core.role.repository.RoleRepository;
-import com.woorinpang.userservice.global.service.AbstractService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class RoleService extends AbstractService {
+public class RoleService {
 
     private final RoleQueryRepository roleQueryRepository;
     private final RoleRepository roleRepository;

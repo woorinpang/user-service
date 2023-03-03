@@ -1,5 +1,6 @@
 package com.woorinpang.userservice.core.user.service;
 
+import com.woorinpang.common.exception.BusinessMessageException;
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.domain.UserState;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
@@ -11,8 +12,6 @@ import com.woorinpang.userservice.core.user.service.param.JoinUserParam;
 import com.woorinpang.userservice.core.user.service.param.UpdateUserParam;
 import com.woorinpang.userservice.core.log.repository.LoginLogRepository;
 import com.woorinpang.userservice.core.user.service.param.SaveUserParam;
-import com.woorinpang.userservice.global.exception.BusinessMessageException;
-import com.woorinpang.userservice.global.service.AbstractService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,7 @@ import static org.springframework.util.StringUtils.hasText;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserService extends AbstractService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
@@ -62,7 +61,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     public User findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessMessageException(getMessage("foo")));
+                .orElseThrow(() -> new BusinessMessageException("foo"));
     }
 
     /**
