@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 public class UserListDto {
 
     private Long userId;
-    private String signId;
-    private String name;
+    private String username;
     private String email;
+    private String name;
     private String roleCode;
     private String roleDescription;
     private String userStateCode;
@@ -27,17 +27,17 @@ public class UserListDto {
 
     public UserListDto(User user) {
         this.userId = user.getId();
-        this.signId = user.getSignId();
+        this.username = user.getUsername();
         this.name = user.getName();
         this.email = user.getEmail();
     }
 
     @QueryProjection
-    public UserListDto(Long userId, String signId, String name, String email, Role role, UserState userState, LocalDateTime lastLoginDate, Integer loginFailCount) {
+    public UserListDto(Long userId, String username, String email, String name, Role role, UserState userState, LocalDateTime lastLoginDate, Integer loginFailCount) {
         this.userId = userId;
-        this.signId = signId;
-        this.name = name;
+        this.username = username;
         this.email = email;
+        this.name = name;
         this.roleCode = role.getCode();
         this.roleDescription = role.getDescription();
         this.userStateCode = userState.getCode();

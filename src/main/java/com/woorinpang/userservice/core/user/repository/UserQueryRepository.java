@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.woorinpang.userservice.core.user.domain.QUser.user;
-import static org.springframework.util.StringUtils.*;
+import static org.springframework.util.StringUtils.hasText;
 
 @Repository
 public class UserQueryRepository {
@@ -47,9 +47,9 @@ public class UserQueryRepository {
                         Projections.constructor(
                                 UserListDto.class,
                                 user.id,
-                                user.signId,
-                                user.name,
+                                user.username,
                                 user.email,
+                                user.name,
                                 user.role,
                                 user.userState,
                                 user.lastLoginDate,

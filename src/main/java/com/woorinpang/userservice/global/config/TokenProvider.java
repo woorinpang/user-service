@@ -48,29 +48,29 @@ public class TokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        //signId 가져오기
+        //username 가져오기
         User findUser = userService.findByEmail(email);
-        String signId = findUser.getSignId();
+        String username = findUser.getUsername();
 
         //jwt access 토큰 생성
-        String accessToken = createAccessToken(authorities, signId);
+        String accessToken = createAccessToken(authorities, username);
 
         //jwt refresh 토크 생성 후 사용자 도메인에 저장하여 토큰 재생성 요청시 활용한다.
         String refreshToken = createRefreshToken();
-        userService.updateRefreshToken(signId, refreshToken);
+        userService.updateRefreshToken(username, refreshToken);
 
         //Header 에 토큰 세팅
         response.addHeader(TOKEN_ACCESS_KEY, accessToken);
         response.addHeader(TOKEN_REFRESH_KEY, refreshToken);
-        response.addHeader(TOKEN_USER_ID, signId);
+        response.addHeader(TOKEN_USER_ID, username);
     }
 
     /**
      * jwt access token 생성
      */
-    private String createAccessToken(String authorities, String signId) {
+    private String createAccessToken(String authorities, String username) {
         return Jwts.builder()
-                .setSubject(signId)
+                .setSubject(username)
                 .claim(TOKEN_CLAIM_NAME, authorities)
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_EXPIRATION_TIME)))
                 .signWith(SignatureAlgorithm.ES512, TOKEN_SECRET)
@@ -96,14 +96,14 @@ public class TokenProvider {
         User findUser = userService.findByRefreshToken(refreshToken);
 
         //사용자가 있으면 access token 을 새로 발급하여 반환합니다.
-        String accessToken = createAccessToken(findUser.getRole().getCode(), findUser.getSignId());
+        String accessToken = createAccessToken(findUser.getRole().getCode(), findUser.getUsername());
 
         String filteredRefreshToken = refreshToken.replaceAll("\r", "").replaceAll("\n", "");
 
         //Header 에 토큰 세팅
         response.addHeader(TOKEN_ACCESS_KEY, accessToken);
         response.addHeader(TOKEN_REFRESH_KEY, filteredRefreshToken);
-        response.addHeader(TOKEN_USER_ID, findUser.getSignId());
+        response.addHeader(TOKEN_USER_ID, findUser.getUsername());
         return accessToken;
     }
 

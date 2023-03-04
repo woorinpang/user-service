@@ -80,7 +80,7 @@ public class AuthorizationQueryRepository {
     /**
      * 사용자의 인가 목록 조회
      */
-    public List<AuthorizationListDto> findBySignId(String signId) {
+    public List<AuthorizationListDto> findByUsername(String username) {
         return getAuthorizationListJPQLQuery()
                 .where(
                         JPAExpressions
@@ -89,7 +89,7 @@ public class AuthorizationQueryRepository {
                                 .on(user.role.stringValue().eq(roleAuthorization.roleAuthorizationId.roleCode))
                                 .where(
                                         roleAuthorization.roleAuthorizationId.authorizationId.eq(authorization.id)
-                                                .and(user.signId.eq(signId))
+                                                .and(user.username.eq(username))
                                 )
                                 .exists()
                 )

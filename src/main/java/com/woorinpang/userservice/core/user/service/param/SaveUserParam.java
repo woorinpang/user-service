@@ -25,10 +25,10 @@ public class SaveUserParam {
 
     public User toEntity(BCryptPasswordEncoder passwordEncoder) {
         return User.createBuilder()
-                .signId(UUID.randomUUID().toString())
-                .name(this.name)
+                .username(UUID.randomUUID().toString())
                 .email(this.email)
                 .password(passwordEncoder.encode(this.password))
+                .name(this.name)
                 .role(this.role)
                 .userState(this.userState)
                 .build();

@@ -12,9 +12,9 @@ import static org.springframework.util.StringUtils.hasText;
 public class FindUserResponse {
 
     private Long userId;
-    private String signId;
-    private String name;
+    private String username;
     private String email;
+    private String name;
     private String roleCode;
     private String userStateCode;
     private String googleId;
@@ -25,9 +25,9 @@ public class FindUserResponse {
 
     public FindUserResponse(User user) {
         this.userId = user.getId();
-        this.signId = user.getSignId();
-        this.name = user.getName();
+        this.username = user.getUsername();
         this.email = user.getEmail();
+        this.name = user.getName();
         this.roleCode = user.getRole().getCode();
         this.userStateCode = user.getUserState().getCode();
         this.googleId = user.getGoogleId();
