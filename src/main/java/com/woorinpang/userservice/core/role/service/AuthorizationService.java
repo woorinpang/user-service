@@ -86,8 +86,8 @@ public class AuthorizationService {
     /**
      * 사용자의 인가 여부 확인
      */
-    public Boolean isAuthorization(String signId, String httpMethod, String requestPath) {
-        List<AuthorizationListDto> authorizations = ((AuthorizationService) AopContext.currentProxy()).findBySignId(signId);
+    public Boolean isAuthorization(String username, String httpMethod, String requestPath) {
+        List<AuthorizationListDto> authorizations = ((AuthorizationService) AopContext.currentProxy()).findByUsername(username);
 
         return isContainMatch(authorizations, httpMethod, requestPath);
     }
@@ -95,9 +95,9 @@ public class AuthorizationService {
     /**
      * 사용자의 인가 전체 목록 조회
      */
-    @Cacheable(value = "cache-user-authorization-by-signid", key = "#roles")
-    public List<AuthorizationListDto> findBySignId(String signId) {
-        return authorizationQueryRepository.findBySignId(signId);
+    @Cacheable(value = "cache-user-authorization-by-username", key = "#roles")
+    public List<AuthorizationListDto> findByUsername(String username) {
+        return authorizationQueryRepository.findByUsername(username);
     }
 
     /**
@@ -221,8 +221,8 @@ public class AuthorizationService {
      * 인가 조회 캐시 클리어
      */
     private void clearAuthorizationCache() {
-        Cache signidCache = cacheManager.getCache("cache-user-authorization-by-signid");
-        if (signidCache != null) signidCache.clear();
+        Cache usernameCache = cacheManager.getCache("cache-user-authorization-by-username");
+        if (usernameCache != null) usernameCache.clear();
         Cache rolesCache = cacheManager.getCache("cache-user-authorization-by-roles");
         if (rolesCache != null) rolesCache.clear();
     }

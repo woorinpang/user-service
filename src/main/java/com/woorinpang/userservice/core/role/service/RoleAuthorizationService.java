@@ -74,8 +74,8 @@ public class RoleAuthorizationService {
      * 인가 조회 캐시 클리어
      */
     private void clearAuthorizationCache() {
-        Cache signidCache = cacheManager.getCache("cache-user-authorization-by-signid");
-        if (signidCache != null) signidCache.clear();
+        Cache usernameCache = cacheManager.getCache("cache-user-authorization-by-username");
+        if (usernameCache != null) usernameCache.clear();
         Cache rolesCache = cacheManager.getCache("cache-user-authorization-by-roles");
         if (rolesCache != null) rolesCache.clear();
     }

@@ -33,10 +33,10 @@ public class TestDataInit {
 
         public void userInit() {
             User user = User.createBuilder()
-                    .signId(UUID.randomUUID().toString())
-                    .name("spring")
+                    .username("spring")
                     .email("spring@naver.com")
                     .password(passwordEncoder.encode("1234"))
+                    .name("spring")
                     .role(Role.USER)
                     .userState(UserState.NORMAL)
                     .build();

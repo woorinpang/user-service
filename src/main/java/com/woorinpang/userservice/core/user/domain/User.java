@@ -26,14 +26,14 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String signId;
-    @Column(name = "user_name", nullable = false, length = 60)
-    private String name;
+    private String username;
     @Column(nullable = false, length = 60, unique = true)
     private String email;
     @Column(length = 100)
     private String password;
 
+    @Column(nullable = false, length = 60)
+    private String name;
     @Enumerated(EnumType.STRING)
     @Column
     private Role role;
@@ -60,12 +60,13 @@ public class User extends BaseEntity {
     private String naverId;
 
     @Builder(builderMethodName = "createBuilder")
-    public User(String signId, String name, String email, String password, Role role,
-                UserState userState, String googleId, String kakaoId, String naverId) {
-        this.signId = signId;
-        this.name = name;
+    public User(String username, String email, String password,
+                String name, Role role, UserState userState,
+                String googleId, String kakaoId, String naverId) {
+        this.username = username;
         this.email = email;
         this.password = password;
+        this.name = name;
         this.role = role;
         this.userState = userState;
         this.googleId = googleId;
@@ -77,9 +78,9 @@ public class User extends BaseEntity {
      * 유저 수정
      */
     public void update(UpdateUserParam param) {
-        this.name = param.getName();
         this.email = param.getEmail();
         this.password = param.getPassword();
+        this.name = param.getName();
         this.role = param.getRole();
         this.userState = param.getUserState();
     }
@@ -119,8 +120,8 @@ public class User extends BaseEntity {
     /**
      * 사용자 정보 수정
      */
-    public void updateInfo(String userName, String email) {
-        this.name = userName;
+    public void updateInfo(String name, String email) {
+        this.name = name;
         this.email = email;
     }
 

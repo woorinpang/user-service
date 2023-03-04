@@ -38,22 +38,22 @@ public class AuthorizationController {
      */
     @GetMapping("/check")
     @ResponseStatus(HttpStatus.OK)
-    public Boolean isAuthorization(@RequestParam("httpMethod") String httpMethod, @RequestParam("requestPath") String reuqestPath) {
+    public Boolean isAuthorization(@RequestParam("httpMethod") String httpMethod, @RequestParam("requestPath") String requestPath) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String signId = authentication.getName();
+        String username = authentication.getName();
         List<String> roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::toString)
                 .collect(Collectors.toList());
 
         //사용자 아이디로 조회
-        //return authorizationService.isAuthorization(signId, httpMethod, reuqestPath);
+        //return authorizationService.isAuthorization(username, httpMethod, requestPath);
 
         //권한으로 조회
-        Boolean isAuthorization = authorizationService.isAuthorization(roles, httpMethod, reuqestPath);
+        Boolean isAuthorization = authorizationService.isAuthorization(roles, httpMethod, requestPath);
 
-        log.info("[isAuthorization={}] authentication.isAuthenticated()={}, signId={}, httpMethod={}, requestPath={}, roles={}",
-                isAuthorization, authentication.isAuthenticated(), signId, httpMethod, reuqestPath, roles);
+        log.info("[isAuthorization={}] authentication.isAuthenticated()={}, username={}, httpMethod={}, requestPath={}, roles={}",
+                isAuthorization, authentication.isAuthenticated(), username, httpMethod, requestPath, roles);
 
         return isAuthorization;
     }
