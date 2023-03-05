@@ -27,7 +27,7 @@ public class UserFindPassword extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String tokenValue;
     @Column(nullable = false)
-    private Boolean isChange;
+    private boolean isChange;
 
     /**
      *
