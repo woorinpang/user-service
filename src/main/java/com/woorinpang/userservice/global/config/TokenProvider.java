@@ -30,7 +30,7 @@ public class TokenProvider {
     @Value("${token.expiration_time}")
     private String TOKEN_EXPIRATION_TIME;
 
-    @Value("${token.refresh_time")
+    @Value("${token.refresh_time}")
     private String TOKEN_REFRESH_TIME;
 
     final String TOKEN_CLAIM_NAME = "authorities";
