@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.core.user.repository;
+package com.woorinpang.userservice.core.user.domain;
 
 import com.woorinpang.userservice.core.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.global.config;
 
 import com.woorinpang.common.config.GlobalConstant;
-import com.woorinpang.userservice.core.user.service.UserService;
+import com.woorinpang.userservice.core.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
-    private final UserService userService;
+    private final AuthService authService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Bean
@@ -49,7 +49,7 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationManager() throws Exception {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userService);
+        provider.setUserDetailsService(authService);
         provider.setPasswordEncoder(new BCryptPasswordEncoder());
         return provider;
     }

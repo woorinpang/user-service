@@ -48,7 +48,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     //database
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
     //querydsl springboot 3.0 이상
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
@@ -68,7 +68,10 @@ dependencies {
     //lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2'
 }
 
 dependencyManagement {
