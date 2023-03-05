@@ -27,11 +27,11 @@ public class JoinUserRequest {
                 && Objects.nonNull(token) && !"".equals(token) && !"undefined".equals(token);
     }
 
-    public JoinUserParam toParam(BCryptPasswordEncoder passwordEncoder) {
+    public JoinUserParam toParam() {
         return JoinUserParam.builder()
                 .name(this.userName)
                 .email(this.email)
-                .password(passwordEncoder.encode(this.password))
+                .password(this.password)
                 .provider(this.provider)
                 .token(this.token)
                 .isProvider(isProvider())

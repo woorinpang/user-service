@@ -11,17 +11,13 @@ import com.woorinpang.userservice.core.user.presentation.response.SaveUserRespon
 import com.woorinpang.userservice.core.user.presentation.response.UpdateUserResponse;
 import com.woorinpang.userservice.core.user.service.UserService;
 import com.woorinpang.userservice.global.config.TokenProvider;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +29,6 @@ public class UserController {
 
     private final UserService userService;
     private final TokenProvider tokenProvider;
-
-    private final BCryptPasswordEncoder passwordEncoder;
 
     /**
      * 유저 목록 조회
@@ -83,15 +77,6 @@ public class UserController {
     }
 
     /**
-     * refresh token 과 일치하는 사용자가 잇으면 access toekn 을 새로 발급하여 리턴한다.
-     */
-    @PutMapping("/token/refresh")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        tokenProvider.refreshToken(refreshToken, response);
-    }
-
-    /**
      * 사용자 소셜 정보 조회
      */
     public ResponseEntity<SocialUserResponse> social(@RequestBody @Validated SocialUserRequest request) {
@@ -114,7 +99,7 @@ public class UserController {
      */
     @PostMapping("/join")
     public ResponseEntity<JoinUserResponse> join(@RequestBody @Validated JoinUserRequest request) {
-        Long joinId = userService.join(request.toParam(passwordEncoder));
+        Long joinId = userService.join(request.toParam());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new JoinUserResponse(joinId));
