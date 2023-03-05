@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEmailRequest {
 
-    private String signId;
+    private String username;
 
     @NotBlank(message = "{user.email}{valid.required}")
     @Email

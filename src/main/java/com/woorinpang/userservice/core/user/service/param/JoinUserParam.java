@@ -17,19 +17,19 @@ import java.util.UUID;
 @Builder
 public class JoinUserParam {
 
-    private String name;
     private String email;
     private String password;
+    private String name;
     private String provider;
     private String token;
     private boolean isProvider;
 
     public User toEntity(BCryptPasswordEncoder passwordEncoder) {
         return User.createBuilder()
-                .signId(UUID.randomUUID().toString())
-                .name(this.name)
+                .username(this.email)
                 .email(this.email)
                 .password(passwordEncoder.encode(this.password))
+                .name(this.name)
                 .role(Role.USER)
                 .userState(UserState.NORMAL)
                 .build();

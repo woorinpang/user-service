@@ -1,37 +1,28 @@
 package com.woorinpang.userservice.core.user.service;
 
+import com.woorinpang.common.exception.BusinessMessageException;
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.domain.UserState;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
 import com.woorinpang.userservice.core.user.presentation.request.*;
-import com.woorinpang.userservice.core.user.repository.UserQueryRepository;
-import com.woorinpang.userservice.core.user.repository.UserRepository;
+import com.woorinpang.userservice.core.user.infrastructure.UserQueryRepository;
+import com.woorinpang.userservice.core.user.domain.UserRepository;
 import com.woorinpang.userservice.core.user.service.param.JoinUserParam;
 import com.woorinpang.userservice.core.user.service.param.UpdateUserParam;
 import com.woorinpang.userservice.core.log.repository.LoginLogRepository;
 import com.woorinpang.userservice.core.user.service.param.SaveUserParam;
-import com.woorinpang.userservice.global.exception.BusinessMessageException;
-import com.woorinpang.userservice.global.service.AbstractService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,7 +33,7 @@ import static org.springframework.util.StringUtils.hasText;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserService extends AbstractService implements UserDetailsService {
+public class UserService {
 
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
@@ -62,7 +53,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     public User findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessMessageException(getMessage("foo")));
+                .orElseThrow(() -> new BusinessMessageException("foo"));
     }
 
     /**
@@ -89,8 +80,8 @@ public class UserService extends AbstractService implements UserDetailsService {
      * 사용자 refresh token 정보를 받아 수정하고 권한 정보를 반환한다.
      */
     @Transactional
-    public String updateRefreshToken(String  signId, String updateRefreshToken) {
-        User findUser = userRepository.findBySignId(signId)
+    public String updateRefreshToken(String username, String updateRefreshToken) {
+        User findUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("없음"));
 
         findUser.updateRefreshToken(updateRefreshToken);
@@ -108,8 +99,8 @@ public class UserService extends AbstractService implements UserDetailsService {
     /**
      * 로그인아이디로 사용자를 찾아 반환한다.
      */
-    public User findBySignId(String signId) {
-        return userRepository.findBySignId(signId)
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("없음"));
     }
 
@@ -131,45 +122,11 @@ public class UserService extends AbstractService implements UserDetailsService {
     }
 
     /**
-     * SecurityConfig > configure > UserDetailsService 메소드에서 호출된다.
-     * 스프링 시큐리티에 의해 로그인 대상 사용자의 패스워드와 권한 정보를 DB 에서 조회하여 UserDetails 를 반환한다.
-     */
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info("loadUserByUsername! email = {}", email);
-        //로그인 실패시 이메일 계정을 로그에 남기기 위해 세팅하고 unsuccessfulAuthentication 메소드에서 받아서 로그에 입력한다.
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        request.setAttribute("email", email);
-
-        //UsernameNotFoundException 을 던지면 AbstractUserDetailsAuthenticationProvider 에서 BadCredentialsException 으로 처리하기 때문에 IllegalArgumentException 을 발생시킨다.
-        //사용자가 없는 것인지 패스워드가 잘못된 것인지 구분하기 위함이다.
-        User findUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        log.info("{} 사용자 존재함", findUser);
-
-        if (!UserState.NORMAL.equals(findUser.getUserState())) {
-            throw new IllegalArgumentException("로그인할수 없습니다.");
-        }
-
-        //로그인 유저의 권한 목록 주입
-        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(findUser.getRole().getCode()));
-
-//        if (findUser.isSocialUser() && !hasText(findUser.getPassword())) {
-//            //소셜 회원이고 비밀번호가 등록되지 않은 경우
-//            return new SocialUser(findUser.getEmail(), authorities);
-//        } else {
-//            return new org.springframework.security.core.userdetails.User(findUser.getEmail(), findUser.getPassword(), authorities);
-//        }
-        return new org.springframework.security.core.userdetails.User(findUser.getEmail(), findUser.getPassword(), authorities);
-    }
-
-    /**
      * 로그인 후처리
      */
     @Transactional
     public void loginCallback(String email, Boolean isSuccess, String failContent) {
-        User findUser = userRepository.findByEmail(email)
+        User findUser = userRepository.findByUsername(email)
                 .orElseThrow(() -> new IllegalArgumentException("없음"));
 
         if (Boolean.TRUE.equals(isSuccess)) {
@@ -182,15 +139,15 @@ public class UserService extends AbstractService implements UserDetailsService {
     /**
      * 이메일 중복 확인
      */
-    public Boolean existsEmail(String email, String signId) {
+    public Boolean existsEmail(String email, String username) {
         if (!hasText(email)) {
             throw new IllegalArgumentException("이메일 없음");
         }
 
-        if (!hasText(signId)) {
+        if (!hasText(username)) {
             return userRepository.findByEmail(email).isPresent();
         } else {
-            return userRepository.findByEmailAndSignIdNot(email, signId).isPresent();
+            return userRepository.findByEmailAndUsernameNot(email, username).isPresent();
         }
     }
 
@@ -322,8 +279,8 @@ public class UserService extends AbstractService implements UserDetailsService {
         return true;
     }
 
-    private User findUserVerifyPassword(String signId, String password) {
-        User entity = this.findBySignId(signId);
+    private User findUserVerifyPassword(String username, String password) {
+        User entity = this.findByUsername(username);
         if (!passwordEncoder.matches(password, entity.getPassword())) {
             throw new BusinessMessageException("틀려");
         }
@@ -334,22 +291,22 @@ public class UserService extends AbstractService implements UserDetailsService {
      * 사용자 정보 수정
      */
     @Transactional
-    public String updateInfo(String signId, UserUpdateInfoRequest request) {
-        User user = findUserVerify(signId, request);
+    public String updateInfo(String username, UserUpdateInfoRequest request) {
+        User user = findUserVerify(username, request);
 
         user.updateInfo(request.getUserName(), request.getEmail());
-        return user.getSignId();
+        return user.getUsername();
     }
 
-    private User findUserVerify(String signId, UserVerifyRequest request) {
-        if (!hasText(signId)) {
+    private User findUserVerify(String username, UserVerifyRequest request) {
+        if (!hasText(username)) {
             throw new BusinessMessageException("에러");
         }
 
         User user = null;
 
         if ("password".equals(request.getProvider())) {
-            user = findUserVerifyPassword(signId, request.getPassword());
+            user = findUserVerifyPassword(username, request.getPassword());
         } else {
             user = findSocialUserByToken(request.getProvider(), request.getToken());
 
@@ -357,7 +314,7 @@ public class UserService extends AbstractService implements UserDetailsService {
                 throw new BusinessMessageException("없음");
             }
 
-            if (!signId.equals(user.getSignId())) {
+            if (!username.equals(user.getUsername())) {
                 throw new BusinessMessageException("ㄴㄴㄴㄴ");
             }
         }
@@ -370,8 +327,8 @@ public class UserService extends AbstractService implements UserDetailsService {
     }
 
     @Transactional
-    public Boolean leave(String signId, UserVerifyRequest request) {
-        User entity = findUserVerify(signId, request);
+    public Boolean leave(String username, UserVerifyRequest request) {
+        User entity = findUserVerify(username, request);
         entity.updateUserStateCode(UserState.LEAVE);
         return true;
     }

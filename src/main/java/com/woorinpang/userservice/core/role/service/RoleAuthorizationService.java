@@ -5,7 +5,6 @@ import com.woorinpang.userservice.core.role.dto.RoleAuthorizationSearchCondition
 import com.woorinpang.userservice.core.role.repository.RoleAuthorizationQueryRepository;
 import com.woorinpang.userservice.core.role.repository.RoleAuthorizationRepository;
 import com.woorinpang.userservice.core.role.domain.RoleAuthorization;
-import com.woorinpang.userservice.global.service.AbstractService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -26,7 +25,7 @@ import static org.springframework.util.StringUtils.hasText;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class RoleAuthorizationService extends AbstractService {
+public class RoleAuthorizationService {
 
     private final RoleAuthorizationQueryRepository roleAuthorizationQueryRepository;
     private final RoleAuthorizationRepository roleAuthorizationRepository;
@@ -75,8 +74,8 @@ public class RoleAuthorizationService extends AbstractService {
      * 인가 조회 캐시 클리어
      */
     private void clearAuthorizationCache() {
-        Cache signidCache = cacheManager.getCache("cache-user-authorization-by-signid");
-        if (signidCache != null) signidCache.clear();
+        Cache usernameCache = cacheManager.getCache("cache-user-authorization-by-username");
+        if (usernameCache != null) usernameCache.clear();
         Cache rolesCache = cacheManager.getCache("cache-user-authorization-by-roles");
         if (rolesCache != null) rolesCache.clear();
     }

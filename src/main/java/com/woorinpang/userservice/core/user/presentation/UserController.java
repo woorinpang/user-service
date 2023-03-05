@@ -1,5 +1,7 @@
 package com.woorinpang.userservice.core.user.presentation;
 
+import com.woorinpang.common.exception.BusinessMessageException;
+import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
 import com.woorinpang.userservice.core.user.presentation.request.*;
@@ -9,7 +11,6 @@ import com.woorinpang.userservice.core.user.presentation.response.SaveUserRespon
 import com.woorinpang.userservice.core.user.presentation.response.UpdateUserResponse;
 import com.woorinpang.userservice.core.user.service.UserService;
 import com.woorinpang.userservice.global.config.TokenProvider;
-import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -105,7 +106,7 @@ public class UserController {
      */
     @PostMapping("/exists")
     public Boolean existsEmail(@RequestBody @Validated UserEmailRequest request) {
-        return userService.existsEmail(request.getEmail(), request.getSignId());
+        return userService.existsEmail(request.getEmail(), request.getUsername());
     }
 
     /**
@@ -130,13 +131,14 @@ public class UserController {
     /**
      * 사용자 회원정보 변경
      */
-    @PutMapping("/info/{signId}")
-    public String updateInfo(@PathVariable String signId, @RequestBody @Validated UserUpdateInfoRequest request) {
+    @PutMapping("/info/{userId}")
+    public String updateInfo(@PathVariable Long userId, @RequestBody @Validated UserUpdateInfoRequest request) {
         final String authUserId = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!authUserId.equals(signId)) {
+        if (!authUserId.equals(userId)) {
             throw new BusinessMessageException("에러");
         }
-        return userService.updateInfo(signId, request);
+        User findUser = this.userService.findUser(userId);
+        return userService.updateInfo(findUser.getUsername(), request);
     }
 
     /**
@@ -144,8 +146,8 @@ public class UserController {
      */
     @PostMapping("/leave")
     public Boolean leave(@RequestBody @Validated UserVerifyRequest request) {
-        final String signId = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userService.leave(signId, request);
+        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.leave(username, request);
     }
 
     /**

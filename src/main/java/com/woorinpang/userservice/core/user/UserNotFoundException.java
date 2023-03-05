@@ -1,6 +1,7 @@
 package com.woorinpang.userservice.core.user;
 
-import com.woorinpang.userservice.global.exception.EntityNotFoundException;
+
+import com.woorinpang.common.exception.EntityNotFoundException;
 
 public class UserNotFoundException extends EntityNotFoundException {
 
