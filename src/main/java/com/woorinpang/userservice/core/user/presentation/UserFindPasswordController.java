@@ -5,7 +5,7 @@ import com.woorinpang.userservice.core.user.presentation.request.UserFindPasswor
 import com.woorinpang.userservice.core.user.presentation.request.UserFindPasswordUpdateRequest;
 import com.woorinpang.userservice.core.user.presentation.request.UserPasswordMatchRequest;
 import com.woorinpang.userservice.core.user.presentation.request.UserPasswordUpdateRequest;
-import com.woorinpang.userservice.core.user.service.UserService;
+import com.woorinpang.userservice.core.user.service.UserFindPasswordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users/password")
 public class UserFindPasswordController {
 
-    private final UserService userService;
+    private final UserFindPasswordService userFindPasswordService;
 
     /**
      * 사용자 비밀번호 찾기
@@ -29,7 +29,7 @@ public class UserFindPasswordController {
     public ResponseEntity<JsonResponse> findPassword(@RequestBody @Validated UserFindPasswordSaveRequest request) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK(userService.findPassword(request)));
+                .body(JsonResponse.OK(userFindPasswordService.findPassword(request)));
     }
 
     /**
@@ -39,7 +39,7 @@ public class UserFindPasswordController {
     public ResponseEntity<JsonResponse> validPassword(@PathVariable("token") String token) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK(userService.validPassword(token)));
+                .body(JsonResponse.OK(userFindPasswordService.validPassword(token)));
     }
 
     /**
@@ -49,7 +49,7 @@ public class UserFindPasswordController {
     public ResponseEntity<JsonResponse> changePassword(@RequestBody @Validated UserFindPasswordUpdateRequest request) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK(userService.changePassword(request)));
+                .body(JsonResponse.OK(userFindPasswordService.changePassword(request)));
     }
 
     /**
@@ -60,7 +60,7 @@ public class UserFindPasswordController {
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK(userService.updatePassword(username, request)));
+                .body(JsonResponse.OK(userFindPasswordService.updatePassword(username, request)));
     }
 
     /**
@@ -72,6 +72,6 @@ public class UserFindPasswordController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK(userService.matchPassword(username, request.getPassword())));
+                .body(JsonResponse.OK(userFindPasswordService.matchPassword(username, request.getPassword())));
     }
 }

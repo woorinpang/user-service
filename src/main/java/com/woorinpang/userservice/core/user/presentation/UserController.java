@@ -121,14 +121,6 @@ public class UserController {
     }
 
     /**
-     * 사용자 비밀번호 찾기
-     */
-    @PostMapping("/password/find")
-    public Boolean findPassword(@RequestBody @Validated UserFindPasswordSaveRequest request) {
-        return userService.findPassword(request);
-    }
-
-    /**
      * 사용자 회원정보 변경
      */
     @PutMapping("/info/{userId}")
