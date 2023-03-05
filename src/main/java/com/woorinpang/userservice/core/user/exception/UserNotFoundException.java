@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.core.user;
+package com.woorinpang.userservice.core.user.exception;
 
 
 import com.woorinpang.common.exception.EntityNotFoundException;

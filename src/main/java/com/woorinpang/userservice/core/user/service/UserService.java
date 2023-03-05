@@ -1,30 +1,36 @@
 package com.woorinpang.userservice.core.user.service;
 
 import com.woorinpang.common.exception.BusinessMessageException;
-import com.woorinpang.userservice.core.user.domain.User;
-import com.woorinpang.userservice.core.user.domain.UserState;
+import com.woorinpang.userservice.core.log.repository.LoginLogRepository;
+import com.woorinpang.userservice.core.user.domain.*;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
-import com.woorinpang.userservice.core.user.presentation.request.*;
+import com.woorinpang.userservice.core.user.infrastructure.UserFindPasswordQueryRepository;
 import com.woorinpang.userservice.core.user.infrastructure.UserQueryRepository;
-import com.woorinpang.userservice.core.user.domain.UserRepository;
+import com.woorinpang.userservice.core.user.presentation.request.*;
 import com.woorinpang.userservice.core.user.service.param.JoinUserParam;
-import com.woorinpang.userservice.core.user.service.param.UpdateUserParam;
-import com.woorinpang.userservice.core.log.repository.LoginLogRepository;
 import com.woorinpang.userservice.core.user.service.param.SaveUserParam;
+import com.woorinpang.userservice.core.user.service.param.UpdateUserParam;
+import com.woorinpang.userservice.global.config.UserPasswordChangeEmail;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -37,9 +43,12 @@ public class UserService {
 
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
+    private final UserFindPasswordRepository userFindPasswordRepository;
+    private final UserFindPasswordQueryRepository userFindPasswordQueryRepository;
     private final LoginLogRepository loginLogRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final MessageSource messageSource;
+
 
     /**
      * 유저 목록을 조회하여 페이지와 함께 반환한다.
@@ -167,16 +176,18 @@ public class UserService {
         return userRepository.save(param.toEntity(passwordEncoder)).getId();
     }
 
+
+
+
+
+
+
     /**
-     * 사용자 비밀번호 찾기 유효성 확인
+     * 사용자 username 으로 조회
      */
-    @Transactional
-    public Boolean validPassword(String tokenValue) {
-        if (!hasText(tokenValue)) {
-            throw new IllegalArgumentException("invalid");
-        }
-        //TODO 하던중
-        return false;
+    private User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new BusinessMessageException("없음"));
     }
 
     /**
@@ -255,31 +266,9 @@ public class UserService {
         return user.orElse(null);
     }
 
-    /**
-     * 사용자 비밀번호 찾기
-     */
-    public Boolean findPassword(UserFindPasswordSaveRequest request) {
-        final String email = request.getEmail();
 
-        Optional<User> findUser = userRepository.findByEmailAndName(email, request.getUserName());
-        if (!findUser.isPresent()) {
-            throw new BusinessMessageException("없음");
-        }
 
-        User entity = findUser.get();
-
-        //TODO 이메일 전송
-        /*try {
-            final String mainUrl = request.getMailUrl();
-            String tokenValue = UUID.randomUUID().toString().replaceAll("-", "");
-
-            String subject = "email.user.password.title";
-
-        }*/
-        return true;
-    }
-
-    private User findUserVerifyPassword(String username, String password) {
+    public User findUserVerifyPassword(String username, String password) {
         User entity = this.findByUsername(username);
         if (!passwordEncoder.matches(password, entity.getPassword())) {
             throw new BusinessMessageException("틀려");
@@ -298,7 +287,7 @@ public class UserService {
         return user.getUsername();
     }
 
-    private User findUserVerify(String username, UserVerifyRequest request) {
+    public User findUserVerify(String username, UserVerifyRequest request) {
         if (!hasText(username)) {
             throw new BusinessMessageException("에러");
         }
