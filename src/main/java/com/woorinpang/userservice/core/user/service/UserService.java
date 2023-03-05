@@ -223,10 +223,9 @@ public class UserService {
      * 사용자 비밀번호 변경
      */
     @Transactional
-    public Boolean updatePassword(Long userId, UserPasswordUpdateRequest request) {
-        User findUser = this.findUser(userId);
+    public Boolean updatePassword(String username, UserPasswordUpdateRequest request) {
         try {
-            User user = this.findUserVerify(findUser.getUsername(), request);
+            User user = this.findUserVerify(username, request);
 
             user.updatePassword(passwordEncoder.encode(request.getPassword()));
         } catch (IllegalArgumentException e) {
