@@ -80,10 +80,10 @@ public class UserQueryRepository {
     private BooleanExpression searchKeywordContains(UserSearchCondition condition) {
         if (condition.getSearchKeywordType() == null || !hasText(condition.getSearchKeyword())) return null;
 
-        switch (condition.getSearchKeywordType()) {
-            case NAME ->  user.name.containsIgnoreCase(condition.getSearchKeyword());
+        return switch (condition.getSearchKeywordType()) {
+            case NAME -> user.name.containsIgnoreCase(condition.getSearchKeyword());
             case EMAIL -> user.email.containsIgnoreCase(condition.getSearchKeyword());
-        }
-        return null;
+            default -> null;
+        };
     }
 }
