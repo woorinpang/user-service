@@ -2,7 +2,7 @@ package com.woorinpang.userservice.core.user.service;
 
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.domain.UserState;
-import com.woorinpang.userservice.core.user.repository.UserRepository;
+import com.woorinpang.userservice.core.user.domain.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.woorinpang.userservice.core.user;
 
-import com.woorinpang.userservice.core.user.repository.UserQueryRepository;
+import com.woorinpang.userservice.core.user.infrastructure.UserQueryRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.boot.test.context.TestConfiguration;

@@ -1,9 +1,11 @@
-package com.woorinpang.userservice.core.user.repository;
+package com.woorinpang.userservice.core.user.infrastructure;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.woorinpang.common.entity.Role;
+import com.woorinpang.userservice.core.user.domain.UserState;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
 import jakarta.persistence.EntityManager;
@@ -57,7 +59,11 @@ public class UserQueryRepository {
                         )
                 )
                 .from(user)
-                .where(searchKeywordContains(condition))
+                .where(
+                        searchKeywordContains(condition),
+                        searchRoleEq(condition.getSearchRole()),
+                        searchUserStateEq(condition.getSearchUserState())
+                )
                 .orderBy(user.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -71,7 +77,11 @@ public class UserQueryRepository {
         return queryFactory
                 .select(user.count())
                 .from(user)
-                .where(searchKeywordContains(condition));
+                .where(
+                        searchKeywordContains(condition),
+                        searchRoleEq(condition.getSearchRole()),
+                        searchUserStateEq(condition.getSearchUserState())
+                );
     }
 
     /**
@@ -85,5 +95,19 @@ public class UserQueryRepository {
             case EMAIL -> user.email.containsIgnoreCase(condition.getSearchKeyword());
             default -> null;
         };
+    }
+
+    /**
+     * where role = searchRole
+     */
+    private BooleanExpression searchRoleEq(Role searchRole) {
+        return searchRole != null ? user.role.eq(searchRole) : null;
+    }
+
+    /**
+     * where userstate = searchUserState
+     */
+    private BooleanExpression searchUserStateEq(UserState searchUserState) {
+        return searchUserState != null ? user.userState.eq(searchUserState) : null;
     }
 }
