@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.core.user.domain;
 
 import com.woorinpang.servlet.entity.BaseEntity;
-import com.woorinpang.userservice.core.user.service.param.UpdateUserParam;
+import com.woorinpang.userservice.core.user.application.param.UpdateUserParam;
 import com.woorinpang.common.entity.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -27,22 +28,20 @@ public class User extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String username;
-    @Column(nullable = false, length = 60, unique = true)
-    private String email;
     @Column(length = 100)
     private String password;
+    @Column(nullable = false, length = 60, unique = true)
+    private String email;
 
     @Column(nullable = false, length = 60)
     private String name;
     @Enumerated(EnumType.STRING)
     @Column
     private Role role;
-
-    private String refreshToken;
-
     @Enumerated(EnumType.STRING)
     @Column
     private UserState userState;
+    private String refreshToken;
 
     @Column
     private LocalDateTime lastLoginDate;
@@ -60,12 +59,12 @@ public class User extends BaseEntity {
     private String naverId;
 
     @Builder(builderMethodName = "createBuilder")
-    public User(String username, String email, String password,
+    public User(String username, String password, String email,
                 String name, Role role, UserState userState,
                 String googleId, String kakaoId, String naverId) {
         this.username = username;
+        this.password = new BCryptPasswordEncoder().encode(password);
         this.email = email;
-        this.password = password;
         this.name = name;
         this.role = role;
         this.userState = userState;

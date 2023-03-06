@@ -1,10 +1,9 @@
 package com.woorinpang.userservice.core.user.presentation.request;
 
-import com.woorinpang.userservice.core.user.service.param.JoinUserParam;
+import com.woorinpang.userservice.core.user.application.param.JoinUserParam;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Objects;
 

@@ -67,9 +67,11 @@ dependencies {
 //    implementation "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
     //Querydsl 추가
 
-    //lombok
+    //lombok and mapstruct
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    implementation 'org.projectlombok:lombok:1.18.26'
 
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

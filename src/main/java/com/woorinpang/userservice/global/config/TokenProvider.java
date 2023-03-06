@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.global.config;
 
 import com.woorinpang.userservice.core.user.domain.User;
-import com.woorinpang.userservice.core.user.service.UserService;
+import com.woorinpang.userservice.core.user.application.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -3,7 +3,7 @@ package com.woorinpang.userservice.global.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woorinpang.userservice.core.user.presentation.request.UserLoginRequest;
 import com.woorinpang.userservice.core.user.domain.User;
-import com.woorinpang.userservice.core.user.service.UserService;
+import com.woorinpang.userservice.core.user.application.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

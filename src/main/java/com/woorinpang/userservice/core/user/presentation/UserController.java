@@ -4,13 +4,16 @@ import com.woorinpang.common.exception.BusinessMessageException;
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
+import com.woorinpang.userservice.core.user.presentation.dto.UserDtoMapper;
+import com.woorinpang.userservice.core.user.presentation.dto.request.SaveUserRequest;
 import com.woorinpang.userservice.core.user.presentation.request.*;
 import com.woorinpang.userservice.core.user.presentation.response.FindUserResponse;
 import com.woorinpang.userservice.core.user.presentation.response.JoinUserResponse;
 import com.woorinpang.userservice.core.user.presentation.response.SaveUserResponse;
 import com.woorinpang.userservice.core.user.presentation.response.UpdateUserResponse;
-import com.woorinpang.userservice.core.user.service.UserService;
+import com.woorinpang.userservice.core.user.application.UserService;
 import com.woorinpang.userservice.global.config.TokenProvider;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,6 +32,7 @@ public class UserController {
 
     private final UserService userService;
     private final TokenProvider tokenProvider;
+    private final UserDtoMapper mapper;
 
     /**
      * 유저 목록 조회
@@ -54,13 +58,13 @@ public class UserController {
      * 유저 정보 입력
      */
     @PostMapping
-    public ResponseEntity<SaveUserResponse> saveUser(@RequestBody @Validated SaveUserRequest request) {
+    public ResponseEntity<SaveUserResponse> saveUser(@RequestBody @Valid SaveUserRequest request) {
         //validate
         request.validate();
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new SaveUserResponse(userService.save(request.toParam())));
+                .body(new SaveUserResponse(userService.save(mapper.toCommand(request))));
     }
 
     /**

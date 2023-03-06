@@ -5,7 +5,7 @@ import com.woorinpang.userservice.core.user.presentation.request.UserFindPasswor
 import com.woorinpang.userservice.core.user.presentation.request.UserFindPasswordUpdateRequest;
 import com.woorinpang.userservice.core.user.presentation.request.UserPasswordMatchRequest;
 import com.woorinpang.userservice.core.user.presentation.request.UserPasswordUpdateRequest;
-import com.woorinpang.userservice.core.user.service.UserFindPasswordService;
+import com.woorinpang.userservice.core.user.application.UserFindPasswordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.core.user.service.param;
+package com.woorinpang.userservice.core.user.application.param;
 
 import com.woorinpang.common.entity.Role;
 import com.woorinpang.userservice.core.user.domain.UserState;
