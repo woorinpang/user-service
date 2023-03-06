@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.global.config;
 
 import com.woorinpang.common.config.GlobalConstant;
-import com.woorinpang.userservice.core.user.service.AuthService;
+import com.woorinpang.userservice.core.user.application.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

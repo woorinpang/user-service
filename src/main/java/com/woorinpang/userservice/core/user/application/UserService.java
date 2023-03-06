@@ -1,36 +1,32 @@
-package com.woorinpang.userservice.core.user.service;
+package com.woorinpang.userservice.core.user.application;
 
 import com.woorinpang.common.exception.BusinessMessageException;
-import com.woorinpang.userservice.core.log.repository.LoginLogRepository;
-import com.woorinpang.userservice.core.user.domain.*;
+import com.woorinpang.userservice.core.user.application.dto.UserCommandMapper;
+import com.woorinpang.userservice.core.user.application.dto.request.SaveUserCommand;
+import com.woorinpang.userservice.core.user.domain.User;
+import com.woorinpang.userservice.core.user.domain.UserRepository;
+import com.woorinpang.userservice.core.user.domain.UserState;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
-import com.woorinpang.userservice.core.user.infrastructure.UserFindPasswordQueryRepository;
 import com.woorinpang.userservice.core.user.infrastructure.UserQueryRepository;
-import com.woorinpang.userservice.core.user.presentation.request.*;
-import com.woorinpang.userservice.core.user.service.param.JoinUserParam;
-import com.woorinpang.userservice.core.user.service.param.SaveUserParam;
-import com.woorinpang.userservice.core.user.service.param.UpdateUserParam;
-import com.woorinpang.userservice.global.config.UserPasswordChangeEmail;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+import com.woorinpang.userservice.core.user.presentation.request.SocialUserResponse;
+import com.woorinpang.userservice.core.user.presentation.request.UserLoginRequest;
+import com.woorinpang.userservice.core.user.presentation.request.UserUpdateInfoRequest;
+import com.woorinpang.userservice.core.user.presentation.request.UserVerifyRequest;
+import com.woorinpang.userservice.core.user.application.param.JoinUserParam;
+import com.woorinpang.userservice.core.user.application.param.UpdateUserParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -43,12 +39,8 @@ public class UserService {
 
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
-    private final UserFindPasswordRepository userFindPasswordRepository;
-    private final UserFindPasswordQueryRepository userFindPasswordQueryRepository;
-    private final LoginLogRepository loginLogRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final MessageSource messageSource;
-
+    private final UserCommandMapper mapper;
 
     /**
      * 유저 목록을 조회하여 페이지와 함께 반환한다.
@@ -69,8 +61,8 @@ public class UserService {
      * 사용자 정보를 받아 등록하고 userId를 반환한다.
      */
     @Transactional
-    public Long save(SaveUserParam param) {
-        return userRepository.save(param.toEntity(passwordEncoder)).getId();
+    public Long save(SaveUserCommand command) {
+        return userRepository.save(mapper.toEntity(command)).getId();
     }
 
     /**

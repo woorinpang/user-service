@@ -1,6 +1,6 @@
 package com.woorinpang.userservice.core.auth.presentation;
 
-import com.woorinpang.userservice.core.user.service.UserService;
+import com.woorinpang.userservice.core.user.application.UserService;
 import com.woorinpang.userservice.global.config.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.core.user.service.param;
+package com.woorinpang.userservice.core.user.application.param;
 
 import com.woorinpang.common.entity.Role;
 import com.woorinpang.userservice.core.user.domain.User;
@@ -15,23 +15,22 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class JoinUserParam {
+public class SaveUserParam {
 
+    private String name;
     private String email;
     private String password;
-    private String name;
-    private String provider;
-    private String token;
-    private boolean isProvider;
+    private Role role;
+    private UserState userState;
 
     public User toEntity(BCryptPasswordEncoder passwordEncoder) {
         return User.createBuilder()
-                .username(this.email)
+                .username(UUID.randomUUID().toString())
                 .email(this.email)
                 .password(passwordEncoder.encode(this.password))
                 .name(this.name)
-                .role(Role.USER)
-                .userState(UserState.NORMAL)
+                .role(this.role)
+                .userState(this.userState)
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.core.user.service;
+package com.woorinpang.userservice.core.user.application;
 
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.domain.UserState;
