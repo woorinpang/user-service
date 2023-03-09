@@ -17,17 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private final UserService userService;
-    private final TokenProvider tokenProvider;
+    //private final TokenProvider tokenProvider;
 
     /**
      * refresh token 과 일치하는 사용자가 잇으면 access toekn 을 새로 발급하여 리턴한다.
      */
-    @PutMapping("/token/refresh")
+    /*@PutMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         tokenProvider.refreshToken(refreshToken, response);
-    }
+    }*/
 
     /**
      * 토큰 조회

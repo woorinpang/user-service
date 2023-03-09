@@ -1,6 +1,6 @@
 package com.woorinpang.userservice;
 
-import com.woorinpang.common.entity.Role;
+import com.woorinpang.userservice.core.user.domain.Role;
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.domain.UserState;
 import com.woorinpang.userservice.core.user.domain.UserRepository;

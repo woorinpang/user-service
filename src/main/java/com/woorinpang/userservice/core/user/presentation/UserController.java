@@ -1,6 +1,5 @@
 package com.woorinpang.userservice.core.user.presentation;
 
-import com.woorinpang.common.exception.BusinessMessageException;
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
@@ -13,6 +12,7 @@ import com.woorinpang.userservice.core.user.presentation.response.SaveUserRespon
 import com.woorinpang.userservice.core.user.presentation.response.UpdateUserResponse;
 import com.woorinpang.userservice.core.user.application.UserService;
 import com.woorinpang.userservice.global.config.TokenProvider;
+import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final TokenProvider tokenProvider;
-    private final UserDtoMapper mapper;
+//    private final TokenProvider tokenProvider;
+//    private final UserDtoMapper mapper;
 
     /**
      * 유저 목록 조회
@@ -64,7 +64,7 @@ public class UserController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new SaveUserResponse(userService.save(mapper.toCommand(request))));
+                .body(new SaveUserResponse(userService.save(UserDtoMapper.INSTANCE.toCommand(request))));
     }
 
     /**

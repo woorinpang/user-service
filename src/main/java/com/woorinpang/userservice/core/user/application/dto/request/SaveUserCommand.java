@@ -1,6 +1,6 @@
 package com.woorinpang.userservice.core.user.application.dto.request;
 
-import com.woorinpang.common.entity.Role;
+import com.woorinpang.userservice.core.user.domain.Role;
 import com.woorinpang.userservice.core.user.domain.UserState;
 import lombok.Builder;
 

@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.core.role.exception;
 
 
-import com.woorinpang.common.exception.EntityNotFoundException;
+import com.woorinpang.userservice.global.exception.EntityNotFoundException;
 
 public class AuthorizationNotFoundException extends EntityNotFoundException {
 

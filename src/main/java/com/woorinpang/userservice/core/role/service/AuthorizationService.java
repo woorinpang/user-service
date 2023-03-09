@@ -1,6 +1,5 @@
 package com.woorinpang.userservice.core.role.service;
 
-import com.woorinpang.common.config.GlobalConstant;
 import com.woorinpang.userservice.core.role.domain.Authorization;
 import com.woorinpang.userservice.core.role.dto.AuthorizationListDto;
 import com.woorinpang.userservice.core.role.dto.AuthorizationSearchCondition;
@@ -8,6 +7,7 @@ import com.woorinpang.userservice.core.role.exception.AuthorizationNotFoundExcep
 import com.woorinpang.userservice.core.role.presentation.request.UpdateAuthorizationRequest;
 import com.woorinpang.userservice.core.role.repository.AuthorizationQueryRepository;
 import com.woorinpang.userservice.core.role.repository.AuthorizationRepository;
+import com.woorinpang.userservice.global.config.GlobalConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,5 @@
 package com.woorinpang.userservice.core.user.application;
 
-import com.woorinpang.common.exception.BusinessMessageException;
-import com.woorinpang.userservice.core.user.application.UserService;
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.domain.UserFindPassword;
 import com.woorinpang.userservice.core.user.domain.UserFindPasswordRepository;
@@ -11,12 +9,9 @@ import com.woorinpang.userservice.core.user.presentation.request.UserFindPasswor
 import com.woorinpang.userservice.core.user.presentation.request.UserFindPasswordUpdateRequest;
 import com.woorinpang.userservice.core.user.presentation.request.UserPasswordUpdateRequest;
 import com.woorinpang.userservice.global.config.UserPasswordChangeEmail;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +33,7 @@ public class UserFindPasswordService {
     private final UserFindPasswordRepository userFindPasswordRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final JavaMailSender javaMailSender;
+//    private final JavaMailSender javaMailSender;
 
     private final UserService userService;
 
@@ -61,26 +56,26 @@ public class UserFindPasswordService {
             final String username = findUser.getUsername();
             final String changePasswordUrl = request.getChangePasswordUrl() + "?token=" + tokenValue;
 
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-
-            helper.setTo(email);
-            helper.setSubject(subjec);
-            helper.setText(String.format(text, mainUrl, username, changePasswordUrl), true); //String.format 에서 %를 쓰려면 %%로
-
-            log.info("start send change password email: " + email);
-            javaMailSender.send(message);
-
-            Integer requestNo = userFindPasswordQueryRepository.findNextRequestNo(email);
-            UserFindPassword userFindPassword = request.toEntity(requestNo, tokenValue);
-
-            userFindPasswordRepository.save(userFindPassword);
-
-            log.info("end send change password email - email: {}, tokenValue: {}", email, tokenValue);
-        } catch (MessagingException e) {
-            String errorMessage = "error.user.find.password";
-            log.error(errorMessage + ": " + e.getMessage());
-            throw new BusinessMessageException(errorMessage);
+//            MimeMessage message = javaMailSender.createMimeMessage();
+//            MimeMessageHelper helper = new MimeMessageHelper(message);
+//
+//            helper.setTo(email);
+//            helper.setSubject(subjec);
+//            helper.setText(String.format(text, mainUrl, username, changePasswordUrl), true); //String.format 에서 %를 쓰려면 %%로
+//
+//            log.info("start send change password email: " + email);
+//            javaMailSender.send(message);
+//
+//            Integer requestNo = userFindPasswordQueryRepository.findNextRequestNo(email);
+//            UserFindPassword userFindPassword = request.toEntity(requestNo, tokenValue);
+//
+//            userFindPasswordRepository.save(userFindPassword);
+//
+//            log.info("end send change password email - email: {}, tokenValue: {}", email, tokenValue);
+//        } catch (MessagingException e) {
+//            String errorMessage = "error.user.find.password";
+//            log.error(errorMessage + ": " + e.getMessage());
+//            throw new BusinessMessageException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "error.user.find.password";
             log.error(errorMessage + ": " + e.getMessage());

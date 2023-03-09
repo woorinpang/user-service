@@ -1,14 +1,14 @@
 package com.woorinpang.userservice.core.user.infrastructure;
 
-import com.woorinpang.common.dto.CommonSearchCondition;
-import com.woorinpang.common.entity.Role;
 import com.woorinpang.userservice.core.user.UserSetup;
 import com.woorinpang.userservice.core.user.UserTestConfig;
+import com.woorinpang.userservice.core.user.domain.Role;
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.domain.UserRepository;
 import com.woorinpang.userservice.core.user.domain.UserState;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;
+import com.woorinpang.userservice.global.dto.CommonSearchCondition;
 import com.woorinpang.userservice.test.RepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

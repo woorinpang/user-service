@@ -1,6 +1,5 @@
 package com.woorinpang.userservice.core.user.application;
 
-import com.woorinpang.common.exception.BusinessMessageException;
 import com.woorinpang.userservice.core.user.application.dto.UserCommandMapper;
 import com.woorinpang.userservice.core.user.application.dto.request.SaveUserCommand;
 import com.woorinpang.userservice.core.user.domain.User;
@@ -15,6 +14,7 @@ import com.woorinpang.userservice.core.user.presentation.request.UserUpdateInfoR
 import com.woorinpang.userservice.core.user.presentation.request.UserVerifyRequest;
 import com.woorinpang.userservice.core.user.application.param.JoinUserParam;
 import com.woorinpang.userservice.core.user.application.param.UpdateUserParam;
+import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,7 +40,7 @@ public class UserService {
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final UserCommandMapper mapper;
+//    private final UserCommandMapper mapper;
 
     /**
      * 유저 목록을 조회하여 페이지와 함께 반환한다.
@@ -62,7 +62,7 @@ public class UserService {
      */
     @Transactional
     public Long save(SaveUserCommand command) {
-        return userRepository.save(mapper.toEntity(command)).getId();
+        return userRepository.save(UserCommandMapper.INSTANCE.toEntity(command)).getId();
     }
 
     /**

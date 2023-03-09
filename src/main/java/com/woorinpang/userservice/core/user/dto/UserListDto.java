@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.core.user.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.woorinpang.common.entity.Role;
+import com.woorinpang.userservice.core.user.domain.Role;
 import com.woorinpang.userservice.core.user.domain.User;
 import com.woorinpang.userservice.core.user.domain.UserState;
 import lombok.AccessLevel;

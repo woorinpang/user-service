@@ -1,6 +1,6 @@
 package com.woorinpang.userservice.core.user.presentation.request;
 
-import com.woorinpang.common.entity.Role;
+import com.woorinpang.userservice.core.user.domain.Role;
 import com.woorinpang.userservice.core.user.domain.UserState;
 import com.woorinpang.userservice.core.user.application.param.UpdateUserParam;
 import lombok.*;

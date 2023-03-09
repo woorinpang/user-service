@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.4'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+//    id 'java-test-fixtures'
 }
 
 group = 'com.example'
@@ -12,6 +14,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    asciidoctorExt
 }
 
 repositories {
@@ -20,11 +23,15 @@ repositories {
 }
 
 ext {
+    asciidocVersion = "2.0.6.RELEASE"
+    snippetsDir = file('build/generated-snippets')
     set('springCloudVersion', "2022.0.1")
 }
 
 dependencies {
-    implementation project(':common')
+//    implementation project(':common')
+//    testImplementation(testFixtures(project(":common")))
+
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -73,6 +80,10 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     implementation 'org.projectlombok:lombok:1.18.26'
 
+    //spring rest docs
+    asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${asciidocVersion}"
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${asciidocVersion}"
+
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'
@@ -88,6 +99,24 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+//spring rest docs
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
+}
+
 clean {
-    delete file('src/main/generated') // 인텔리제이 Annotation processor 생성물 생성 위치
+    delete file('src/main/generated') //인텔리제이 Annotation processor 생성물
 }
