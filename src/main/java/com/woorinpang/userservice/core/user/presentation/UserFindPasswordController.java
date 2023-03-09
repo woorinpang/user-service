@@ -1,11 +1,11 @@
 package com.woorinpang.userservice.core.user.presentation;
 
-import com.woorinpang.common.json.JsonResponse;
 import com.woorinpang.userservice.core.user.presentation.request.UserFindPasswordSaveRequest;
 import com.woorinpang.userservice.core.user.presentation.request.UserFindPasswordUpdateRequest;
 import com.woorinpang.userservice.core.user.presentation.request.UserPasswordMatchRequest;
 import com.woorinpang.userservice.core.user.presentation.request.UserPasswordUpdateRequest;
 import com.woorinpang.userservice.core.user.application.UserFindPasswordService;
+import com.woorinpang.userservice.global.json.JsonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

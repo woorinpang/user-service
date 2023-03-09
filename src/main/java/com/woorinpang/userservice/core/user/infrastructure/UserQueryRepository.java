@@ -4,7 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.woorinpang.common.entity.Role;
+import com.woorinpang.userservice.core.user.domain.Role;
 import com.woorinpang.userservice.core.user.domain.UserState;
 import com.woorinpang.userservice.core.user.dto.UserListDto;
 import com.woorinpang.userservice.core.user.dto.UserSearchCondition;

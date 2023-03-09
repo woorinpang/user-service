@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+    show-sql: true
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+
+# 2시간(7,200,000), 1일(86,400,000) jwt token
+token:
+  expiration_time: 7200000
+  refresh_time: 86400000
+  secret: 'token_secret'
+
+file:
+  directory: ${app.home:${user.home}}/workspace/github/woorinpang/attach
+  url: http://${file.hostname:localhost}:8080
+messages:
+  directory: ${file.directory}/messages

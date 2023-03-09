@@ -1,6 +1,5 @@
 package com.woorinpang.userservice.global.config;
 
-import com.woorinpang.common.config.GlobalConstant;
 import com.woorinpang.userservice.core.user.application.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final TokenProvider tokenProvider;
+//    private final TokenProvider tokenProvider;
     private final AuthService authService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 

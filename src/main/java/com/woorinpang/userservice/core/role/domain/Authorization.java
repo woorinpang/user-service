@@ -2,7 +2,7 @@ package com.woorinpang.userservice.core.role.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.woorinpang.servlet.entity.BaseEntity;
+import com.woorinpang.userservice.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

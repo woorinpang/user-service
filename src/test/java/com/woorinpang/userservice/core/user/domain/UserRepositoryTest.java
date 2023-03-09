@@ -1,10 +1,11 @@
 package com.woorinpang.userservice.core.user.domain;
 
+import com.woorinpang.userservice.test.RepositoryTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserRepositoryTest {
+class UserRepositoryTest extends RepositoryTest {
 
     @Test
     void findByUsername() {

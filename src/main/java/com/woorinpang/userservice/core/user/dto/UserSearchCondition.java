@@ -1,8 +1,8 @@
 package com.woorinpang.userservice.core.user.dto;
 
-import com.woorinpang.common.dto.CommonSearchCondition;
-import com.woorinpang.common.entity.Role;
+import com.woorinpang.userservice.core.user.domain.Role;
 import com.woorinpang.userservice.core.user.domain.UserState;
+import com.woorinpang.userservice.global.dto.CommonSearchCondition;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
