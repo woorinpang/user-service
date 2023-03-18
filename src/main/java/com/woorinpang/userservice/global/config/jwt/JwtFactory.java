@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Slf4j
-@Component
+//@Component
 public class JwtFactory {
-    @Value("${token.secret}")
-    private String SECRET;
     @Value("${token.access_expiration_time}")
     private long ACCESS_EXPIRATION_TIME;
     @Value("${token.refresh_expiration_time}")
     private long REFRESH_EXPIRATION_TIME;
+    @Value("${token.secret-key}")
+    private String SECRET;
 
     public String accessToken(User user) {
         return JWT.create()

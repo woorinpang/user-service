@@ -10,8 +10,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+
+import static org.springframework.util.StringUtils.*;
 
 @Entity
 @Table(name = "users")
@@ -128,5 +131,15 @@ public class User extends BaseEntity {
      */
     public void updateUserStateCode(UserState userState) {
         this.userState = userState;
+    }
+
+    /**
+     * 소셜 사용자 여부 반환
+     */
+    public boolean isSocialUser() {
+        if (hasText(this.googleId)) return true;
+        else if (hasText(this.kakaoId)) return true;
+        else if (hasText(this.name)) return true;
+        return false;
     }
 }

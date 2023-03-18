@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Slf4j
-@Profile("!test")
+//@Profile("!test")
 //@Component
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {

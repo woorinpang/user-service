@@ -32,7 +32,7 @@ spring:
 token:
   access_expiration_time: 7200000
   refresh_expiration_time: 86400000
-  secret: 'woorinpang_token_secret'
+  secret-key: 'woorinpang_token_secret'
 
 #file attach location - messages{lang}.properties 도 이 경로에 위치한다.
 file:
