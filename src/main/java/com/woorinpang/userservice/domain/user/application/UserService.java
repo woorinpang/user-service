@@ -9,10 +9,10 @@ import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
-import com.woorinpang.userservice.domain.user.infrastructure.dto.UserListDto;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 import com.woorinpang.userservice.domain.user.presentation.request.SocialUserResponse;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserLeaveRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
 import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,34 +44,47 @@ public class UserService {
     /**
      * 유저 목록을 조회하여 페이지와 함께 반환한다.
      */
-    public Page<UserListDto> findUsers(UserSearchCondition condition, Pageable pageable) {
-        return userQueryRepository.findUsers(condition, pageable);
+    public Page<FindPageUserDto> findUsers(UserSearchCondition condition, Pageable pageable) {
+        return userQueryRepository.findPageUsers(condition, pageable);
     }
 
     /**
      * 유저 단건 조회하여 반환한다.
      */
     public User findUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        return this.findById(userId);
     }
 
     /**
-     * 사용자 정보를 받아 등록하고 userId를 반환한다.
+     * 사용자 정보를 받아 저장한다
      */
     @Transactional
-    public Long save(SaveUserCommand command) {
+    public Long saveUser(SaveUserCommand command) {
         return userRepository.save(mapper.toUser(command)).getId();
     }
 
     /**
      * 사용자 정보를 받아 수정한다.
      */
-    public void update(Long userId, UpdateUserCommand command) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("없음"))
-                .update(command);
+    @Transactional
+    public void updateUser(Long userId, UpdateUserCommand command) {
+        this.findById(userId).update(command);
     }
+
+    /**
+     * 사용자를 userState 를 DELETE 로 업데이트한다.
+     */
+    @Transactional
+    public void deleteUser(Long userId) {
+        User findUser = this.findById(userId);
+        findUser.updateUserStateCode(UserState.DELETE);
+    }
+
+    private User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
 
     /**
      * 로그인아이디로 사용자를 찾아 반환한다.
@@ -84,9 +97,9 @@ public class UserService {
     /**
      * 모든 사용자를 생성일 역순으로 정렬 조회하여 반환한다.
      */
-    public List<UserListDto> findAllDesc() {
+    public List<FindPageUserDto> findAllDesc() {
         return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate")).stream()
-                .map(UserListDto::new)
+                .map(FindPageUserDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -216,12 +229,6 @@ public class UserService {
     public Boolean leave(String username, UserLeaveRequest request) {
         User entity = findUserVerify(username, request);
         entity.updateUserStateCode(UserState.LEAVE);
-        return true;
-    }
-
-    public Boolean deleteUser(Long userId) {
-        User findUser = this.findUser(userId);
-        findUser.updateUserStateCode(UserState.DELETE);
         return true;
     }
 }

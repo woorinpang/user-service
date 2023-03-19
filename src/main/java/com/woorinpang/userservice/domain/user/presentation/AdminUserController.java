@@ -57,7 +57,7 @@ public class AdminUserController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new SaveUserResponse(userService.save(request.toCommand())));
+                .body(new SaveUserResponse(userService.saveUser(request.toCommand())));
     }
 
     /**
@@ -66,7 +66,7 @@ public class AdminUserController {
     @PutMapping("/{userId}")
     public ResponseEntity<UpdateUserResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody @Validated UpdateUserRequest request) {
         //validate
-        userService.update(userId, request.toCommand());
+        userService.updateUser(userId, request.toCommand());
 
         return ResponseEntity
                 .status(HttpStatus.OK)

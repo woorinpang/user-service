@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserListDto {
+public class FindPageUserDto {
 
     private Long userId;
     private String username;
@@ -25,7 +25,7 @@ public class UserListDto {
     private LocalDateTime lastLoginDate;
     private Integer loginFailCount;
 
-    public UserListDto(User user) {
+    public FindPageUserDto(User user) {
         this.userId = user.getId();
         this.username = user.getUsername();
         this.name = user.getName();
@@ -33,7 +33,7 @@ public class UserListDto {
     }
 
     @QueryProjection
-    public UserListDto(Long userId, String username, String email, String name, Role role, UserState userState, LocalDateTime lastLoginDate, Integer loginFailCount) {
+    public FindPageUserDto(Long userId, String username, String email, String name, Role role, UserState userState, LocalDateTime lastLoginDate, Integer loginFailCount) {
         this.userId = userId;
         this.username = username;
         this.email = email;

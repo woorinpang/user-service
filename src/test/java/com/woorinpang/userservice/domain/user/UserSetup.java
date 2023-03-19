@@ -1,43 +1,61 @@
 package com.woorinpang.userservice.domain.user;
 
+import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class UserSetup {
 
-    //USER
+    //CREATE_USER
     public static final Long USER_ID = 1L;
     public static final String USERNAME = "chisu";
+    public static final String PASSWORD = "Qlalfqjsgh12!@";
     public static final String EMAIL = "chisu@woorinpang.com";
     public static final String NAME = "채치수";
-    public static final String PASSWORD = "1234";
+    public static final Role ROLE = Role.USER;
+    public static final UserState USER_STATE = UserState.NORMAL;
 
-    public static User setUser() {
+    //UPDATE_USER
+    public static final String UPDATE_EMAIL = "chisuchae@woorinpang.com";
+    public static final String UPDATE_NAME = "채치수짱";
+    public static final Role UPDATE_ROLE = Role.ADMIN;
+    public static final UserState UPDATE_USER_STATE = UserState.NORMAL;
+
+    //ERROR_MESSAGE
+    public static final Long USER_NOT_FOUND_ID = 0L;
+    public static final String USER_NOT_FOUND_MESSAGE = "UserId=" + USER_NOT_FOUND_ID + "은 존재하지 않습니다.";
+
+
+
+    public static User getUser() {
         return User.createBuilder()
                 .username(USERNAME)
-                .email(EMAIL)
                 .password(PASSWORD)
+                .email(EMAIL)
                 .name(NAME)
                 .role(Role.USER)
                 .userState(UserState.NORMAL)
                 .build();
     }
 
-    public static List<User> setUsers() {
+    public static List<User> getUsers() {
         List<User> users = new ArrayList<>();
-        IntStream.range(0, 10).forEach(i -> {
+        IntStream.rangeClosed(1, 10).forEach(i -> {
             User user = i % 2 == 0 ?
                     User.createBuilder()
                             .username(USERNAME + i)
                             .email(EMAIL + i)
                             .password(PASSWORD)
                             .name(NAME + "A")
-                            .role(Role.USER)
+                            .role(Role.ADMIN)
                             .userState(UserState.NORMAL)
                             .build()
                     :
@@ -47,10 +65,37 @@ public class UserSetup {
                             .password(PASSWORD)
                             .name(NAME + "B")
                             .role(Role.USER)
-                            .userState(UserState.NORMAL)
+                            .userState(UserState.LEAVE)
                             .build();
             users.add(user);
         });
         return users;
+    }
+
+    public static List<FindPageUserDto> getFindPageUserDtos() {
+        return getUsers().stream()
+                .map(user -> new FindPageUserDto(user))
+                .collect(Collectors.toList());
+    }
+
+    public static SaveUserCommand getSaveUserCommand() {
+        return SaveUserCommand.builder()
+                .username(USERNAME)
+                .password(PASSWORD)
+                .email(EMAIL)
+                .name(NAME)
+                .role(ROLE)
+                .userState(USER_STATE)
+                .build();
+    }
+
+    public static UpdateUserCommand getUpdateUserCommand() {
+        return UpdateUserCommand.builder()
+                .password(PASSWORD)
+                .email(UPDATE_EMAIL)
+                .name(UPDATE_NAME)
+                .role(UPDATE_ROLE)
+                .userState(UPDATE_USER_STATE)
+                .build();
     }
 }
