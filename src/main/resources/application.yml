@@ -32,4 +32,4 @@ management:
       enabled: false
 logging:
   level:
-    root: debug
+    root: info

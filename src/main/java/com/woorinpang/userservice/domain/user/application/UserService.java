@@ -40,7 +40,7 @@ public class UserService {
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-//    private final UserCommandMapper mapper;
+    private final UserCommandMapper mapper;
 
     /**
      * 유저 목록을 조회하여 페이지와 함께 반환한다.
@@ -62,7 +62,8 @@ public class UserService {
      */
     @Transactional
     public Long save(SaveUserCommand command) {
-        User user = command.toEntity();
+//        User user = command.toEntity();
+        User user = mapper.toUser(command);
 
         return userRepository.save(user).getId();
     }

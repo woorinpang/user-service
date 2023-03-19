@@ -7,11 +7,10 @@ import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
-import com.woorinpang.userservice.global.config.SocialUser;
+import com.woorinpang.userservice.global.config.dto.SocialUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,13 +19,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.*;

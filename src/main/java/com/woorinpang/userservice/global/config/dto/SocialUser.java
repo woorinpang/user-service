@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.global.config;
+package com.woorinpang.userservice.global.config.dto;
 
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;

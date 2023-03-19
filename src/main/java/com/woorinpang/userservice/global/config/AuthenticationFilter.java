@@ -2,7 +2,7 @@ package com.woorinpang.userservice.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woorinpang.userservice.domain.auth.application.AuthService;
-import com.woorinpang.userservice.global.config.auth.dto.LoginRequest;
+import com.woorinpang.userservice.global.config.dto.LoginRequest;
 import com.woorinpang.userservice.global.exception.BusinessException;
 import com.woorinpang.userservice.global.util.LogUtil;
 import io.jsonwebtoken.Claims;

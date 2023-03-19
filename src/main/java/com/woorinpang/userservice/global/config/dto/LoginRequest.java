@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.global.config.auth.dto;
+package com.woorinpang.userservice.global.config.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
