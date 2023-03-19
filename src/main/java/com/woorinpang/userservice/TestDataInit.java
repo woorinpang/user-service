@@ -1,9 +1,9 @@
 package com.woorinpang.userservice;
 
-import com.woorinpang.common.entity.Role;
-import com.woorinpang.userservice.core.user.domain.User;
-import com.woorinpang.userservice.core.user.domain.UserState;
-import com.woorinpang.userservice.core.user.domain.UserRepository;
+import com.woorinpang.userservice.domain.user.domain.Role;
+import com.woorinpang.userservice.domain.user.domain.User;
+import com.woorinpang.userservice.domain.user.domain.UserState;
+import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,8 +33,8 @@ public class TestDataInit {
             User user = User.createBuilder()
                     .username("spring")
                     .email("spring@naver.com")
-                    .password(passwordEncoder.encode("1234"))
-                    .name("spring")
+                    .password("1234")
+                    .name("스프링")
                     .role(Role.USER)
                     .userState(UserState.NORMAL)
                     .build();

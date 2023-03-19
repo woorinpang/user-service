@@ -20,9 +20,6 @@ spring:
         order_inserts: true
         order_updates: true
     show-sql: true
-  cache:
-    jcache:
-      config: classpath:ehcache.xml
 
 # config server actuator
 management:
@@ -33,3 +30,6 @@ management:
   health:
     mail:
       enabled: false
+logging:
+  level:
+    root: info

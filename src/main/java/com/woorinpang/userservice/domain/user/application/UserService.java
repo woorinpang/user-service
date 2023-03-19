@@ -1,0 +1,227 @@
+package com.woorinpang.userservice.domain.user.application;
+
+import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
+import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
+import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.domain.User;
+import com.woorinpang.userservice.domain.user.domain.UserState;
+import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
+import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
+import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.UserListDto;
+import com.woorinpang.userservice.domain.user.presentation.request.SocialUserResponse;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserLeaveRequest;
+import com.woorinpang.userservice.global.exception.BusinessMessageException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.springframework.util.StringUtils.hasText;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class UserService {
+
+    private final UserQueryRepository userQueryRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final UserCommandMapper mapper;
+
+    /**
+     * 유저 목록을 조회하여 페이지와 함께 반환한다.
+     */
+    public Page<UserListDto> findUsers(UserSearchCondition condition, Pageable pageable) {
+        return userQueryRepository.findUsers(condition, pageable);
+    }
+
+    /**
+     * 유저 단건 조회하여 반환한다.
+     */
+    public User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    /**
+     * 사용자 정보를 받아 등록하고 userId를 반환한다.
+     */
+    @Transactional
+    public Long save(SaveUserCommand command) {
+        return userRepository.save(mapper.toUser(command)).getId();
+    }
+
+    /**
+     * 사용자 정보를 받아 수정한다.
+     */
+    public void update(Long userId, UpdateUserCommand command) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("없음"))
+                .update(command);
+    }
+
+    /**
+     * 로그인아이디로 사용자를 찾아 반환한다.
+     */
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("없음"));
+    }
+
+    /**
+     * 모든 사용자를 생성일 역순으로 정렬 조회하여 반환한다.
+     */
+    public List<UserListDto> findAllDesc() {
+        return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate")).stream()
+                .map(UserListDto::new)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 이메일 중복 확인
+     */
+    public Boolean existsEmail(String email, String username) {
+        if (!hasText(email)) {
+            throw new IllegalArgumentException("이메일 없음");
+        }
+
+        if (!hasText(username)) {
+            return userRepository.findByEmail(email).isPresent();
+        } else {
+            return userRepository.findByEmailAndUsernameNot(email, username).isPresent();
+        }
+    }
+
+    public SocialUserResponse getSocialUserInfo(String provider, String token) {
+        SocialUserResponse social = null;
+        switch (provider) {
+            case "google":
+                social = getGoogleUserInfo(token);
+                break;
+            case "naver":
+                social = getNaverUserInfo(token);
+                break;
+            case "kakao":
+                social = getKakaoUserInfo(token);
+                break;
+            default:
+                break;
+        }
+
+        if (social == null) throw new IllegalArgumentException("소셜 없음");
+
+        return social;
+    }
+
+    private SocialUserResponse getGoogleUserInfo(String token) {
+        return null;
+    }
+
+    private SocialUserResponse getNaverUserInfo(String token) {
+        return null;
+    }
+
+    private SocialUserResponse getKakaoUserInfo(String token) {
+        return null;
+    }
+
+    /**
+     * 소셜 사용자 엔티티 조회
+     */
+    private User findSocialUser(String providerCode, String providerId) {
+        Optional<User> user;
+
+        //공급자 id 로 조회
+        switch (providerCode) {
+            case "google":
+                user = userRepository.findByGoogleId(providerId);
+                break;
+            case "naver":
+                user = userRepository.findByNaverId(providerId);
+                break;
+            case "kakao":
+                user = userRepository.findByKakaoId(providerId);
+                break;
+            default:
+                user = Optional.empty();
+                break;
+        }
+
+        return user.orElse(null);
+    }
+
+
+
+    public User findUserVerifyPassword(String username, String password) {
+        User entity = this.findByUsername(username);
+        if (!passwordEncoder.matches(password, entity.getPassword())) {
+            throw new BusinessMessageException("틀려");
+        }
+        return entity;
+    }
+
+    /**
+     * 사용자 정보 수정
+     */
+    @Transactional
+    public String updateInfo(String username, UserUpdateInfoRequest request) {
+        User user = findUserVerify(username, request);
+
+        user.updateInfo(request.getUserName(), request.getEmail());
+        return user.getUsername();
+    }
+
+    public User findUserVerify(String username, UserLeaveRequest request) {
+        if (!hasText(username)) {
+            throw new BusinessMessageException("에러");
+        }
+
+        User user = null;
+
+        if ("password".equals(request.getProvider())) {
+            user = findUserVerifyPassword(username, request.getPassword());
+        } else {
+            user = findSocialUserByToken(request.getProvider(), request.getToken());
+
+            if (user == null) {
+                throw new BusinessMessageException("없음");
+            }
+
+            if (!username.equals(user.getUsername())) {
+                throw new BusinessMessageException("ㄴㄴㄴㄴ");
+            }
+        }
+        return user;
+    }
+
+    private User findSocialUserByToken(String provider, String token) {
+        SocialUserResponse response = getSocialUserInfo(provider, token);
+        return findSocialUser(provider, response.getId());
+    }
+
+    @Transactional
+    public Boolean leave(String username, UserLeaveRequest request) {
+        User entity = findUserVerify(username, request);
+        entity.updateUserStateCode(UserState.LEAVE);
+        return true;
+    }
+
+    public Boolean deleteUser(Long userId) {
+        User findUser = this.findUser(userId);
+        findUser.updateUserStateCode(UserState.DELETE);
+        return true;
+    }
+}
