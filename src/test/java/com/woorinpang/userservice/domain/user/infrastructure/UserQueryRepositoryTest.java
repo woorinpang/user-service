@@ -1,23 +1,10 @@
 package com.woorinpang.userservice.domain.user.infrastructure;
 
-import com.woorinpang.userservice.domain.user.UserSetup;
 import com.woorinpang.userservice.domain.user.UserTestConfig;
-import com.woorinpang.userservice.domain.user.domain.Role;
-import com.woorinpang.userservice.domain.user.domain.User;
-import com.woorinpang.userservice.domain.user.domain.UserState;
-import com.woorinpang.userservice.domain.user.dto.UserListDto;
-import com.woorinpang.userservice.domain.user.dto.UserSearchCondition;
 import com.woorinpang.userservice.global.dto.CommonSearchCondition;
 import com.woorinpang.userservice.test.RepositoryTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.domain.user.dto;
+package com.woorinpang.userservice.domain.user.infrastructure.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.woorinpang.userservice.domain.user.domain.Role;

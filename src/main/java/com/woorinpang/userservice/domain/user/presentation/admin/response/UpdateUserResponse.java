@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.domain.user.presentation.response;
+package com.woorinpang.userservice.domain.user.presentation.admin.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UpdateUserResponse {
-
     private Long userId;
 }

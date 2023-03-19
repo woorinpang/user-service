@@ -1,19 +1,18 @@
 package com.woorinpang.userservice.domain.user.application;
 
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
+import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.User;
-import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.domain.UserState;
-import com.woorinpang.userservice.domain.user.dto.UserListDto;
-import com.woorinpang.userservice.domain.user.dto.UserSearchCondition;
+import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
+import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.UserListDto;
 import com.woorinpang.userservice.domain.user.presentation.request.SocialUserResponse;
-import com.woorinpang.userservice.domain.user.presentation.request.UserLoginRequest;
-import com.woorinpang.userservice.domain.user.presentation.request.UserUpdateInfoRequest;
-import com.woorinpang.userservice.domain.user.presentation.request.UserVerifyRequest;
-import com.woorinpang.userservice.domain.user.application.param.JoinUserParam;
-import com.woorinpang.userservice.domain.user.application.param.UpdateUserParam;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserLeaveRequest;
 import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +53,7 @@ public class UserService {
      */
     public User findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessMessageException("foo"));
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     /**
@@ -62,42 +61,16 @@ public class UserService {
      */
     @Transactional
     public Long save(SaveUserCommand command) {
-//        User user = command.toEntity();
-        User user = mapper.toUser(command);
-
-        return userRepository.save(user).getId();
+        return userRepository.save(mapper.toUser(command)).getId();
     }
 
     /**
      * 사용자 정보를 받아 수정한다.
      */
-    public void update(Long userId, UpdateUserParam param) {
-        User findUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("없음"));
-
-        //새로운 비밀번호가 들어오면 인코드 아니면 기존 비밀번호 업데이트
-        param.encodePassword(hasText(param.getPassword()) ? passwordEncoder.encode(param.getPassword()) : findUser.getPassword());
-        findUser.update(param);
-    }
-
-    /**
-     * 사용자 refresh token 정보를 받아 수정하고 권한 정보를 반환한다.
-     */
-    @Transactional
-    public String updateRefreshToken(String username, String updateRefreshToken) {
-        User findUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("없음"));
-
-        findUser.updateRefreshToken(updateRefreshToken);
-        return findUser.getRole().getCode();
-    }
-
-    /**
-     * 토큰으로 사용자를 찾아 반환한다.
-     */
-    public User findByRefreshToken(String refreshToken) {
-        return userRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new UsernameNotFoundException("없음"));
+    public void update(Long userId, UpdateUserCommand command) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("없음"))
+                .update(command);
     }
 
     /**
@@ -109,35 +82,12 @@ public class UserService {
     }
 
     /**
-     * 이메일로 사용자를 찾아 반환한다.
-     */
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("없음"));
-    }
-
-    /**
      * 모든 사용자를 생성일 역순으로 정렬 조회하여 반환한다.
      */
     public List<UserListDto> findAllDesc() {
         return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate")).stream()
                 .map(UserListDto::new)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * 로그인 후처리
-     */
-    @Transactional
-    public void loginCallback(String email, Boolean isSuccess, String failContent) {
-        User findUser = userRepository.findByUsername(email)
-                .orElseThrow(() -> new IllegalArgumentException("없음"));
-
-        if (Boolean.TRUE.equals(isSuccess)) {
-            findUser.successLogin();
-        } else {
-            findUser.failLogin();
-        }
     }
 
     /**
@@ -153,54 +103,6 @@ public class UserService {
         } else {
             return userRepository.findByEmailAndUsernameNot(email, username).isPresent();
         }
-    }
-
-    /**
-     * 사용자 회원 가입
-     */
-    @Transactional
-    public Long join(JoinUserParam param) {
-        Boolean exists = this.existsEmail(param.getEmail(), null);
-        if (exists) {
-            throw new IllegalArgumentException("이미 이메일이 존재함");
-        }
-
-//        if (param.isProvider()) {
-//
-//        }
-        return userRepository.save(param.toEntity(passwordEncoder)).getId();
-    }
-
-
-
-
-
-
-
-    /**
-     * 사용자 username 으로 조회
-     */
-    private User getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new BusinessMessageException("없음"));
-    }
-
-    /**
-     * OAuth 사용자 검색
-     */
-    public User loadUserBySocial(UserLoginRequest request) {
-        SocialUserResponse response = this.getSocialUserInfo(request.getProvider(), request.getToken());
-
-        User findUser = this.findSocialUser(request.getProvider(), response.getId());
-
-        if (findUser == null) {
-            throw new IllegalArgumentException("없음");
-        }
-        if (!UserState.NORMAL.equals(findUser.getUserState())) {
-            throw new IllegalArgumentException("주의");
-        }
-
-        return findUser;
     }
 
     public SocialUserResponse getSocialUserInfo(String provider, String token) {
@@ -282,7 +184,7 @@ public class UserService {
         return user.getUsername();
     }
 
-    public User findUserVerify(String username, UserVerifyRequest request) {
+    public User findUserVerify(String username, UserLeaveRequest request) {
         if (!hasText(username)) {
             throw new BusinessMessageException("에러");
         }
@@ -311,7 +213,7 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean leave(String username, UserVerifyRequest request) {
+    public Boolean leave(String username, UserLeaveRequest request) {
         User entity = findUserVerify(username, request);
         entity.updateUserStateCode(UserState.LEAVE);
         return true;

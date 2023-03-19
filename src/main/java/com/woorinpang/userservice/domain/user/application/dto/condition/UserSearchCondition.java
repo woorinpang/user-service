@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.domain.user.dto;
+package com.woorinpang.userservice.domain.user.application.dto.condition;
 
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.UserState;

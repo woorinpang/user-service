@@ -1,6 +1,6 @@
 package com.woorinpang.userservice.domain.user.domain;
 
-import com.woorinpang.userservice.domain.user.application.param.UpdateUserParam;
+import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
 import com.woorinpang.userservice.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -78,12 +78,13 @@ public class User extends BaseEntity {
     /**
      * 유저 수정
      */
-    public void update(UpdateUserParam param) {
-        this.email = param.getEmail();
-        this.password = param.getPassword();
-        this.name = param.getName();
-        this.role = param.getRole();
-        this.userState = param.getUserState();
+    public void update(UpdateUserCommand command) {
+        //새로운 비밀번호가 들어오면 인코드 아니면 기존 비밀번호 업데이트
+        this.password = hasText(command.password()) ? new BCryptPasswordEncoder().encode(command.password()) : this.password;
+        this.email = command.email();
+        this.name = command.name();
+        this.role = command.role();
+        this.userState = command.userState();
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.domain.user.presentation.response;
+package com.woorinpang.userservice.domain.user.presentation.admin.response;
 
 import com.woorinpang.userservice.domain.user.domain.User;
 import lombok.AccessLevel;
@@ -10,7 +10,6 @@ import static org.springframework.util.StringUtils.hasText;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FindUserResponse {
-
     private Long userId;
     private String username;
     private String email;

@@ -1,12 +1,10 @@
 package com.woorinpang.userservice.domain.auth.presentation;
 
 import com.woorinpang.userservice.domain.auth.application.AuthService;
-import com.woorinpang.userservice.domain.auth.presentation.dto.request.SignupUserRequest;
 import com.woorinpang.userservice.global.common.json.JsonResponse;
 import com.woorinpang.userservice.global.config.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -28,15 +26,6 @@ public class AuthController {
 
     private final TokenProvider tokenProvider;
     private final AuthService authService;
-
-    @PostMapping("/signup")
-    public ResponseEntity<JsonResponse> signup(@RequestBody @Valid SignupUserRequest request) {
-        //TODO validate
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(JsonResponse.OK());
-    }
 
     /**
      * refresh token 과 일치하는 사용자가 있으면 access token 을 새로 발급하여 리턴한다.
@@ -67,6 +56,9 @@ public class AuthController {
 
         return isAuth;
     }
+
+
+    //TODO 로그아웃
 
 
 }

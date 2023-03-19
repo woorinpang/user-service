@@ -1,6 +1,5 @@
 package com.woorinpang.userservice.domain.user.presentation;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
