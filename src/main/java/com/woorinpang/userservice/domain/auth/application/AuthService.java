@@ -11,6 +11,8 @@ import com.woorinpang.userservice.global.config.SocialUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +26,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.*;
 
@@ -113,5 +117,16 @@ public class AuthService implements UserDetailsService {
     private User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("nonononono"));
+    }
+
+    public Boolean isAuthorization(String username, String httpMethod, String requestPath) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    public Boolean isAuthorization(HttpServletRequest request, Authentication authentication) {
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::toString).collect(Collectors.toList());
+        //TODO Authorization table에서 권한을 가져오고 검증해서 값을 Boolean 으로 반환한다.
+        return true;
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 //@Component
 public class JwtDecoder {
-    @Value("${token.secret}")
+    @Value("${token.secret-key}")
     private String SECRET;
 
     public DecodedJWT verify(String token) {

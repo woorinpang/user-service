@@ -1,5 +1,8 @@
 package com.woorinpang.userservice.global.config;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.woorinpang.userservice.domain.auth.application.AuthService;
 import com.woorinpang.userservice.domain.user.domain.User;
 import io.jsonwebtoken.Claims;
@@ -54,7 +57,7 @@ public class TokenProvider {
         Long userId = findUser.getId();
 
         // JWT Access 토큰 생성
-        String accessToken = createAccessToken(authorities, userId);
+        String accessToken = createAccessToken(authorities,  userId, findUser.getUsername());
 
         // JWT Refresh 토큰 생성 후 사용자 도메인에 저장하여 토큰 재생성 요청시 활용한다.
         String refreshToken = createRefreshToken();
@@ -69,10 +72,11 @@ public class TokenProvider {
     /**
      * JWT Access Token 생성
      */
-    private String createAccessToken(String authorities, Long userId) {
+    private String createAccessToken(String authorities, Long userId, String username) {
         return Jwts.builder()
-                .setSubject(userId.toString())
+                .setSubject(username)
                 .claim(TOKEN_CLAIM_NAME, authorities)
+                .claim("userId", userId)
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_EXPIRATION_TIME)))
                 .signWith(SignatureAlgorithm.HS512, TOKEN_SECRET)
                 .compact();
@@ -96,7 +100,7 @@ public class TokenProvider {
         // refresh token 으로 유효한 사용자가 있는지 찾는다.
         User findUser = authService.findByRefreshToken(refreshToken);
         // 사용자가 있으면 access token 을 새로 발급하여 리턴한다.
-        String accessToken = createAccessToken(findUser.getRole().getCode(), findUser.getId());
+        String accessToken = createAccessToken(findUser.getRole().getCode(), findUser.getId(), findUser.getUsername());
 
         String filteredRefreshToken = refreshToken.replaceAll("\r", "").replaceAll("\n", "");
 

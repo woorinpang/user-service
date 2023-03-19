@@ -48,7 +48,7 @@ public class User extends BaseEntity {
     @Column
     private LocalDateTime lastLoginDate;
 
-    @Column(nullable = false, columnDefinition = "tinyint default '0'")
+    @Column(nullable = false, columnDefinition = "tinyint default 0")
     private Integer loginFailCount;
 
     @Column(length = 100)

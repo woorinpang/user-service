@@ -10,5 +10,5 @@ public interface UserCommandMapper {
 
     UserCommandMapper INSTANCE = Mappers.getMapper(UserCommandMapper.class);
 
-    User toEntity(SaveUserCommand command);
+    //User toEntity(SaveUserCommand command);
 }

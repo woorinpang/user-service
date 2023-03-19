@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                 .and()
                     .authorizeHttpRequests()
                     .requestMatchers(GlobalConstant.SECURITY_PERMITAIL_ANTPATTERNS).permitAll()
-//                    .anyRequest().access("@authorizationService.isAuthorization(request, authentication)")
+//                    .anyRequest().access("@authService.isAuthorization(request, authentication)")
                 .and()
                     .formLogin().disable()
                     .httpBasic().disable()
@@ -59,7 +59,6 @@ public class WebSecurityConfig {
     protected AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
         return new AuthenticationFilter(authenticationManager, tokenProvider, authService);
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http)

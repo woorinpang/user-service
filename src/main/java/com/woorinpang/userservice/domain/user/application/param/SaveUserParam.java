@@ -16,18 +16,18 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class SaveUserParam {
-
-    private String name;
-    private String email;
+    private String username;
     private String password;
+    private String email;
+    private String name;
     private Role role;
     private UserState userState;
 
-    public User toEntity(BCryptPasswordEncoder passwordEncoder) {
+    public User toEntity() {
         return User.createBuilder()
-                .username(UUID.randomUUID().toString())
+                .username(this.username)
+                .password(this.password)
                 .email(this.email)
-                .password(passwordEncoder.encode(this.password))
                 .name(this.name)
                 .role(this.role)
                 .userState(this.userState)

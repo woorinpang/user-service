@@ -62,7 +62,9 @@ public class UserService {
      */
     @Transactional
     public Long save(SaveUserCommand command) {
-        return userRepository.save(UserCommandMapper.INSTANCE.toEntity(command)).getId();
+        User user = command.toEntity();
+
+        return userRepository.save(user).getId();
     }
 
     /**

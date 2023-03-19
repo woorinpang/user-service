@@ -59,9 +59,11 @@ public class UserController {
         //validate
         request.validate();
 
-        return ResponseEntity
+        ResponseEntity<SaveUserResponse> body = ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new SaveUserResponse(userService.save(UserDtoMapper.INSTANCE.toCommand(request))));
+                .body(new SaveUserResponse(userService.save(request.toCommand())));
+
+        return body;
     }
 
     /**

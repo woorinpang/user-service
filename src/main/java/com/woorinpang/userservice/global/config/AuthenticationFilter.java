@@ -106,7 +106,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         super.unsuccessfulAuthentication(request, response, failed);
     }
 
-
     /**
      * 로그인 요청 뿐만 아니라 모든 요청시마다 호출된다.
      * 토큰에 담긴 정보로 Authentication 정보를 설정한다.
@@ -121,7 +120,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 super.doFilter(request, response, chain);
             } else {
                 // 토큰 유효성 검사는 API Gateway ReactiveAuthorization 클래스에서 미리 처리된다.
-                Claims claims = tokenProvider.getClaimsFromToken(token);
+                Claims claims = tokenProvider.getClaimsFromToken(token.replace("Bearer ", ""));
 
                 String username = claims.getSubject();
                 if (username == null) {

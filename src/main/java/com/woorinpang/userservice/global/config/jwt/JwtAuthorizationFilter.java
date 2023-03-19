@@ -25,13 +25,13 @@ import java.io.IOException;
 @Slf4j
 //@Profile("!test")
 //@Component
-@RequiredArgsConstructor
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private final JwtDecoder jwtDecoder;
+//@RequiredArgsConstructor
+public class JwtAuthorizationFilter /*extends OncePerRequestFilter*/ {
+    /*private final JwtDecoder jwtDecoder;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        /*String authorizationHeader = request.getHeader(AuthConstants.HEADER_STRING.getValue());
+        String authorizationHeader = request.getHeader(AuthConstants.HEADER_STRING.getValue());
         log.info("Header Authorization : {}", authorizationHeader);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith(AuthConstants.TOKEN_PREFIX.getValue())) {
@@ -60,6 +60,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             log.error("JwtFilter - doFilterInternal() : {}", e.getMessage());
             request.setAttribute("exception", JwtException.UNKNOWN_ERROR.name());
         }
-        chain.doFilter(request, response);*/
-    }
+        chain.doFilter(request, response);
+    }*/
 }

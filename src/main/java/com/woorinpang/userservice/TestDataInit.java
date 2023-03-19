@@ -33,9 +33,8 @@ public class TestDataInit {
             User user = User.createBuilder()
                     .username("spring")
                     .email("spring@naver.com")
-//                    .password(passwordEncoder.encode("1234"))
                     .password("1234")
-                    .name("spring")
+                    .name("스프링")
                     .role(Role.USER)
                     .userState(UserState.NORMAL)
                     .build();
