@@ -57,7 +57,7 @@ public class ErrorResponse {
     }
 
     /**
-     *
+     * @Valid 어노테이션으로 넘어오는 값의 경우
      */
     public static ErrorResponse of(final ErrorCode code, final BindingResult bindingResult, MessageSource messageSource) {
         return new ErrorResponse(code, FieldError.of(bindingResult), messageSource);

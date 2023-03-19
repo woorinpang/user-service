@@ -1,16 +1,16 @@
 package com.woorinpang.userservice.global.exception;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -21,6 +21,14 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class GlobalExceptionHandlerAdvice {
 
     protected final MessageSource messageSource;
+
+    /**
+     * 모든 컨트롤러로 들어오는 요청을 초기화 한다.
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.initBeanPropertyAccess(); //setter 구현 없이 dto 클래스 필드에 접근
+    }
 
     /**
      * javax.validation.Valid or @Validated 으로 binding error 발생시 발생한다.
@@ -87,30 +95,6 @@ public class GlobalExceptionHandlerAdvice {
     }
 
     /**
-     * 요청한 페이지가 존재하지 않는 경우
-     */
-    /*@ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
-        log.error("handleNotFoundException", e);
-        final ErrorResponse response = ErrorResponse.of(e, messageSource);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(response);
-    }*/
-
-    /**
-     * Authentication 객체가 필요한 권한을 보유하지 않은 경우 발생
-     */
-    @ExceptionHandler(AccessDeniedException.class)
-    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
-        log.error("handleAccessDeniedException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.ACCESS_DENIED, messageSource);
-        return ResponseEntity
-                .status(HttpStatus.valueOf(ErrorCode.ACCESS_DENIED.getStatus()))
-                .body(response);
-    }
-
-    /**
      * 사용자 인증되지 않은 경우 발생
      */
     @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
@@ -120,18 +104,6 @@ public class GlobalExceptionHandlerAdvice {
         return ResponseEntity
                 .status(HttpStatus.valueOf(ErrorCode.ACCESS_DENIED.getStatus()))
                 .body(response);
-    }
-
-    /**
-     * JWT 인증 만료 경우 발생
-     */
-    @ExceptionHandler(ExpiredJwtException.class)
-    protected ResponseEntity<ErrorResponse> handleExpiredJwtException(ExpiredJwtException e) {
-        log.error("handleExpiredJwtException", e);
-        final ErrorResponse reponse = ErrorResponse.of(ErrorCode.JWT_EXPIRED, messageSource);
-        return ResponseEntity
-                .status(HttpStatus.valueOf(ErrorCode.JWT_EXPIRED.getStatus()))
-                .body(reponse);
     }
 
     /**
@@ -154,7 +126,7 @@ public class GlobalExceptionHandlerAdvice {
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
         log.error("handleBusinessException", e);
-        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), messageSource);
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), e.getCustomMessage());
         return ResponseEntity
                 .status(HttpStatus.valueOf(e.getErrorCode().getStatus()))
                 .body(response);

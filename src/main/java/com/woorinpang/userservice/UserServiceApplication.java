@@ -8,16 +8,17 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 //@ComponentScan({"com.woorinpang.common", "com.woorinpang.servlet", "com.woorinpang.userservice"})
-//@EnableDiscoveryClient
+@EnableDiscoveryClient
 @SpringBootApplication
 public class UserServiceApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class, args);
-    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    public static void main(String[] args) {
+        SpringApplication.run(UserServiceApplication.class, args);
+    }
+
 }

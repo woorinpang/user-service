@@ -22,9 +22,9 @@ eureka:
 
 # 2시간(7,200,000), 1일(86,400,000) jwt token
 token:
-  expiration_time: 7200000
-  refresh_time: 86400000
-  secret: 'token_secret'
+  access_expiration_time: 7200000
+  refresh_expiration_time: 86400000
+  secret-key: 'woorinpang_token_secret'
 
 file:
   directory: ${app.home:${user.home}}/workspace/github/woorinpang/attach
