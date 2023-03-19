@@ -14,14 +14,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Import(UserTestConfig.class)
-@DisplayName("user 레포지토리 테스트")
+@DisplayName("UserQueryRepository 레포지토리 테스트")
 class UserQueryRepositoryTest extends RepositoryTest {
 
     @Autowired protected UserQueryRepository userQueryRepository;
@@ -61,7 +60,6 @@ class UserQueryRepositoryTest extends RepositoryTest {
             assertThat(content).extracting("loginFailCount").first().isInstanceOf(Integer.class);
         }
     }
-
 
     @Nested
     @DisplayName("사용자_목록_조회하면_")
