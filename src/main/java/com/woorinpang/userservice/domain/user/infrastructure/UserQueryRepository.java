@@ -4,11 +4,11 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.domain.QUser;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.UserState;
-import com.woorinpang.userservice.domain.user.infrastructure.dto.UserListDto;
-import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,9 +31,9 @@ public class UserQueryRepository {
     /**
      * 유저 목록 조회
      */
-    public Page<UserListDto> findUsers(UserSearchCondition condition, Pageable pageable) {
+    public Page<FindPageUserDto> findPageUsers(UserSearchCondition condition, Pageable pageable) {
 
-        List<UserListDto> content = getUserList(condition, pageable);
+        List<FindPageUserDto> content = getUserList(condition, pageable);
 
         JPAQuery<Long> count = getUserListCount(condition);
 
@@ -43,11 +43,11 @@ public class UserQueryRepository {
     /**
      * 유저 목록
      */
-    private List<UserListDto> getUserList(UserSearchCondition condition, Pageable pageable) {
+    private List<FindPageUserDto> getUserList(UserSearchCondition condition, Pageable pageable) {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                UserListDto.class,
+                                FindPageUserDto.class,
                                 QUser.user.id,
                                 QUser.user.username,
                                 QUser.user.email,

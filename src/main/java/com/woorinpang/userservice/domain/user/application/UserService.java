@@ -9,7 +9,7 @@ import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
-import com.woorinpang.userservice.domain.user.infrastructure.dto.UserListDto;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 import com.woorinpang.userservice.domain.user.presentation.request.SocialUserResponse;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserLeaveRequest;
@@ -44,8 +44,8 @@ public class UserService {
     /**
      * 유저 목록을 조회하여 페이지와 함께 반환한다.
      */
-    public Page<UserListDto> findUsers(UserSearchCondition condition, Pageable pageable) {
-        return userQueryRepository.findUsers(condition, pageable);
+    public Page<FindPageUserDto> findUsers(UserSearchCondition condition, Pageable pageable) {
+        return userQueryRepository.findPageUsers(condition, pageable);
     }
 
     /**
@@ -84,9 +84,9 @@ public class UserService {
     /**
      * 모든 사용자를 생성일 역순으로 정렬 조회하여 반환한다.
      */
-    public List<UserListDto> findAllDesc() {
+    public List<FindPageUserDto> findAllDesc() {
         return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate")).stream()
-                .map(UserListDto::new)
+                .map(FindPageUserDto::new)
                 .collect(Collectors.toList());
     }
 
