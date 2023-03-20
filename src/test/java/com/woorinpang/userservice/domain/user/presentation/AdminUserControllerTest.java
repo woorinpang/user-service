@@ -5,8 +5,10 @@ import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
 import com.woorinpang.userservice.test.IntegrationTest;
+import com.woorinpang.userservice.test.WithMockCustomUser;
 import org.aspectj.lang.annotation.Before;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.RequestDocumentation;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +28,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -47,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminUserControllerTest extends IntegrationTest {
 
     @Autowired private UserRepository userRepository;
+    @Autowired private WebApplicationContext context;
 
     @Nested
     @DisplayName("사용자_목록_조회하면_")
@@ -170,9 +175,17 @@ class AdminUserControllerTest extends IntegrationTest {
     @Nested
     @DisplayName("사용자_저장하면_")
     class SaveUser {
+
+        @BeforeEach
+        void init() {
+            mockMvc = MockMvcBuilders
+                    .webAppContextSetup(context)
+                    .apply(springSecurity())
+                    .build();
+        }
         @Test
         @DisplayName("성공하고 상태코드 201과 savedUserId를 반환한다.")
-        @WithMockUser
+        @WithMockCustomUser
         void documentTest() throws Exception {
             //given
             SaveUserRequest request = getSaveUserRequest();
