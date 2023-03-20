@@ -8,11 +8,20 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UpdateUserRequest {
-    private String username;
-    private String email;
     private String password;
-    private String RoleCode;
+    private String email;
+    private String name;
+    private String roleCode;
     private String userStateCode;
+
+    @Builder
+    public UpdateUserRequest(String password, String email, String name, String roleCode, String userStateCode) {
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.roleCode = roleCode;
+        this.userStateCode = userStateCode;
+    }
 
     public void validate() {
         //validate
@@ -20,10 +29,10 @@ public class UpdateUserRequest {
 
     public UpdateUserCommand toCommand() {
         return UpdateUserCommand.builder()
-                .name(this.username)
-                .email(this.email)
                 .password(this.password)
-                .role(Role.findByCode(this.RoleCode))
+                .email(this.email)
+                .name(this.name)
+                .role(Role.findByCode(this.roleCode))
                 .userState(UserState.findByCode(this.userStateCode))
                 .build();
     }

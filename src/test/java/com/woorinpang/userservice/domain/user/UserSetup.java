@@ -7,6 +7,8 @@ import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
+import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
+import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -38,6 +40,7 @@ public class UserSetup {
 
     //REQUEST_URI
     public static final String API_V1_GET_FIND_USERS = "/api/v1/admin/users";
+    public static final String API_V1_GET_FIND_USER = "/api/v1/admin/users/{userId}";
 
     public static User getUser() {
         return User.createBuilder()
@@ -120,6 +123,27 @@ public class UserSetup {
                 .name(UPDATE_NAME)
                 .role(UPDATE_ROLE)
                 .userState(UPDATE_USER_STATE)
+                .build();
+    }
+
+    public static SaveUserRequest getSaveUserRequest() {
+        return SaveUserRequest.builder()
+                .username(USERNAME)
+                .password(PASSWORD)
+                .email(EMAIL)
+                .name(NAME)
+                .roleCode(ROLE.name())
+                .userStateCode(USER_STATE.name())
+                .build();
+    }
+
+    public static UpdateUserRequest getUpdateUserRequest() {
+        return UpdateUserRequest.builder()
+                .password(PASSWORD)
+                .email(UPDATE_EMAIL)
+                .name(UPDATE_NAME)
+                .roleCode(UPDATE_ROLE.name())
+                .userStateCode(UPDATE_USER_STATE.name())
                 .build();
     }
 }
