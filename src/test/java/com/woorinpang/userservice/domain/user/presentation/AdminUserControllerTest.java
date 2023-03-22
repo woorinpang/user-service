@@ -5,8 +5,6 @@ import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
 import com.woorinpang.userservice.test.IntegrationTest;
-import com.woorinpang.userservice.test.WithMockCustomUser;
-import org.aspectj.lang.annotation.Before;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,38 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.payload.PayloadDocumentation;
-import org.springframework.restdocs.request.RequestDocumentation;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.List;
 
 import static com.woorinpang.userservice.domain.user.UserSetup.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,13 +86,17 @@ class AdminUserControllerTest extends IntegrationTest {
     @Nested
     @DisplayName("사용자_단건_조회하면_")
     class FindUser {
+        User user = getUser();
+
+        @BeforeEach
+        void init() {
+            //given
+            em.persist(user);
+        }
+
         @Test
         @DisplayName("성공하고 상태코드 200과 값을 반환한다.")
         void documentTest() throws Exception {
-            //given
-            User user = getUser();
-            em.persist(user);
-
             //expected
             getResultActions(user.getId())
                     .andExpect(status().isOk())
@@ -160,8 +138,6 @@ class AdminUserControllerTest extends IntegrationTest {
         @Test
         @DisplayName("userId = 0L 로 조회 실패하여 UserNotFoundException 이 발생한다.")
         void test01() throws Exception {
-            //given
-
             //expected
             getResultActions(USER_NOT_FOUND_ID)
                     .andExpect(status().isNotFound())
@@ -220,23 +196,20 @@ class AdminUserControllerTest extends IntegrationTest {
     @Nested
     @DisplayName("사용자_수정하면_")
     class UpdateUser {
+        User user = getUser();
+        UpdateUserRequest request = getUpdateUserRequest();
+
+        @BeforeEach
+        void init() {
+            //given
+            em.persist(user);
+        }
 
         @Test
         @DisplayName("성공하고 상태코드 200과 updatedUserId를 반환한다.")
         void updateUser() throws Exception {
-            //given
-            User user = getUser();
-            em.persist(user);
-
-            UpdateUserRequest request = getUpdateUserRequest();
-
-            //when
-            ResultActions resultActions = mockMvc.perform(put(API_V1_PUT_UPDATE_USER, user.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)));
-
-            //then
-            resultActions
+            //expected
+            getResultActions(user.getId(), request)
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.timestamp").isNotEmpty())
                     .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
@@ -260,25 +233,75 @@ class AdminUserControllerTest extends IntegrationTest {
                     ))*/
             ;
         }
+
+        @Test
+        @DisplayName("userId = 0L 로 조회 실패하여 UserNotFoundException 이 발생한다.")
+        void test01() throws Exception {
+            //expected
+            getResultActions(USER_NOT_FOUND_ID, request)
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(USER_NOT_FOUND_MESSAGE))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+                    .andDo(print());
+        }
+
+        private ResultActions getResultActions(Long userId, UpdateUserRequest request) throws Exception {
+            return mockMvc.perform(put(API_V1_PUT_UPDATE_USER, userId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
+        }
     }
 
     @Nested
     @DisplayName("사용자_삭제하면_")
     class DeleteUser {
-        @Test
-        void deleteUser() throws Exception {
+        User user = getUser();
+
+        @BeforeEach
+        void init() {
             //given
-            User user = getUser();
             userRepository.save(user);
+        }
 
-            //when
-            ResultActions resultActions = mockMvc.perform(delete(API_V1_DELETE_DELETE_USER, user.getId()));
-
-            //then
-            resultActions
+        @Test
+        @DisplayName("성공하고 상태코드 204를 반환한다.")
+        void deleteUser() throws Exception {
+            //expected
+            getResultActions(user.getId())
                     .andExpect(status().isNoContent())
-                    .andDo(print());
+                    .andExpect(jsonPath("$.message").value(HttpStatus.NO_CONTENT.getReasonPhrase()))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.NO_CONTENT.value()))
+                    .andExpect(jsonPath("$.data").isEmpty())
+                    .andDo(print())
+                    /*.andDo(document("admin-delete-user",
+                            pathParameters(
+                                    parameterWithName("userId").description("사용자 고유 번호")
+                            ),
+                            responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
+                                    fieldWithPath("data").ignored()
+                            )
+                    ))*/
+            ;
+        }
 
+        @Test
+        @DisplayName("userId = 0L 로 조회 실패하여 UserNotFoundException 이 발생한다.")
+        void test01() throws Exception {
+            //expected
+            getResultActions(USER_NOT_FOUND_ID)
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(USER_NOT_FOUND_MESSAGE))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+                    .andDo(print());
+        }
+
+        private ResultActions getResultActions(Long userId) throws Exception {
+            return mockMvc.perform(delete(API_V1_DELETE_DELETE_USER, userId));
         }
     }
 }
