@@ -4,6 +4,7 @@ import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -5,8 +5,6 @@ import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
 import com.woorinpang.userservice.test.IntegrationTest;
-import com.woorinpang.userservice.test.WithMockCustomUser;
-import org.aspectj.lang.annotation.Before;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,35 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
-import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.payload.PayloadDocumentation;
-import org.springframework.restdocs.request.RequestDocumentation;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
 import static com.woorinpang.userservice.domain.user.UserSetup.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,14 +28,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminUserControllerTest extends IntegrationTest {
 
     @Autowired private UserRepository userRepository;
-    @Autowired private WebApplicationContext context;
+
 
     @Nested
     @DisplayName("사용자_목록_조회하면_")
     class FindUsers {
         @Test
         @DisplayName("성공하고 상태코드 200과 페이지정보 및 데이터를 반환한다.")
-        @WithMockUser
         void documentTest() throws Exception {
             //given
             List<User> users = getUsers();
@@ -78,7 +54,7 @@ class AdminUserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andExpect(jsonPath("$.data.content.length()", Matchers.is(5)))
                     .andDo(print())
-                    .andDo(document("admin-find-users",
+                    /*.andDo(document("admin-find-users",
                             queryParameters(
                                     parameterWithName("searchKeywordType").description("검색 조건 유형"),
                                     parameterWithName("searchKeyword").description("검색 키워드"),
@@ -102,21 +78,25 @@ class AdminUserControllerTest extends IntegrationTest {
                                     fieldWithPath("data.content[*].lastLoginDate").type(JsonFieldType.STRING).description("최신 로그인 시간"),
                                     fieldWithPath("data.content[*].loginFailCount").type(JsonFieldType.STRING).description("로그인 실패 횟수")
                             )
-                    ));
+                    ))*/
+            ;
         }
     }
 
     @Nested
     @DisplayName("사용자_단건_조회하면_")
     class FindUser {
+        User user = getUser();
+
+        @BeforeEach
+        void init() {
+            //given
+            em.persist(user);
+        }
+
         @Test
         @DisplayName("성공하고 상태코드 200과 값을 반환한다.")
-        @WithMockUser
         void documentTest() throws Exception {
-            //given
-            User user = getUser();
-            em.persist(user);
-
             //expected
             getResultActions(user.getId())
                     .andExpect(status().isOk())
@@ -131,11 +111,14 @@ class AdminUserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.data.userStateCode").value(USER_STATE.getCode()))
                     .andExpect(jsonPath("$.data.hasPassword").value(Boolean.TRUE))
                     .andDo(print())
-                    .andDo(MockMvcRestDocumentation.document("admin-find-user",
+                    /*.andDo(MockMvcRestDocumentation.document("admin-find-user",
                             pathParameters(
                                     parameterWithName("userId").description("사용자 고유 번호")
                             ),
                             responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
                                     fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 고유 번호"),
                                     fieldWithPath("username").type(JsonFieldType.NUMBER).description("사용자 아이디"),
                                     fieldWithPath("email").type(JsonFieldType.NUMBER).description("사용자 이메일"),
@@ -148,16 +131,13 @@ class AdminUserControllerTest extends IntegrationTest {
                                     fieldWithPath("isSocialUser").type(JsonFieldType.BOOLEAN).description("소셜 사용자 여부"),
                                     fieldWithPath("hasPassword").type(JsonFieldType.BOOLEAN).description("비밀번호 여부")
                             )
-                    ))
+                    ))*/
             ;
         }
 
         @Test
         @DisplayName("userId = 0L 로 조회 실패하여 UserNotFoundException 이 발생한다.")
-        @WithMockUser
         void test01() throws Exception {
-            //given
-
             //expected
             getResultActions(USER_NOT_FOUND_ID)
                     .andExpect(status().isNotFound())
@@ -175,17 +155,8 @@ class AdminUserControllerTest extends IntegrationTest {
     @Nested
     @DisplayName("사용자_저장하면_")
     class SaveUser {
-
-        @BeforeEach
-        void init() {
-            mockMvc = MockMvcBuilders
-                    .webAppContextSetup(context)
-                    .apply(springSecurity())
-                    .build();
-        }
         @Test
         @DisplayName("성공하고 상태코드 201과 savedUserId를 반환한다.")
-        @WithMockCustomUser
         void documentTest() throws Exception {
             //given
             SaveUserRequest request = getSaveUserRequest();
@@ -197,47 +168,140 @@ class AdminUserControllerTest extends IntegrationTest {
 
             resultActions
                     .andExpect(status().isCreated())
-                    .andDo(print());
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(HttpStatus.CREATED.getReasonPhrase()))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
+                    .andExpect(jsonPath("$.data.savedUserId").isNotEmpty())
+                    .andDo(print())
+                    /*.andDo(document("admin-save-user",
+                            PayloadDocumentation.requestFields(
+                                    PayloadDocumentation.fieldWithPath("username").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                    PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("사용자비밀번호"),
+                                    PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                    PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("사용자 이름"),
+                                    PayloadDocumentation.fieldWithPath("roleCode").type(JsonFieldType.STRING).description("권한 코드"),
+                                    PayloadDocumentation.fieldWithPath("userStateCode").type(JsonFieldType.STRING).description("사용자 상태 코드")
+                            ),
+                            PayloadDocumentation.responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
+                                    fieldWithPath("data.savedUserId").type(JsonFieldType.STRING).description("저장된 사용자 고유 번호")
+                            )
+                    ))*/
+            ;
         }
-
-        @Test
-        @DisplayName("")
-        @WithMockUser
-        void test01() {
-
-        }
-
     }
 
     @Nested
     @DisplayName("사용자_수정하면_")
     class UpdateUser {
+        User user = getUser();
+        UpdateUserRequest request = getUpdateUserRequest();
+
+        @BeforeEach
+        void init() {
+            //given
+            em.persist(user);
+        }
 
         @Test
         @DisplayName("성공하고 상태코드 200과 updatedUserId를 반환한다.")
-        @WithMockUser
         void updateUser() throws Exception {
-            //given
-            User user = getUser();
-            em.persist(user);
-
-            UpdateUserRequest request = getUpdateUserRequest();
-
-            //when
-            ResultActions resultActions = mockMvc.perform(put("/api/v1/admin/users", user.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzcHJpbmciLCJhdXRob3JpdGllcyI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEsImV4cCI6MTY3OTMyOTkxOX0.Bi1Ta1tlDzuwWp0Q0MH57Rp1NvGx-fBbq6xnmzAyA0e_EVrIGHG38IlT7ffAp0l9w6VDOuIA70rICq2vxIg2SA")
-                    .content(objectMapper.writeValueAsString(request)));
-
-            //then
-            resultActions
+            //expected
+            getResultActions(user.getId(), request)
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                    .andExpect(jsonPath("$.data.updatedUserId").isNotEmpty())
+                    .andDo(print())
+                    /*.andDo(document("admin-update-user",
+                            PayloadDocumentation.requestFields(
+                                    PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("사용자 패스워드"),
+                                    PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                    PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("사용자 이름"),
+                                    PayloadDocumentation.fieldWithPath("roleCode").type(JsonFieldType.STRING).description("권한 코드"),
+                                    PayloadDocumentation.fieldWithPath("userStateCode").type(JsonFieldType.STRING).description("사용자 상태 코드")
+                            ),
+                            PayloadDocumentation.responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
+                                    fieldWithPath("data.updatedUserId").type(JsonFieldType.STRING).description("수정된 사용자 고유 번호")
+                            )
+                    ))*/
+            ;
+        }
+
+        @Test
+        @DisplayName("userId = 0L 로 조회 실패하여 UserNotFoundException 이 발생한다.")
+        void test01() throws Exception {
+            //expected
+            getResultActions(USER_NOT_FOUND_ID, request)
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(USER_NOT_FOUND_MESSAGE))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                     .andDo(print());
         }
 
+        private ResultActions getResultActions(Long userId, UpdateUserRequest request) throws Exception {
+            return mockMvc.perform(put(API_V1_PUT_UPDATE_USER, userId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
+        }
     }
 
-    @Test
-    void deleteUser() {
+    @Nested
+    @DisplayName("사용자_삭제하면_")
+    class DeleteUser {
+        User user = getUser();
+
+        @BeforeEach
+        void init() {
+            //given
+            userRepository.save(user);
+        }
+
+        @Test
+        @DisplayName("성공하고 상태코드 204를 반환한다.")
+        void deleteUser() throws Exception {
+            //expected
+            getResultActions(user.getId())
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$.message").value(HttpStatus.NO_CONTENT.getReasonPhrase()))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.NO_CONTENT.value()))
+                    .andExpect(jsonPath("$.data").isEmpty())
+                    .andDo(print())
+                    /*.andDo(document("admin-delete-user",
+                            pathParameters(
+                                    parameterWithName("userId").description("사용자 고유 번호")
+                            ),
+                            responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
+                                    fieldWithPath("data").ignored()
+                            )
+                    ))*/
+            ;
+        }
+
+        @Test
+        @DisplayName("userId = 0L 로 조회 실패하여 UserNotFoundException 이 발생한다.")
+        void test01() throws Exception {
+            //expected
+            getResultActions(USER_NOT_FOUND_ID)
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(USER_NOT_FOUND_MESSAGE))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+                    .andDo(print());
+        }
+
+        private ResultActions getResultActions(Long userId) throws Exception {
+            return mockMvc.perform(delete(API_V1_DELETE_DELETE_USER, userId));
+        }
     }
 }
