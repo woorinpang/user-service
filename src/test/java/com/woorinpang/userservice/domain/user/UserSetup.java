@@ -1,11 +1,16 @@
 package com.woorinpang.userservice.domain.user;
 
+import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
 import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
+import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
+import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +38,9 @@ public class UserSetup {
     public static final Long USER_NOT_FOUND_ID = 0L;
     public static final String USER_NOT_FOUND_MESSAGE = "UserId=" + USER_NOT_FOUND_ID + "은 존재하지 않습니다.";
 
-
+    //REQUEST_URI
+    public static final String API_V1_GET_FIND_USERS = "/api/v1/admin/users";
+    public static final String API_V1_GET_FIND_USER = "/api/v1/admin/users/{userId}";
 
     public static User getUser() {
         return User.createBuilder()
@@ -44,6 +51,26 @@ public class UserSetup {
                 .role(Role.USER)
                 .userState(UserState.NORMAL)
                 .build();
+    }
+
+    public static LinkedMultiValueMap<String, String> getParams() {
+        UserSearchCondition condition = UserSearchCondition.builder()
+                .searchKeywordType(UserSearchCondition.KeywordType.NAME)
+                .searchKeyword(NAME)
+                .searchRole(Role.ADMIN)
+                .searchUserState(UserState.NORMAL)
+                .build();
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("searchKeywordType", condition.getSearchKeywordType().name());
+        params.add("searchKeyword", condition.getSearchKeyword());
+        params.add("searchRole", condition.getSearchRole().name());
+        params.add("searchUserState", condition.getSearchUserState().name());
+        params.add("page", String.valueOf(pageRequest.getOffset()));
+        params.add("size", String.valueOf(pageRequest.getPageSize()));
+        return params;
     }
 
     public static List<User> getUsers() {
@@ -96,6 +123,27 @@ public class UserSetup {
                 .name(UPDATE_NAME)
                 .role(UPDATE_ROLE)
                 .userState(UPDATE_USER_STATE)
+                .build();
+    }
+
+    public static SaveUserRequest getSaveUserRequest() {
+        return SaveUserRequest.builder()
+                .username(USERNAME)
+                .password(PASSWORD)
+                .email(EMAIL)
+                .name(NAME)
+                .roleCode(ROLE.name())
+                .userStateCode(USER_STATE.name())
+                .build();
+    }
+
+    public static UpdateUserRequest getUpdateUserRequest() {
+        return UpdateUserRequest.builder()
+                .password(PASSWORD)
+                .email(UPDATE_EMAIL)
+                .name(UPDATE_NAME)
+                .roleCode(UPDATE_ROLE.name())
+                .userStateCode(UPDATE_USER_STATE.name())
                 .build();
     }
 }
