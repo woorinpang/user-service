@@ -11,7 +11,6 @@ import org.hibernate.validator.constraints.Length;
 public class UpdateUserRequest {
     private String password;
     private String email;
-    @Length(max = 1)
     private String name;
     private String roleCode;
     private String userStateCode;

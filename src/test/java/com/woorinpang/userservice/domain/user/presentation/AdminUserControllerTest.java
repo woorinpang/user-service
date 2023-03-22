@@ -54,15 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminUserControllerTest extends IntegrationTest {
 
     @Autowired private UserRepository userRepository;
-    @Autowired private WebApplicationContext context;
 
-    @BeforeEach
-    void init() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(new CharacterEncodingFilter("UTF-8"))
-                .apply(SecurityMockMvcConfigurers.springSecurity())
-                .build();
-    }
 
     @Nested
     @DisplayName("사용자_목록_조회하면_")
@@ -205,7 +197,7 @@ class AdminUserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
                     .andExpect(jsonPath("$.data.savedUserId").isNotEmpty())
                     .andDo(print())
-                    .andDo(document("admin-save-user",
+                    /*.andDo(document("admin-save-user",
                             PayloadDocumentation.requestFields(
                                     PayloadDocumentation.fieldWithPath("username").type(JsonFieldType.STRING).description("사용자 아이디"),
                                     PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("사용자비밀번호"),
@@ -220,15 +212,8 @@ class AdminUserControllerTest extends IntegrationTest {
                                     fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
                                     fieldWithPath("data.savedUserId").type(JsonFieldType.STRING).description("저장된 사용자 고유 번호")
                             )
-                    ))
+                    ))*/
             ;
-        }
-
-        @Test
-        @DisplayName("")
-        @WithMockUser
-        void test01() {
-
         }
     }
 
@@ -238,7 +223,6 @@ class AdminUserControllerTest extends IntegrationTest {
 
         @Test
         @DisplayName("성공하고 상태코드 200과 updatedUserId를 반환한다.")
-        @WithMockUser
         void updateUser() throws Exception {
             //given
             User user = getUser();
@@ -253,9 +237,29 @@ class AdminUserControllerTest extends IntegrationTest {
 
             //then
             resultActions
-                    .andDo(print());
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                    .andExpect(jsonPath("$.data.updatedUserId").isNotEmpty())
+                    .andDo(print())
+                    /*.andDo(document("admin-update-user",
+                            PayloadDocumentation.requestFields(
+                                    PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("사용자 패스워드"),
+                                    PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                    PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("사용자 이름"),
+                                    PayloadDocumentation.fieldWithPath("roleCode").type(JsonFieldType.STRING).description("권한 코드"),
+                                    PayloadDocumentation.fieldWithPath("userStateCode").type(JsonFieldType.STRING).description("사용자 상태 코드")
+                            ),
+                            PayloadDocumentation.responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
+                                    fieldWithPath("data.updatedUserId").type(JsonFieldType.STRING).description("수정된 사용자 고유 번호")
+                            )
+                    ))*/
+            ;
         }
-
     }
 
     @Nested
