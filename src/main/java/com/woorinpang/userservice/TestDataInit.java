@@ -4,6 +4,7 @@ import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
+import com.woorinpang.userservice.global.config.TokenProvider;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,15 +28,14 @@ public class TestDataInit {
     @RequiredArgsConstructor
     static class InitService {
         private final UserRepository userRepository;
-        private final BCryptPasswordEncoder passwordEncoder;
-
+        private final TokenProvider tokenProvider;
         public void userInit() {
             User user = User.createBuilder()
                     .username("spring")
                     .email("spring@naver.com")
                     .password("1234")
                     .name("스프링")
-                    .role(Role.USER)
+                    .role(Role.ADMIN)
                     .userState(UserState.NORMAL)
                     .build();
             userRepository.save(user);

@@ -6,7 +6,6 @@ import com.woorinpang.userservice.global.common.dto.CommonSearchCondition;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSearchCondition extends CommonSearchCondition {
 
@@ -14,6 +13,7 @@ public class UserSearchCondition extends CommonSearchCondition {
     private Role searchRole;
     private UserState searchUserState;
 
+    @Builder
     public UserSearchCondition(String searchKeyword, KeywordType searchKeywordType, Role searchRole, UserState searchUserState) {
         super(searchKeyword);
         this.searchKeywordType = searchKeywordType;

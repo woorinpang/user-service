@@ -43,8 +43,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column
     private UserState userState;
-    private String refreshToken;
 
+    private String refreshToken;
     @Column
     private LocalDateTime lastLoginDate;
 
