@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UpdateUserResponse {
-    private Long userId;
+    private Long updatedUserId;
 }

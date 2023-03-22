@@ -41,6 +41,9 @@ public class UserSetup {
     //REQUEST_URI
     public static final String API_V1_GET_FIND_USERS = "/api/v1/admin/users";
     public static final String API_V1_GET_FIND_USER = "/api/v1/admin/users/{userId}";
+    public static final String API_V1_POST_SAVE_USER = "/api/v1/admin/users";
+    public static final String API_V1_PUT_UPDATE_USER = "/api/v1/admin/users/{userId}";
+    public static final String API_V1_DELETE_DELETE_USER = "/api/v1/admin/users/{userId}";
 
     public static User getUser() {
         return User.createBuilder()
@@ -132,8 +135,8 @@ public class UserSetup {
                 .password(PASSWORD)
                 .email(EMAIL)
                 .name(NAME)
-                .roleCode(ROLE.name())
-                .userStateCode(USER_STATE.name())
+                .roleCode(ROLE.getCode())
+                .userStateCode(USER_STATE.getCode())
                 .build();
     }
 
@@ -142,8 +145,8 @@ public class UserSetup {
                 .password(PASSWORD)
                 .email(UPDATE_EMAIL)
                 .name(UPDATE_NAME)
-                .roleCode(UPDATE_ROLE.name())
-                .userStateCode(UPDATE_USER_STATE.name())
+                .roleCode(UPDATE_ROLE.getCode())
+                .userStateCode(UPDATE_USER_STATE.getCode())
                 .build();
     }
 }

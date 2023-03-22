@@ -9,8 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
 public @interface WithMockCustomUser {
-    String username() default "username";
-    String password() default "password";
+    String username() default "test_user";
+    String password() default "1234";
 
     Role role() default Role.USER;
 }
