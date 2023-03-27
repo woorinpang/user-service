@@ -2,11 +2,13 @@ package com.woorinpang.userservice.domain.user.application;
 
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
 import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
-import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
-import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
+import com.woorinpang.userservice.domain.user.exception.EmailAlreadyExistsException;
 import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
+import com.woorinpang.userservice.domain.user.exception.UsernameAlreadyExistsException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
@@ -122,13 +124,36 @@ class UserServiceTest extends UnitTest {
             //verify
             verify(userRepository, times(1)).save(any(User.class));
         }
+
+        @Test
+        @DisplayName("Username 중복시 UsernameAlreadyExistsException 이 발생한다")
+        void test02() {
+            //given
+            given_username_already_exists_exception();
+
+            //expected
+            assertThatThrownBy(() -> userService.saveUser(getSaveUserCommand()))
+                    .isInstanceOf(UsernameAlreadyExistsException.class)
+                    .hasMessage("Username=%s은 이미 존재합니다.".formatted(USERNAME));
+        }
+
+        @Test @DisplayName("Email 중복시 EmailAlreadyExistsException 이 발생한다")
+        void test03() {
+            //given
+            given_email_already_exists_exception();
+
+            //expected
+            assertThatThrownBy(() -> userService.saveUser(getSaveUserCommand()))
+                    .isInstanceOf(EmailAlreadyExistsException.class)
+                    .hasMessage("Email=%s은 이미 존재합니다.".formatted(EMAIL));
+        }
     }
 
     @Nested
     @DisplayName("사용자_수정하면_")
     class UpdateUser {
-        UpdateUserCommand command = getUpdateUserCommand();
 
+        UpdateUserCommand command = getUpdateUserCommand();
         @Test
         @DisplayName("UpdateUserCommand 객체로 받아 수정한다.")
         void test01() {
@@ -148,6 +173,7 @@ class UserServiceTest extends UnitTest {
             //verify
             verify(userRepository, times(1)).findById(any(Long.class));
         }
+
         @Test
         @DisplayName("userId = 0L 으로 조회실패하고 UserNotFoundException 이 발생한다.")
         void test02() {
@@ -161,7 +187,6 @@ class UserServiceTest extends UnitTest {
         }
 
     }
-
     @Nested
     @DisplayName("사용자_삭제하면_")
     class DeleteUser {
@@ -182,6 +207,7 @@ class UserServiceTest extends UnitTest {
             //verify
             verify(userRepository, times(1)).findById(any(Long.class));
         }
+
         @Test
         @DisplayName("userId = 0L 으로 조회실패하고 UserNotFoundException 이 발생한다.")
         void test02() {
@@ -195,12 +221,19 @@ class UserServiceTest extends UnitTest {
         }
 
     }
-
     private void given_optional_of_nullable_user(User user) {
         given(userRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(user));
     }
 
     private void given_user_not_found_exception() {
         given(userRepository.findById(any(Long.class))).willThrow(new UserNotFoundException(USER_NOT_FOUND_ID));
+    }
+
+    private void given_username_already_exists_exception() {
+        given(userRepository.existsByUsername(any(String.class))).willThrow(new UsernameAlreadyExistsException(USERNAME));
+    }
+
+    private void given_email_already_exists_exception() {
+        given(userRepository.existsByEmail(any(String.class))).willThrow(new EmailAlreadyExistsException(EMAIL));
     }
 }

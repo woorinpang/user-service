@@ -2,11 +2,13 @@ package com.woorinpang.userservice.domain.user.application;
 
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
 import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
-import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
-import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
+import com.woorinpang.userservice.domain.user.exception.EmailAlreadyExistsException;
 import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
+import com.woorinpang.userservice.domain.user.exception.UsernameAlreadyExistsException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
@@ -60,6 +62,7 @@ public class UserService {
      */
     @Transactional
     public Long saveUser(SaveUserCommand command) {
+        checkDuplicateUsernameAndEmail(command);
         return userRepository.save(mapper.toUser(command)).getId();
     }
 
@@ -80,10 +83,20 @@ public class UserService {
         findUser.updateUserStateCode(UserState.DELETE);
     }
 
-    private User findById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+    /**
+     * 사용자 회원가입
+     */
+    @Transactional
+    public Long join(SaveUserCommand command) {
+        checkDuplicateUsernameAndEmail(command);
+
+        //TODO Social Login
+        if (command.isProvider()) {
+
+        }
+        return userRepository.save(mapper.toUser(command)).getId();
     }
+
 
 
     /**
@@ -220,15 +233,32 @@ public class UserService {
         return user;
     }
 
+    @Transactional
+    public Boolean leave(String username, UserLeaveRequest request) {
+        User entity = findUserVerify(username, request);
+        entity.updateUserStateCode(UserState.LEAVE);
+        return true;
+    }
+
     private User findSocialUserByToken(String provider, String token) {
         SocialUserResponse response = getSocialUserInfo(provider, token);
         return findSocialUser(provider, response.getId());
     }
 
-    @Transactional
-    public Boolean leave(String username, UserLeaveRequest request) {
-        User entity = findUserVerify(username, request);
-        entity.updateUserStateCode(UserState.LEAVE);
+    /**
+     * User 단건 조회
+     */
+    private User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    /**
+     * Username And Email 중복확인
+     */
+    private Boolean checkDuplicateUsernameAndEmail(SaveUserCommand command) {
+        if (userRepository.existsByUsername(command.username())) throw new UsernameAlreadyExistsException(command.username());
+        if (userRepository.existsByEmail(command.email())) throw new EmailAlreadyExistsException(command.email());
         return true;
     }
 }

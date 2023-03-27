@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.domain.user.application.dto.request;
+package com.woorinpang.userservice.domain.user.application.dto.command;
 
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.UserState;

@@ -1,17 +1,15 @@
-package com.woorinpang.userservice.domain.user.application.dto.request;
+package com.woorinpang.userservice.domain.user.application.dto.command;
 
 import com.woorinpang.userservice.domain.user.domain.Role;
-import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
-import lombok.Builder;
 
-@Builder
-public record SaveUserCommand(
+public record JoinUserCommand(
         String username,
         String password,
         String email,
         String name,
         Role role,
         UserState userState
+
 ) {
 }

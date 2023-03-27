@@ -2,6 +2,7 @@ package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.application.UserService;
 import com.woorinpang.userservice.domain.user.presentation.user.request.*;
+import com.woorinpang.userservice.domain.user.presentation.user.response.JoinResponse;
 import com.woorinpang.userservice.global.common.json.JsonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,11 @@ public class UserController {
 
     //TODO 회원가입 -> 로그인 필요없음
     @PostMapping("/join")
-    public ResponseEntity<JsonResponse> join(@RequestBody @Valid UserJoinRequest request) {
+    public ResponseEntity<JsonResponse> join(@RequestBody @Valid JoinRequest request) {
+        Long joinedUserId = userService.join(request.toCommand());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(JsonResponse.OK());
+                .body(JsonResponse.CREATED(new JoinResponse(joinedUserId)));
     }
 
     //TODO 내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함

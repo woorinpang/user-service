@@ -1,6 +1,6 @@
 package com.woorinpang.userservice.domain.user.presentation.admin.request;
 
-import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import lombok.AccessLevel;

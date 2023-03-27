@@ -29,7 +29,6 @@ class AdminUserControllerTest extends IntegrationTest {
 
     @Autowired private UserRepository userRepository;
 
-
     @Nested
     @DisplayName("사용자_목록_조회하면_")
     class FindUsers {

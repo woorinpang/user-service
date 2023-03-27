@@ -1,8 +1,8 @@
 package com.woorinpang.userservice.domain.user;
 
 import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
-import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
-import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
