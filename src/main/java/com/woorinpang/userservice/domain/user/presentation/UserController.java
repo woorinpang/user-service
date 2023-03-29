@@ -2,6 +2,8 @@ package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.application.UserService;
 import com.woorinpang.userservice.domain.user.presentation.user.request.*;
+import com.woorinpang.userservice.domain.user.presentation.user.response.UserInfoResponse;
+import com.woorinpang.userservice.domain.user.presentation.user.response.UserJoinResponse;
 import com.woorinpang.userservice.global.common.json.JsonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,27 +21,30 @@ public class UserController {
 
     private final UserService userService;
 
-    //TODO 회원가입 -> 로그인 필요없음
+    //회원가입 -> 로그인 필요없음
     @PostMapping("/join")
-    public ResponseEntity<JsonResponse> join(@RequestBody @Valid UserJoinRequest request) {
+    public ResponseEntity<JsonResponse> userJoin(@RequestBody @Valid UserJoinRequest request) {
+        Long userId = userService.join(request.toCommand());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(JsonResponse.OK());
+                .body(JsonResponse.CREATED(new UserJoinResponse(userId)));
     }
 
-    //TODO 내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함
+    //내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함
     @GetMapping("/{userId}")
-    public ResponseEntity<JsonResponse> Info(@PathVariable("userId") Long userId) {
+    public ResponseEntity<JsonResponse> userInfo(@PathVariable("userId") Long userId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK());
+                .body(JsonResponse.OK(new UserInfoResponse(userService.findInfo(userId))));
     }
 
     //TODO 내 정보 수정
     @PutMapping("/{userId}")
-    public ResponseEntity<JsonResponse> updateInfo(@RequestBody @Valid UserUpdateInfoRequest request) {
+    public ResponseEntity<JsonResponse> userUpdateInfo(@PathVariable("userId") Long userId,
+                                                       @RequestBody @Valid UserUpdateInfoRequest request) {
         //validate
-
+        request.validate();
+        userService.updateInfo(userId, request.toCommand());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(JsonResponse.OK());

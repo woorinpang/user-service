@@ -2,7 +2,7 @@ package com.woorinpang.userservice.domain.user.infrastructure;
 
 import com.woorinpang.userservice.domain.user.UserSetup;
 import com.woorinpang.userservice.domain.user.UserTestConfig;
-import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;

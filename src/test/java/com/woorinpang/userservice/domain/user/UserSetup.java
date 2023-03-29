@@ -1,14 +1,18 @@
 package com.woorinpang.userservice.domain.user;
 
-import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
-import com.woorinpang.userservice.domain.user.application.dto.request.SaveUserCommand;
-import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserJoinCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
+import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserJoinRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -37,13 +41,20 @@ public class UserSetup {
     //ERROR_MESSAGE
     public static final Long USER_NOT_FOUND_ID = 0L;
     public static final String USER_NOT_FOUND_MESSAGE = "UserId=" + USER_NOT_FOUND_ID + "은 존재하지 않습니다.";
+    public static final String USERNAME_ALREADY_EXISTS_MESSAGE = "Username=%s은 이미 존재합니다.";
+    public static final String EMAIL_ALREADY_EXISTS_MESSAGE = "Email=%s은 이미 존재합니다.";
 
-    //REQUEST_URI
-    public static final String API_V1_GET_FIND_USERS = "/api/v1/admin/users";
-    public static final String API_V1_GET_FIND_USER = "/api/v1/admin/users/{userId}";
-    public static final String API_V1_POST_SAVE_USER = "/api/v1/admin/users";
-    public static final String API_V1_PUT_UPDATE_USER = "/api/v1/admin/users/{userId}";
-    public static final String API_V1_DELETE_DELETE_USER = "/api/v1/admin/users/{userId}";
+    //ADMIN_CONTROLLER_REQUEST_URI
+    public static final String API_V1_ADMIN_GET_FIND_USERS = "/api/v1/admin/users";
+    public static final String API_V1_ADMIN_GET_FIND_USER = "/api/v1/admin/users/{userId}";
+    public static final String API_V1_ADMIN_POST_SAVE_USER = "/api/v1/admin/users";
+    public static final String API_V1_ADMIN_PUT_UPDATE_USER = "/api/v1/admin/users/{userId}";
+    public static final String API_V1_ADMIN_DELETE_DELETE_USER = "/api/v1/admin/users/{userId}";
+
+    //USER_CONTROLLER_REQUEST_URI
+    public static final String API_V1_USER_POST_JOIN = "/api/v1/users/join";
+    public static final String API_V1_USER_GET_INFO = "/api/v1/users/{userId}";
+    public static final String API_V1_USER_PUT_UPDATE = "/api/v1/users/{userId}";
 
     public static User getUser() {
         return User.createBuilder()
@@ -108,6 +119,43 @@ public class UserSetup {
                 .collect(Collectors.toList());
     }
 
+    public static SaveUserRequest getSaveUserRequest() {
+        return SaveUserRequest.builder()
+                .username(USERNAME)
+                .password(PASSWORD)
+                .email(EMAIL)
+                .name(NAME)
+                .roleCode(ROLE.getCode())
+                .userStateCode(USER_STATE.getCode())
+                .build();
+    }
+
+    public static UpdateUserRequest getUpdateUserRequest() {
+        return UpdateUserRequest.builder()
+                .password(PASSWORD)
+                .email(UPDATE_EMAIL)
+                .name(UPDATE_NAME)
+                .roleCode(UPDATE_ROLE.getCode())
+                .userStateCode(UPDATE_USER_STATE.getCode())
+                .build();
+    }
+
+    public static UserJoinRequest getUserJoinRequest() {
+        return UserJoinRequest.builder()
+                .username(USERNAME)
+                .password(PASSWORD)
+                .email(EMAIL)
+                .name(NAME)
+                .build();
+    }
+
+    public static UserUpdateInfoRequest getUserUpdateInfoRequest() {
+        return UserUpdateInfoRequest.builder()
+                .name(UPDATE_NAME)
+                .email(UPDATE_EMAIL)
+                .build();
+    }
+
     public static SaveUserCommand getSaveUserCommand() {
         return SaveUserCommand.builder()
                 .username(USERNAME)
@@ -129,24 +177,21 @@ public class UserSetup {
                 .build();
     }
 
-    public static SaveUserRequest getSaveUserRequest() {
-        return SaveUserRequest.builder()
+    public static UserJoinCommand getJoinUserCommand() {
+        return UserJoinCommand.builder()
                 .username(USERNAME)
                 .password(PASSWORD)
                 .email(EMAIL)
                 .name(NAME)
-                .roleCode(ROLE.getCode())
-                .userStateCode(USER_STATE.getCode())
+                .role(ROLE)
+                .userState(USER_STATE)
                 .build();
     }
 
-    public static UpdateUserRequest getUpdateUserRequest() {
-        return UpdateUserRequest.builder()
-                .password(PASSWORD)
-                .email(UPDATE_EMAIL)
+    public static UserUpdateInfoCommand getUserUpdateInfoCommand() {
+        return UserUpdateInfoCommand.builder()
                 .name(UPDATE_NAME)
-                .roleCode(UPDATE_ROLE.getCode())
-                .userStateCode(UPDATE_USER_STATE.getCode())
+                .email(UPDATE_EMAIL)
                 .build();
     }
 }

@@ -29,7 +29,6 @@ class AdminUserControllerTest extends IntegrationTest {
 
     @Autowired private UserRepository userRepository;
 
-
     @Nested
     @DisplayName("사용자_목록_조회하면_")
     class FindUsers {
@@ -43,7 +42,7 @@ class AdminUserControllerTest extends IntegrationTest {
             LinkedMultiValueMap<String, String> params = getParams();
 
             //when
-            ResultActions resultActions = mockMvc.perform(get(API_V1_GET_FIND_USERS)
+            ResultActions resultActions = mockMvc.perform(get(API_V1_ADMIN_GET_FIND_USERS)
                     .queryParams(params));
 
             //then
@@ -148,7 +147,7 @@ class AdminUserControllerTest extends IntegrationTest {
         }
 
         private ResultActions getResultActions(Long userId) throws Exception {
-            return mockMvc.perform(get(API_V1_GET_FIND_USER, userId));
+            return mockMvc.perform(get(API_V1_ADMIN_GET_FIND_USER, userId));
         }
     }
 
@@ -156,7 +155,7 @@ class AdminUserControllerTest extends IntegrationTest {
     @DisplayName("사용자_저장하면_")
     class SaveUser {
         @Test
-        @DisplayName("성공하고 상태코드 201과 savedUserId를 반환한다.")
+        @DisplayName("성공하고 상태코드 201과 userId를 반환한다.")
         void documentTest() throws Exception {
             //given
             SaveUserRequest request = getSaveUserRequest();
@@ -171,7 +170,7 @@ class AdminUserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.timestamp").isNotEmpty())
                     .andExpect(jsonPath("$.message").value(HttpStatus.CREATED.getReasonPhrase()))
                     .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
-                    .andExpect(jsonPath("$.data.savedUserId").isNotEmpty())
+                    .andExpect(jsonPath("$.data.userId").isNotEmpty())
                     .andDo(print())
                     /*.andDo(document("admin-save-user",
                             PayloadDocumentation.requestFields(
@@ -186,7 +185,7 @@ class AdminUserControllerTest extends IntegrationTest {
                                     fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
                                     fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
                                     fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
-                                    fieldWithPath("data.savedUserId").type(JsonFieldType.STRING).description("저장된 사용자 고유 번호")
+                                    fieldWithPath("data.userId를").type(JsonFieldType.STRING).description("저장된 사용자 고유 번호")
                             )
                     ))*/
             ;
@@ -206,7 +205,7 @@ class AdminUserControllerTest extends IntegrationTest {
         }
 
         @Test
-        @DisplayName("성공하고 상태코드 200과 updatedUserId를 반환한다.")
+        @DisplayName("성공하고 상태코드 200과 userId를 반환한다.")
         void updateUser() throws Exception {
             //expected
             getResultActions(user.getId(), request)
@@ -214,7 +213,7 @@ class AdminUserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.timestamp").isNotEmpty())
                     .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                    .andExpect(jsonPath("$.data.updatedUserId").isNotEmpty())
+                    .andExpect(jsonPath("$.data.userId").isNotEmpty())
                     .andDo(print())
                     /*.andDo(document("admin-update-user",
                             PayloadDocumentation.requestFields(
@@ -228,7 +227,7 @@ class AdminUserControllerTest extends IntegrationTest {
                                     fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
                                     fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
                                     fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
-                                    fieldWithPath("data.updatedUserId").type(JsonFieldType.STRING).description("수정된 사용자 고유 번호")
+                                    fieldWithPath("data.userId").type(JsonFieldType.STRING).description("수정된 사용자 고유 번호")
                             )
                     ))*/
             ;
@@ -247,7 +246,7 @@ class AdminUserControllerTest extends IntegrationTest {
         }
 
         private ResultActions getResultActions(Long userId, UpdateUserRequest request) throws Exception {
-            return mockMvc.perform(put(API_V1_PUT_UPDATE_USER, userId)
+            return mockMvc.perform(put(API_V1_ADMIN_PUT_UPDATE_USER, userId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)));
         }
@@ -301,7 +300,7 @@ class AdminUserControllerTest extends IntegrationTest {
         }
 
         private ResultActions getResultActions(Long userId) throws Exception {
-            return mockMvc.perform(delete(API_V1_DELETE_DELETE_USER, userId));
+            return mockMvc.perform(delete(API_V1_ADMIN_DELETE_DELETE_USER, userId));
         }
     }
 }

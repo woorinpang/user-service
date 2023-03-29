@@ -1,20 +1,25 @@
 package com.woorinpang.userservice.domain.user.presentation.user.request;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class UserUpdateInfoRequest extends UserLeaveRequest {
 
-    private String userName;
+    private String name;
     private String email;
 
-    @Builder
-    public UserUpdateInfoRequest(String userName, String email) {
-        this.userName = userName;
-        this.email = email;
+    public void validate() {
+        //validate
+    }
+
+    public UserUpdateInfoCommand toCommand() {
+        return UserUpdateInfoCommand.builder()
+                .name(this.name)
+                .email(this.email)
+                .build();
     }
 }
