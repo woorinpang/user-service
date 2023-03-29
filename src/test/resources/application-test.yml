@@ -14,6 +14,12 @@ spring:
         format_sql: true
         default_batch_fetch_size: 1000
     show-sql: true
+  messages:
+    basename: messages, errors
+  h2:
+    console:
+      enabled: true
+      path: /h2
 
 eureka:
   client:
@@ -25,9 +31,3 @@ token:
   access_expiration_time: 7200000
   refresh_expiration_time: 86400000
   secret-key: 'woorinpang_token_secret'
-
-file:
-  directory: ${app.home:${user.home}}/workspace/github/woorinpang/attach
-  url: http://${file.hostname:localhost}:8080
-messages:
-  directory: ${file.directory}/messages

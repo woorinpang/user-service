@@ -1,6 +1,7 @@
 package com.woorinpang.userservice.domain.user.domain;
 
-import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
 import com.woorinpang.userservice.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,7 +11,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -60,6 +60,9 @@ public class User extends BaseEntity {
     @Column(length = 100)
     private String naverId;
 
+    /**
+     * 사용자 생성
+     */
     @Builder(builderMethodName = "createBuilder")
     public User(String username, String password, String email,
                 String name, Role role, UserState userState,
@@ -76,7 +79,7 @@ public class User extends BaseEntity {
     }
 
     /**
-     * 유저 수정
+     * 사용자 수정
      */
     public void update(UpdateUserCommand command) {
         //새로운 비밀번호가 들어오면 인코드 아니면 기존 비밀번호 업데이트
@@ -85,6 +88,21 @@ public class User extends BaseEntity {
         this.name = command.name();
         this.role = command.role();
         this.userState = command.userState();
+    }
+
+    /**
+     * 사용자 상태 코드 수정
+     */
+    public void updateUserStateCode(UserState userState) {
+        this.userState = userState;
+    }
+
+    /**
+     * 사용자 정보 수정
+     */
+    public void updateInfo(UserUpdateInfoCommand command) {
+        this.name = command.name();
+        this.email = command.email();
     }
 
     /**
@@ -117,21 +135,6 @@ public class User extends BaseEntity {
     public void failLogin() {
         this.loginFailCount++;
         if (this.loginFailCount >= 5) this.userState = UserState.HALT;
-    }
-
-    /**
-     * 사용자 정보 수정
-     */
-    public void updateInfo(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
-
-    /**
-     * 사용자 상태 코드 수정
-     */
-    public void updateUserStateCode(UserState userState) {
-        this.userState = userState;
     }
 
     /**

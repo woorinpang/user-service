@@ -2,7 +2,7 @@ package com.woorinpang.userservice.domain.user.presentation.admin.request;
 
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.UserState;
-import com.woorinpang.userservice.domain.user.application.dto.request.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import lombok.*;
 
 @Getter

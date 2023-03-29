@@ -7,6 +7,6 @@ public interface GlobalConstant {
     final String REFRESH_TOKEN_URI = "/api/v1/users/token/refresh";
     final String MESSAGES_URI = "/api/v1/messages/**";
     final String LOGIN_URI = "/login";
-    final String[] SECURITY_PERMITAIL_ANTPATTERNS = {"/api/v1/users", AUTHORIZATION_URI, REFRESH_TOKEN_URI, MESSAGES_URI, LOGIN_URI, "/actuator/**", "/v3/api-docs/**", "/api/v1/images/**", "/swagger-ui.html"};
+    final String[] SECURITY_PERMITAIL_ANTPATTERNS = {"/api/v1/admin/users/**", "/api/v1/users/**", AUTHORIZATION_URI, REFRESH_TOKEN_URI, MESSAGES_URI, LOGIN_URI, "/actuator/**", "/v3/api-docs/**", "/api/v1/images/**"};
     final String USER_SERVICE_URI = "/user-service";
 }

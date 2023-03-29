@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.application.UserService;
-import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.response.FindUserResponse;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -51,26 +50,26 @@ public class AdminUserController {
      * 사용자 저장
      */
     @PostMapping
-    public ResponseEntity<SaveUserResponse> saveUser(@RequestBody @Valid SaveUserRequest request) {
+    public ResponseEntity<JsonResponse> saveUser(@RequestBody @Valid SaveUserRequest request) {
         //validate
         request.validate();
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new SaveUserResponse(userService.saveUser(request.toCommand())));
+                .body(JsonResponse.CREATED(new SaveUserResponse(userService.saveUser(request.toCommand()))));
     }
 
     /**
      * 사용자 수정
      */
     @PutMapping("/{userId}")
-    public ResponseEntity<UpdateUserResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody @Validated UpdateUserRequest request) {
+    public ResponseEntity<JsonResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody @Valid UpdateUserRequest request) {
         //validate
         userService.updateUser(userId, request.toCommand());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new UpdateUserResponse(userService.findUser(userId).getId()));
+                .body(JsonResponse.OK(new UpdateUserResponse(userService.findUser(userId).getId())));
     }
 
     /**
