@@ -7,5 +7,5 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UserJoinResponse {
-    private Long joinedUserId;
+    private Long userId;
 }

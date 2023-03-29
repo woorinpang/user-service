@@ -1,7 +1,7 @@
 package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.application.UserService;
-import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.response.FindUserResponse;

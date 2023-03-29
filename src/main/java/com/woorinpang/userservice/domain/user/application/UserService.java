@@ -1,7 +1,9 @@
 package com.woorinpang.userservice.domain.user.application;
 
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
-import com.woorinpang.userservice.domain.user.application.dto.condition.UserSearchCondition;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserJoinCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
 import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.User;
@@ -14,7 +16,6 @@ import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 import com.woorinpang.userservice.domain.user.presentation.request.SocialUserResponse;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserLeaveRequest;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
 import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,38 +45,40 @@ public class UserService {
     private final UserCommandMapper mapper;
 
     /**
-     * 유저 목록을 조회하여 페이지와 함께 반환한다.
+     * 사용자 목록조회
      */
     public Page<FindPageUserDto> findUsers(UserSearchCondition condition, Pageable pageable) {
         return userQueryRepository.findPageUsers(condition, pageable);
     }
 
     /**
-     * 유저 단건 조회하여 반환한다.
+     * 사용자 단건조회
      */
     public User findUser(Long userId) {
         return this.findById(userId);
     }
 
     /**
-     * 사용자 정보를 받아 저장한다
+     * 사용자 저장
      */
     @Transactional
     public Long saveUser(SaveUserCommand command) {
-        checkDuplicateUsernameAndEmail(command);
+        checkDuplicateUsername(command.username());
+        checkDuplicateEmail(command.email());
         return userRepository.save(mapper.toUser(command)).getId();
     }
 
     /**
-     * 사용자 정보를 받아 수정한다.
+     * 사용자 수정
      */
     @Transactional
     public void updateUser(Long userId, UpdateUserCommand command) {
+        checkDuplicateEmail(command.email());
         this.findById(userId).update(command);
     }
 
     /**
-     * 사용자를 userState 를 DELETE 로 업데이트한다.
+     * 사용자 삭제
      */
     @Transactional
     public void deleteUser(Long userId) {
@@ -87,8 +90,10 @@ public class UserService {
      * 사용자 회원가입
      */
     @Transactional
-    public Long join(SaveUserCommand command) {
-        checkDuplicateUsernameAndEmail(command);
+    public Long join(UserJoinCommand command) {
+        checkDuplicateUsername(command.username());
+        checkDuplicateEmail(command.email());
+
         //TODO Social Login
         if (command.isProvider()) {
 
@@ -99,10 +104,18 @@ public class UserService {
     /**
      * 사용자 정보 조회
      */
-    public User findUserInfo(Long userId) {
-        return this.findUser(userId);
+    public User findInfo(Long userId) {
+        return this.findById(userId);
     }
 
+    /**
+     * 사용자 정보 수정
+     */
+    @Transactional
+    public void updateInfo(Long userId, UserUpdateInfoCommand command) {
+        checkDuplicateEmail(command.email());
+        this.findById(userId).updateInfo(command);
+    }
 
     /**
      * 로그인아이디로 사용자를 찾아 반환한다.
@@ -204,17 +217,6 @@ public class UserService {
         return entity;
     }
 
-    /**
-     * 사용자 정보 수정
-     */
-    @Transactional
-    public String updateInfo(String username, UserUpdateInfoRequest request) {
-        User user = findUserVerify(username, request);
-
-        user.updateInfo(request.getUserName(), request.getEmail());
-        return user.getUsername();
-    }
-
     public User findUserVerify(String username, UserLeaveRequest request) {
         if (!hasText(username)) {
             throw new BusinessMessageException("에러");
@@ -261,10 +263,12 @@ public class UserService {
     /**
      * Username And Email 중복확인
      */
-    private void checkDuplicateUsernameAndEmail(SaveUserCommand command) {
-        if (userRepository.existsByUsername(command.username())) throw new UsernameAlreadyExistsException(command.username());
-        if (userRepository.existsByEmail(command.email())) throw new EmailAlreadyExistsException(command.email());
+    private void checkDuplicateUsername(String username) {
+        if (userRepository.existsByUsername(username)) throw new UsernameAlreadyExistsException(username);
     }
 
+    private void checkDuplicateEmail(String email) {
+        if (userRepository.existsByEmail(email)) throw new EmailAlreadyExistsException(email);
+    }
 
 }

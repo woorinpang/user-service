@@ -1,6 +1,7 @@
 package com.woorinpang.userservice.domain.user.presentation.user.request;
 
 import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserJoinCommand;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import jakarta.validation.constraints.Email;
@@ -23,8 +24,8 @@ public class UserJoinRequest {
     private String provider;
     private String token;
 
-    public SaveUserCommand toCommand() {
-        return SaveUserCommand.builder()
+    public UserJoinCommand toCommand() {
+        return UserJoinCommand.builder()
                 .username(this.username)
                 .password(this.password)
                 .email(this.email)

@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.global.exception;
+package com.woorinpang.userservice.global.exception.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

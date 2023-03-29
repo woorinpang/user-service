@@ -24,25 +24,27 @@ public class UserController {
     //회원가입 -> 로그인 필요없음
     @PostMapping("/join")
     public ResponseEntity<JsonResponse> userJoin(@RequestBody @Valid UserJoinRequest request) {
-        Long joinedUserId = userService.join(request.toCommand());
+        Long userId = userService.join(request.toCommand());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(JsonResponse.CREATED(new UserJoinResponse(joinedUserId)));
+                .body(JsonResponse.CREATED(new UserJoinResponse(userId)));
     }
 
-    //TODO 내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함
+    //내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함
     @GetMapping("/{userId}")
     public ResponseEntity<JsonResponse> userInfo(@PathVariable("userId") Long userId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK(new UserInfoResponse(userService.findUserInfo(userId))));
+                .body(JsonResponse.OK(new UserInfoResponse(userService.findInfo(userId))));
     }
 
     //TODO 내 정보 수정
     @PutMapping("/{userId}")
-    public ResponseEntity<JsonResponse> updateInfo(@RequestBody @Valid UserUpdateInfoRequest request) {
+    public ResponseEntity<JsonResponse> userUpdateInfo(@PathVariable("userId") Long userId,
+                                                       @RequestBody @Valid UserUpdateInfoRequest request) {
         //validate
-
+        request.validate();
+        userService.updateInfo(userId, request.toCommand());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(JsonResponse.OK());

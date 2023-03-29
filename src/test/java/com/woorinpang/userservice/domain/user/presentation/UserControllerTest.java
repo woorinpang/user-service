@@ -2,6 +2,7 @@ package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserJoinRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
 import com.woorinpang.userservice.test.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,15 +30,10 @@ class UserControllerTest extends IntegrationTest {
         @DisplayName("성공하고 상태코드 201과 joinedUserId 를 반환한다.")
         void documentTest() throws Exception {
             //given
-            UserJoinRequest request = UserJoinRequest.builder()
-                    .username(USERNAME)
-                    .password(PASSWORD)
-                    .email(EMAIL)
-                    .name(NAME)
-                    .build();
+            UserJoinRequest request = getUserJoinRequest();
 
             //expected
-            mockMvc.perform(post(API_V1_POST_JOIN)
+            mockMvc.perform(post(API_V1_USER_POST_JOIN)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isCreated())
@@ -45,7 +41,7 @@ class UserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.message").value(HttpStatus.CREATED.getReasonPhrase()))
                     .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
                     .andExpect(jsonPath("$.code").value("SUCCESS"))
-                    .andExpect(jsonPath("$.data.joinedUserId").isNumber())
+                    .andExpect(jsonPath("$.data.userId").isNumber())
                     /*.andDo(document("user-join",
                             requestFields(
                                     fieldWithPath("username").type(JsonFieldType.STRING).description("사용자 아이디"),
@@ -58,7 +54,7 @@ class UserControllerTest extends IntegrationTest {
                                     fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
                                     fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
                                     fieldWithPath("code").type(JsonFieldType.STRING).description("코드"),
-                                    fieldWithPath("data.joinedUserId").type(JsonFieldType.NUMBER).description("회원가입된 유저 고유 번호")
+                                    fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("회원가입된 유저 고유 번호")
                             )
                     ))*/
             ;
@@ -76,7 +72,7 @@ class UserControllerTest extends IntegrationTest {
             em.persist(user);
 
             //expected
-            mockMvc.perform(get(API_V1_GET_INFO, user.getId()))
+            mockMvc.perform(get(API_V1_USER_GET_INFO, user.getId()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.timestamp").isNotEmpty())
                     .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
@@ -88,7 +84,7 @@ class UserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.data.name").value(NAME))
                     .andExpect(jsonPath("$.data.roleCode").value(ROLE.getCode()))
                     .andExpect(jsonPath("$.data.userStateCode").value(USER_STATE.getCode()))
-                    .andDo(document("user-info",
+                    /*.andDo(document("user-info",
                             pathParameters(
                                     parameterWithName("userId").description("사용자 고유번호")
                             ),
@@ -104,7 +100,45 @@ class UserControllerTest extends IntegrationTest {
                                     fieldWithPath("data.roleCode").type(JsonFieldType.STRING).description("권한 코드"),
                                     fieldWithPath("data.userStateCode").type(JsonFieldType.STRING).description("사용자 상태 코드")
                             )
-                    ))
+                    ))*/
+            ;
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자_정보수정하면_")
+    class UserUpdateInfo {
+        @Test
+        @DisplayName("성공하고 상태코드 200을 반환한다.")
+        void documentTest() throws Exception {
+            //given
+            User user = getUser();
+            em.persist(user);
+
+            UserUpdateInfoRequest request = getUserUpdateInfoRequest();
+
+            //expected
+            mockMvc.perform(put(API_V1_USER_PUT_UPDATE, user.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                    .andExpect(jsonPath("$.code").value("SUCCESS"))
+                    .andExpect(jsonPath("$.data").isEmpty())
+                    /*.andDo(document("user-update-info",
+                            pathParameters(
+                                    parameterWithName("userId").description("사용자 고유번호")
+                            ),
+                            responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
+                                    fieldWithPath("code").type(JsonFieldType.STRING).description("코드"),
+                                    fieldWithPath("data").ignored()
+                            )
+                    ))*/
             ;
         }
     }

@@ -36,7 +36,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 @Transactional
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public abstract class IntegrationTest {
-
     @PersistenceContext protected EntityManager em;
     @Autowired protected MockMvc mockMvc;
     @Autowired protected ObjectMapper objectMapper;
@@ -52,11 +51,4 @@ public abstract class IntegrationTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
     }
-
-//    @BeforeEach
-//    void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-//        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-//                .apply(documentationConfiguration(restDocumentation))
-//                .build();
-//    }
 }
