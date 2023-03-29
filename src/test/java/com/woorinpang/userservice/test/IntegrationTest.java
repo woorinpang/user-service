@@ -35,17 +35,20 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 @ActiveProfiles(profiles = "test")
 @Transactional
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class IntegrationTest {
+public abstract class IntegrationTest {
 
     @PersistenceContext protected EntityManager em;
     @Autowired protected MockMvc mockMvc;
     @Autowired protected ObjectMapper objectMapper;
-    @Autowired private WebApplicationContext context;
+    @Autowired protected RestDocumentationResultHandler restDocumentationResultHandler;
 
     @BeforeEach
-    void init() {
+    void init(final WebApplicationContext context, final RestDocumentationContextProvider provider) {
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(new CharacterEncodingFilter("UTF-8"))
+                .apply(documentationConfiguration(provider))
+                .alwaysDo(MockMvcResultHandlers.print())
+//                .alwaysDo(restDocumentationResultHandler)
+                .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
     }

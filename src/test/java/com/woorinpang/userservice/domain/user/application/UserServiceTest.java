@@ -266,6 +266,44 @@ class UserServiceTest extends UnitTest {
         }
     }
 
+    @Nested
+    @DisplayName("사용자_정보조회하면_")
+    class FindUserInfo {
+        @Test
+        @DisplayName("1건 조회된다.")
+        void test01() {
+            //given
+            User user = getUser();
+            given_optional_of_nullable_user(user);
+
+            //when
+            User findUser = userService.findUserInfo(USER_ID);
+
+            //then
+            assertThat(findUser.getUsername()).isEqualTo(USERNAME);
+            assertThat(findUser.getPassword()).isNotEqualTo(PASSWORD);
+            assertThat(findUser.getEmail()).isEqualTo(EMAIL);
+            assertThat(findUser.getName()).isEqualTo(NAME);
+            assertThat(findUser.getRole()).isEqualTo(ROLE);
+            assertThat(findUser.getUserState()).isEqualTo(USER_STATE);
+
+            //verify
+            verify(userRepository, times(1)).findById(any(Long.class));
+        }
+
+        @Test
+        @DisplayName("userId = 0L 으로 조회실패하고 UserNotFoundException 이 발생한다.")
+        void test02() {
+            //given
+            given_user_not_found_exception();
+
+            //expected
+            assertThatThrownBy(() -> userService.findUserInfo(USER_NOT_FOUND_ID))
+                    .isInstanceOf(UserNotFoundException.class)
+                    .hasMessage(USER_NOT_FOUND_MESSAGE);
+        }
+    }
+
     private void given_optional_of_nullable_user(User user) {
         given(userRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(user));
     }

@@ -38,12 +38,16 @@ public class UserSetup {
     public static final Long USER_NOT_FOUND_ID = 0L;
     public static final String USER_NOT_FOUND_MESSAGE = "UserId=" + USER_NOT_FOUND_ID + "은 존재하지 않습니다.";
 
-    //REQUEST_URI
-    public static final String API_V1_GET_FIND_USERS = "/api/v1/admin/users";
-    public static final String API_V1_GET_FIND_USER = "/api/v1/admin/users/{userId}";
-    public static final String API_V1_POST_SAVE_USER = "/api/v1/admin/users";
-    public static final String API_V1_PUT_UPDATE_USER = "/api/v1/admin/users/{userId}";
-    public static final String API_V1_DELETE_DELETE_USER = "/api/v1/admin/users/{userId}";
+    //ADMIN_CONTROLLER_REQUEST_URI
+    public static final String API_V1_ADMIN_GET_FIND_USERS = "/api/v1/admin/users";
+    public static final String API_V1_ADMIN_GET_FIND_USER = "/api/v1/admin/users/{userId}";
+    public static final String API_V1_ADMIN_POST_SAVE_USER = "/api/v1/admin/users";
+    public static final String API_V1_ADMIN_PUT_UPDATE_USER = "/api/v1/admin/users/{userId}";
+    public static final String API_V1_ADMIN_DELETE_DELETE_USER = "/api/v1/admin/users/{userId}";
+
+    //USER_CONTROLLER_REQUEST_URI
+    public static final String API_V1_POST_JOIN = "/api/v1/users/join";
+    public static final String API_V1_GET_INFO = "/api/v1/users/{userId}";
 
     public static User getUser() {
         return User.createBuilder()

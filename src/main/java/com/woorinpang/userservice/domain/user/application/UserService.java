@@ -96,6 +96,12 @@ public class UserService {
         return userRepository.save(mapper.toUser(command)).getId();
     }
 
+    /**
+     * 사용자 정보 조회
+     */
+    public User findUserInfo(Long userId) {
+        return this.findUser(userId);
+    }
 
 
     /**
@@ -259,4 +265,6 @@ public class UserService {
         if (userRepository.existsByUsername(command.username())) throw new UsernameAlreadyExistsException(command.username());
         if (userRepository.existsByEmail(command.email())) throw new EmailAlreadyExistsException(command.email());
     }
+
+
 }

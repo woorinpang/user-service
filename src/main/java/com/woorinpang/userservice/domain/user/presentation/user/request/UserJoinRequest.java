@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class JoinRequest {
+public class UserJoinRequest {
 
     private String username;
     // (숫자)(영문)(특수문자)(공백제거)(자리수)

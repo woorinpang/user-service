@@ -2,7 +2,8 @@ package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.application.UserService;
 import com.woorinpang.userservice.domain.user.presentation.user.request.*;
-import com.woorinpang.userservice.domain.user.presentation.user.response.JoinResponse;
+import com.woorinpang.userservice.domain.user.presentation.user.response.UserInfoResponse;
+import com.woorinpang.userservice.domain.user.presentation.user.response.UserJoinResponse;
 import com.woorinpang.userservice.global.common.json.JsonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,21 +21,21 @@ public class UserController {
 
     private final UserService userService;
 
-    //TODO 회원가입 -> 로그인 필요없음
+    //회원가입 -> 로그인 필요없음
     @PostMapping("/join")
-    public ResponseEntity<JsonResponse> join(@RequestBody @Valid JoinRequest request) {
+    public ResponseEntity<JsonResponse> userJoin(@RequestBody @Valid UserJoinRequest request) {
         Long joinedUserId = userService.join(request.toCommand());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(JsonResponse.CREATED(new JoinResponse(joinedUserId)));
+                .body(JsonResponse.CREATED(new UserJoinResponse(joinedUserId)));
     }
 
     //TODO 내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함
     @GetMapping("/{userId}")
-    public ResponseEntity<JsonResponse> Info(@PathVariable("userId") Long userId) {
+    public ResponseEntity<JsonResponse> userInfo(@PathVariable("userId") Long userId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK());
+                .body(JsonResponse.OK(new UserInfoResponse(userService.findUserInfo(userId))));
     }
 
     //TODO 내 정보 수정

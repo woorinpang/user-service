@@ -6,6 +6,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class JoinResponse {
+public class UserJoinResponse {
     private Long joinedUserId;
 }

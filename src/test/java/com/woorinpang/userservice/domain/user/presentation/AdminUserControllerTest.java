@@ -42,7 +42,7 @@ class AdminUserControllerTest extends IntegrationTest {
             LinkedMultiValueMap<String, String> params = getParams();
 
             //when
-            ResultActions resultActions = mockMvc.perform(get(API_V1_GET_FIND_USERS)
+            ResultActions resultActions = mockMvc.perform(get(API_V1_ADMIN_GET_FIND_USERS)
                     .queryParams(params));
 
             //then
@@ -147,7 +147,7 @@ class AdminUserControllerTest extends IntegrationTest {
         }
 
         private ResultActions getResultActions(Long userId) throws Exception {
-            return mockMvc.perform(get(API_V1_GET_FIND_USER, userId));
+            return mockMvc.perform(get(API_V1_ADMIN_GET_FIND_USER, userId));
         }
     }
 
@@ -246,7 +246,7 @@ class AdminUserControllerTest extends IntegrationTest {
         }
 
         private ResultActions getResultActions(Long userId, UpdateUserRequest request) throws Exception {
-            return mockMvc.perform(put(API_V1_PUT_UPDATE_USER, userId)
+            return mockMvc.perform(put(API_V1_ADMIN_PUT_UPDATE_USER, userId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)));
         }
@@ -300,7 +300,7 @@ class AdminUserControllerTest extends IntegrationTest {
         }
 
         private ResultActions getResultActions(Long userId) throws Exception {
-            return mockMvc.perform(delete(API_V1_DELETE_DELETE_USER, userId));
+            return mockMvc.perform(delete(API_V1_ADMIN_DELETE_DELETE_USER, userId));
         }
     }
 }
