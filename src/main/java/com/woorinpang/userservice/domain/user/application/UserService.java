@@ -89,7 +89,6 @@ public class UserService {
     @Transactional
     public Long join(SaveUserCommand command) {
         checkDuplicateUsernameAndEmail(command);
-
         //TODO Social Login
         if (command.isProvider()) {
 
@@ -256,9 +255,8 @@ public class UserService {
     /**
      * Username And Email 중복확인
      */
-    private Boolean checkDuplicateUsernameAndEmail(SaveUserCommand command) {
+    private void checkDuplicateUsernameAndEmail(SaveUserCommand command) {
         if (userRepository.existsByUsername(command.username())) throw new UsernameAlreadyExistsException(command.username());
         if (userRepository.existsByEmail(command.email())) throw new EmailAlreadyExistsException(command.email());
-        return true;
     }
 }

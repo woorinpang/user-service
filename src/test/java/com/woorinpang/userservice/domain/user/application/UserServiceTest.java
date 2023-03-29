@@ -219,8 +219,53 @@ class UserServiceTest extends UnitTest {
                     .isInstanceOf(UserNotFoundException.class)
                     .hasMessage(USER_NOT_FOUND_MESSAGE);
         }
-
     }
+
+    @Nested
+    @DisplayName("사용자 회원가입하면_")
+    class Join {
+        @Test
+        @DisplayName("SaveUserCommand 객체를 받아 저장한다.")
+        void test01() {
+            //given
+            User user = getUser();
+            given(userRepository.save(any(User.class))).willReturn(user);
+            given(userCommandMapper.toUser(any(SaveUserCommand.class))).willReturn(user);
+            SaveUserCommand command = getSaveUserCommand();
+
+            //when
+            Long joinedUserId = userService.join(command);
+
+            //then
+
+            //verify
+            verify(userRepository, times(1)).save(any(User.class));
+        }
+
+        @Test
+        @DisplayName("Username 중복시 UsernameAlreadyExistsException 이 발생한다")
+        void test02() {
+            //given
+            given_username_already_exists_exception();
+
+            //expected
+            assertThatThrownBy(() -> userService.join(getSaveUserCommand()))
+                    .isInstanceOf(UsernameAlreadyExistsException.class)
+                    .hasMessage("Username=%s은 이미 존재합니다.".formatted(USERNAME));
+        }
+
+        @Test @DisplayName("Email 중복시 EmailAlreadyExistsException 이 발생한다")
+        void test03() {
+            //given
+            given_email_already_exists_exception();
+
+            //expected
+            assertThatThrownBy(() -> userService.join(getSaveUserCommand()))
+                    .isInstanceOf(EmailAlreadyExistsException.class)
+                    .hasMessage("Email=%s은 이미 존재합니다.".formatted(EMAIL));
+        }
+    }
+
     private void given_optional_of_nullable_user(User user) {
         given(userRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(user));
     }
