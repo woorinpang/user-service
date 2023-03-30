@@ -3,6 +3,7 @@ package com.woorinpang.userservice.domain.user.application;
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
 import com.woorinpang.userservice.domain.user.application.dto.command.UserJoinCommand;
 import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
+import com.woorinpang.userservice.domain.user.exception.PasswordNotMatchException;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
 import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
@@ -24,6 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -31,16 +34,16 @@ import static com.woorinpang.userservice.domain.user.UserSetup.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @DisplayName("UserService 단위 테스트")
 class UserServiceTest extends UnitTest {
 
-    @InjectMocks protected UserService userService;
-    @Mock protected UserQueryRepository userQueryRepository;
-    @Mock protected UserRepository userRepository;
-    @Mock protected UserCommandMapper userCommandMapper;
+    @InjectMocks private UserService userService;
+    @Mock private UserQueryRepository userQueryRepository;
+    @Mock private UserRepository userRepository;
+    @Mock private UserCommandMapper userCommandMapper;
+    @Mock private BCryptPasswordEncoder passwordEncoder;
 
     @Nested
     @DisplayName("사용자_목록_조회하면_")
@@ -365,7 +368,63 @@ class UserServiceTest extends UnitTest {
         }
     }
 
+    @Nested
+    @DisplayName("사용자_비밀번호_확인하면")
+    class MatchPassword {
+        @Test
+        @DisplayName("비밀번호가 일치하여 true를 반환한다.")
+        void test01() {
+            //given
+            User user = getUser();
+            given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+            given(passwordEncoder.matches(any(String.class), any(String.class))).willReturn(Boolean.TRUE);
 
+            String password = PASSWORD;
+
+            //when
+            Boolean aBoolean = userService.matchPassword(USERNAME, password);
+
+            //then
+            assertThat(aBoolean).isTrue();
+
+            //verify
+            verify(userRepository, times(1)).findByUsername(any(String.class));
+            verify(passwordEncoder, times(1)).matches(any(String.class), any(String.class));
+        }
+
+        @Test
+        @DisplayName("비밀번호가 불일치하여 false를 반환한다.")
+        void test02() {
+            //given
+            User user = getUser();
+            given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+            given(passwordEncoder.matches(any(String.class), any(String.class))).willReturn(Boolean.FALSE);
+
+            String notMatchPassword = PASSWORD + "wrong";
+
+            //when
+            Boolean aBoolean = userService.matchPassword(USERNAME, notMatchPassword);
+
+            //then
+            assertThat(aBoolean).isFalse();
+
+            //verify
+            verify(userRepository, times(1)).findByUsername(any(String.class));
+            verify(passwordEncoder, times(1)).matches(any(String.class), any(String.class));
+        }
+
+        @Test
+        @DisplayName("username = taewoong 으로 조회실패하고 UserNotFoundException 이 발생한다.")
+        void test03() {
+            //given
+            given_user_not_found_exception();
+
+            //expected
+            assertThatThrownBy(() -> userService.matchPassword(USERNAME_NOT_FOUND, PASSWORD))
+                    .isInstanceOf(UsernameNotFoundException.class)
+                    .hasMessage(USERNAME_NOT_FOUND_MESSAGE.formatted(USERNAME_NOT_FOUND));
+        }
+    }
 
     private void given_optional_of_nullable_user(User user) {
         given(userRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(user));

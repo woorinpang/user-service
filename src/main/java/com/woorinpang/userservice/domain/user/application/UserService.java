@@ -3,6 +3,7 @@ package com.woorinpang.userservice.domain.user.application;
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
 import com.woorinpang.userservice.domain.user.application.dto.command.UserJoinCommand;
 import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
+import com.woorinpang.userservice.domain.user.exception.PasswordNotMatchException;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
 import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
@@ -118,12 +119,20 @@ public class UserService {
     }
 
     /**
-     * 로그인아이디로 사용자를 찾아 반환한다.
+     * 사용자 비밀번호 확인
      */
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("없음"));
+    public Boolean matchPassword(String username, String password) {
+        try {
+            this.findUserVerifyPassword(username, password);
+        } catch (PasswordNotMatchException e) {
+            log.error(e.getMessage());
+            return false;
+        }
+        return true;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     /**
      * 모든 사용자를 생성일 역순으로 정렬 조회하여 반환한다.
@@ -209,13 +218,6 @@ public class UserService {
 
 
 
-    public User findUserVerifyPassword(String username, String password) {
-        User entity = this.findByUsername(username);
-        if (!passwordEncoder.matches(password, entity.getPassword())) {
-            throw new BusinessMessageException("틀려");
-        }
-        return entity;
-    }
 
     public User findUserVerify(String username, UserLeaveRequest request) {
         if (!hasText(username)) {
@@ -261,14 +263,35 @@ public class UserService {
     }
 
     /**
-     * Username And Email 중복확인
+     * Username 중복확인
      */
     private void checkDuplicateUsername(String username) {
         if (userRepository.existsByUsername(username)) throw new UsernameAlreadyExistsException(username);
     }
 
+    /**
+     * Email 중복확인
+     */
     private void checkDuplicateEmail(String email) {
         if (userRepository.existsByEmail(email)) throw new EmailAlreadyExistsException(email);
     }
 
+    /**
+     * 사용자 조회, 비밀번호 검증
+     */
+    private User findUserVerifyPassword(String username, String password) {
+        User findUser = this.findByUsername(username);
+        if (!passwordEncoder.matches(password, findUser.getPassword())) {
+            throw new PasswordNotMatchException();
+        }
+        return findUser;
+    }
+
+    /**
+     * 로그인아이디로 사용자를 찾아 반환한다.
+     */
+    private User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username=%s은 존재하지 않는 사용자입니다.".formatted(username)));
+    }
 }

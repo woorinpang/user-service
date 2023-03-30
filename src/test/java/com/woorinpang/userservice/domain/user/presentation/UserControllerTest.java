@@ -2,8 +2,10 @@ package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserJoinRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserMatchPasswordRequest;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
 import com.woorinpang.userservice.test.IntegrationTest;
+import com.woorinpang.userservice.test.WithMockCustomUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.RequestDocumentation;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static com.woorinpang.userservice.domain.user.UserSetup.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -137,6 +140,42 @@ class UserControllerTest extends IntegrationTest {
                                     fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
                                     fieldWithPath("code").type(JsonFieldType.STRING).description("코드"),
                                     fieldWithPath("data").ignored()
+                            )
+                    ))*/
+            ;
+        }
+    }
+
+    @Nested
+    @DisplayName("내_비밀번호확인하면_")
+    class UserMatchPassword {
+        @Test
+        @DisplayName("일치하고 상태코드 200과 true를 반환한다.")
+        @WithMockCustomUser(username = USERNAME, password = PASSWORD)
+        void documentTest() throws Exception {
+            //given
+            User user = getUser();
+            em.persist(user);
+
+            UserMatchPasswordRequest request = getUserMatchPasswordRequest();
+
+            //expected
+            mockMvc.perform(post(API_V1_USER_MATCH_PASSWORD)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                    .andExpect(jsonPath("$.code").value("SUCCESS"))
+                    .andExpect(jsonPath("$.data").value(Boolean.TRUE))
+                    /*.andDo(document("user-match-password",
+                            responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
+                                    fieldWithPath("code").type(JsonFieldType.STRING).description("코드"),
+                                    fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
                             )
                     ))*/
             ;
