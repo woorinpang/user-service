@@ -77,9 +77,11 @@ public class UserController {
                 .body(JsonResponse.OK(userService.existsUsername(request.getUsername())));
     }
 
-    //TODO 회원탈퇴
+    //TODO 사용자 회원탈퇴
     @PostMapping("/leave")
     public Boolean leave(@RequestBody @Valid UserLeaveRequest request) {
+        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.leave(username, request);
 
         return null;
     }

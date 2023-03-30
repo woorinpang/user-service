@@ -138,6 +138,16 @@ public class UserService {
         return userRepository.findByUsername(username).isPresent();
     }
 
+    /**
+     * 사용자 회원탈퇴
+     */
+    @Transactional
+    public Boolean leave(String username, UserLeaveRequest request) {
+        User entity = findUserVerify(username, request);
+        entity.updateUserStateCode(UserState.LEAVE);
+        return true;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -249,12 +259,7 @@ public class UserService {
         return user;
     }
 
-    @Transactional
-    public Boolean leave(String username, UserLeaveRequest request) {
-        User entity = findUserVerify(username, request);
-        entity.updateUserStateCode(UserState.LEAVE);
-        return true;
-    }
+
 
     private User findSocialUserByToken(String provider, String token) {
         SocialUserResponse response = getSocialUserInfo(provider, token);
