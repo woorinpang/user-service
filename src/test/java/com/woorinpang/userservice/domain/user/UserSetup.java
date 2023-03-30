@@ -11,6 +11,7 @@ import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserExistsUsernameRequest;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserJoinRequest;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserMatchPasswordRequest;
 import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
@@ -61,6 +62,7 @@ public class UserSetup {
     public static final String API_V1_USER_GET_INFO = "/api/v1/users/{userId}";
     public static final String API_V1_USER_PUT_UPDATE = "/api/v1/users/{userId}";
     public static final String API_V1_USER_MATCH_PASSWORD = "/api/v1/users/password/match";
+    public static final String API_V1_USER_EXISTS_USERNAME = "/api/v1/users/username/exists";
 
     public static User getUser() {
         return User.createBuilder()
@@ -165,6 +167,12 @@ public class UserSetup {
     public static UserMatchPasswordRequest getUserMatchPasswordRequest() {
         return UserMatchPasswordRequest.builder()
                 .password(PASSWORD)
+                .build();
+    }
+
+    public static UserExistsUsernameRequest getUserExistsUsernameRequest() {
+        return UserExistsUsernameRequest.builder()
+                .username(USERNAME)
                 .build();
     }
 

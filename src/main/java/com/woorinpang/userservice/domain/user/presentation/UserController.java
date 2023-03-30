@@ -60,25 +60,21 @@ public class UserController {
      * 내 비밀번호 확인
      */
     @PostMapping("/password/match")
-    public ResponseEntity<JsonResponse> userMatchPassword(@RequestBody @Valid UserMatchPasswordRequest request) {
+    public ResponseEntity<JsonResponse> matchPassword(@RequestBody @Valid UserMatchPasswordRequest request) {
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(JsonResponse.OK(userService.matchPassword(username, request.getPassword())));
     }
 
-    //TODO 아이디 중복확인(username) - 로그인 없이
+    /**
+     * 아이디 중복확인(username) - 로그인 없이
+     */
     @PostMapping("/username/exists")
-    public Boolean existsUsername(@RequestBody @Valid UserExistsUsernameRequest request) {
-
-        return null;
-    }
-
-    //TODO 이메일 중복확인(email) - 로그인 없이
-    @PostMapping("/email/exists")
-    public Boolean existsEmail(@RequestBody @Valid UserExistsEmailRequest request) {
-
-        return null;
+    public ResponseEntity<JsonResponse> existsUsername(@RequestBody @Valid UserExistsUsernameRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(JsonResponse.OK(userService.existsUsername(request.getUsername())));
     }
 
     //TODO 회원탈퇴

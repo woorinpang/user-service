@@ -125,10 +125,17 @@ public class UserService {
         try {
             this.findUserVerifyPassword(username, password);
         } catch (PasswordNotMatchException e) {
-            log.error(e.getMessage());
+            log.error("error message = {}", e);
             return false;
         }
         return true;
+    }
+
+    /**
+     * 사용자 아이디 중복확인
+     */
+    public Boolean existsUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -294,4 +301,6 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username=%s은 존재하지 않는 사용자입니다.".formatted(username)));
     }
+
+
 }

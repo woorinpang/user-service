@@ -426,6 +426,44 @@ class UserServiceTest extends UnitTest {
         }
     }
 
+    @Nested
+    @DisplayName("사용자_아이디_중복체크하면_")
+    class ExistsUsername {
+        @Test
+        @DisplayName("중복된 아이디가 있고 true를 반환한다.")
+        void test01() {
+            //given
+            User user = getUser();
+            given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+
+            //when
+            Boolean aBoolean = userService.existsUsername(USERNAME);
+
+            //then
+            assertThat(aBoolean).isTrue();
+
+            //verify
+            verify(userRepository, times(1)).findByUsername(any(String.class));
+        }
+
+        @Test
+        @DisplayName("중복된 아이디가 없고 false를 반환한다.")
+        void test02() {
+            //given
+            User user = getUser();
+            given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(null));
+
+            //when
+            Boolean aBoolean = userService.existsUsername(USERNAME_NOT_FOUND);
+
+            //then
+            assertThat(aBoolean).isFalse();
+
+            //verify
+            verify(userRepository, times(1)).findByUsername(any(String.class));
+        }
+    }
+
     private void given_optional_of_nullable_user(User user) {
         given(userRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(user));
     }
