@@ -1,6 +1,7 @@
 package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.application.UserService;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserLeaveCommand;
 import com.woorinpang.userservice.domain.user.presentation.user.request.*;
 import com.woorinpang.userservice.domain.user.presentation.user.response.UserInfoResponse;
 import com.woorinpang.userservice.domain.user.presentation.user.response.UserJoinResponse;
@@ -79,10 +80,13 @@ public class UserController {
 
     //TODO 사용자 회원탈퇴
     @PostMapping("/leave")
-    public Boolean leave(@RequestBody @Valid UserLeaveRequest request) {
+    public ResponseEntity<JsonResponse> leave(@RequestBody @Valid UserLeaveRequest request) {
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        userService.leave(username, request);
+        UserLeaveCommand userLeaveCommand = request.toCommand();
+        userService.leave(username, userLeaveCommand);
 
-        return null;
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(JsonResponse.OK());
     }
 }

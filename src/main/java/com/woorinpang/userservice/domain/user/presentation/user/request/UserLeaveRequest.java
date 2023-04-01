@@ -1,5 +1,7 @@
 package com.woorinpang.userservice.domain.user.presentation.user.request;
 
+import com.woorinpang.userservice.domain.user.application.dto.command.UserLeaveCommand;
+import com.woorinpang.userservice.global.common.entity.Provider;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -13,6 +15,13 @@ public class UserLeaveRequest {
     private String password;
     @NotBlank(message = "{common.provider}{valid.required}")
     private String provider;
-
     private String token;
+
+    public UserLeaveCommand toCommand() {
+        return UserLeaveCommand.builder()
+                .password(this.password)
+                .provider(Provider.GOOGLE)
+                .token(this.token)
+                .build();
+    }
 }
