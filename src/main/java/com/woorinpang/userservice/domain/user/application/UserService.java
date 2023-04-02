@@ -174,14 +174,14 @@ public class UserService {
     /**
      * 사용자 검증 및 조회
      */
-    public User findUserVerify(String username, UserLeaveCommand command) {
+    private User findUserVerify(String username, UserLeaveCommand command) {
         if (!hasText(username)) {
             throw new BusinessMessageException("로그인이 필요합니다.");
         }
 
         User user = null;
 
-        if ("password".equals(command.provider())) {
+        if (Provider.WOORINPANG.equals(command.provider())) {
             user = findUserVerifyPassword(username, command.password());
         } else {
             user = findSocialUserByToken(command.provider(), command.token());
@@ -246,7 +246,7 @@ public class UserService {
         return findSocialUser(provider, command.id());
     }
 
-    public SocialUserCommand getSocialUserInfo(Provider provider, String token) {
+    private SocialUserCommand getSocialUserInfo(Provider provider, String token) {
         SocialUserCommand social = null;
         switch (provider) {
             case GOOGLE:

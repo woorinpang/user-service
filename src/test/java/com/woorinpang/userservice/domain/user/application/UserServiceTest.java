@@ -1,12 +1,9 @@
 package com.woorinpang.userservice.domain.user.application;
 
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
-import com.woorinpang.userservice.domain.user.application.dto.command.UserJoinCommand;
-import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.*;
 import com.woorinpang.userservice.domain.user.exception.PasswordNotMatchException;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
-import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
-import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.exception.EmailAlreadyExistsException;
@@ -15,7 +12,10 @@ import com.woorinpang.userservice.domain.user.exception.UsernameAlreadyExistsExc
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
+import com.woorinpang.userservice.global.common.entity.Provider;
+import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import com.woorinpang.userservice.test.UnitTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -464,6 +464,88 @@ class UserServiceTest extends UnitTest {
         }
     }
 
+    @Nested
+    @DisplayName("사용자_회원탈퇴하면_")
+    class Leave {
+        User user;
+        @BeforeEach
+        void init() {
+            user = getUser();
+        }
+
+        @Nested
+        @DisplayName("WOORINPANG_로그인일때_")
+        class WoorinpangLogin {
+            @Test
+            @DisplayName("사용자 상태코드를 LEAVE로 수정한다.")
+            void test01() {
+                //given
+                given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+                given(passwordEncoder.matches(any(String.class), any(String.class))).willReturn(Boolean.TRUE);
+
+                UserLeaveCommand command = UserLeaveCommand.builder()
+                        .password(user.getPassword())
+                        .provider(Provider.WOORINPANG)
+                        .build();
+
+                //when
+                Boolean aBoolean = userService.leave(USERNAME, command);
+
+                //then
+                assertThat(aBoolean).isTrue();
+                assertThat(user.getUserState()).isEqualTo(UserState.LEAVE);
+            }
+
+            @Test
+            @DisplayName("로그인 정보가 없으면 BusinessMessageException이 발생한다.")
+            void test02() {
+                //given
+                UserLeaveCommand command = UserLeaveCommand.builder()
+                        .password(user.getPassword())
+                        .provider(Provider.WOORINPANG)
+                        .build();
+
+                //expected
+                assertThatThrownBy(() -> userService.leave("", command))
+                        .isInstanceOf(BusinessMessageException.class)
+                        .hasMessage("로그인이 필요합니다.");
+            }
+
+            @Test
+            @DisplayName("로그인 아이디가 존재하지 않으면 UsernameNotFoundException이 발생한다.")
+            void test03() {
+                //given
+                given_username_not_found_exception();
+                UserLeaveCommand command = UserLeaveCommand.builder()
+                        .password(user.getPassword())
+                        .provider(Provider.WOORINPANG)
+                        .build();
+
+                //expected
+                assertThatThrownBy(() -> userService.leave(USERNAME_NOT_FOUND, command))
+                        .isInstanceOf(UsernameNotFoundException.class)
+                        .hasMessage(USERNAME_NOT_FOUND_MESSAGE);
+            }
+
+            @Test
+            @DisplayName("로그인 아이디의 비밀번호가 일치하지 않으면 PasswordNotMatchException이 발생한다.")
+            void test04() {
+                //given
+                given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+                given(passwordEncoder.matches(any(String.class), any(String.class))).willReturn(Boolean.FALSE);
+                UserLeaveCommand command = UserLeaveCommand.builder()
+                        .password(PASSWORD_NOT_MATCH_MESSAGE)
+                        .provider(Provider.WOORINPANG)
+                        .build();
+
+                //expected
+                assertThatThrownBy(() -> userService.leave(USERNAME, command))
+                        .isInstanceOf(PasswordNotMatchException.class)
+                        .hasMessage(PASSWORD_NOT_MATCH_MESSAGE);
+            }
+        }
+    }
+
     private void given_optional_of_nullable_user(User user) {
         given(userRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(user));
     }
@@ -478,5 +560,9 @@ class UserServiceTest extends UnitTest {
 
     private void given_email_already_exists_exception() {
         given(userRepository.existsByEmail(any(String.class))).willThrow(new EmailAlreadyExistsException(EMAIL));
+    }
+
+    private void given_username_not_found_exception() {
+        given(userRepository.findByUsername(any(String.class))).willThrow(new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
     }
 }
