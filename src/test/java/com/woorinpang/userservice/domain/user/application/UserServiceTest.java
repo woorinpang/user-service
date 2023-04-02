@@ -1,11 +1,9 @@
 package com.woorinpang.userservice.domain.user.application;
 
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
-import com.woorinpang.userservice.domain.user.application.dto.command.UserJoinCommand;
-import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.*;
+import com.woorinpang.userservice.domain.user.exception.PasswordNotMatchException;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
-import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
-import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.exception.EmailAlreadyExistsException;
@@ -14,7 +12,10 @@ import com.woorinpang.userservice.domain.user.exception.UsernameAlreadyExistsExc
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
+import com.woorinpang.userservice.global.common.entity.Provider;
+import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import com.woorinpang.userservice.test.UnitTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -31,16 +34,16 @@ import static com.woorinpang.userservice.domain.user.UserSetup.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @DisplayName("UserService 단위 테스트")
 class UserServiceTest extends UnitTest {
 
-    @InjectMocks protected UserService userService;
-    @Mock protected UserQueryRepository userQueryRepository;
-    @Mock protected UserRepository userRepository;
-    @Mock protected UserCommandMapper userCommandMapper;
+    @InjectMocks private UserService userService;
+    @Mock private UserQueryRepository userQueryRepository;
+    @Mock private UserRepository userRepository;
+    @Mock private UserCommandMapper userCommandMapper;
+    @Mock private BCryptPasswordEncoder passwordEncoder;
 
     @Nested
     @DisplayName("사용자_목록_조회하면_")
@@ -365,7 +368,183 @@ class UserServiceTest extends UnitTest {
         }
     }
 
+    @Nested
+    @DisplayName("사용자_비밀번호_확인하면")
+    class MatchPassword {
+        @Test
+        @DisplayName("비밀번호가 일치하여 true를 반환한다.")
+        void test01() {
+            //given
+            User user = getUser();
+            given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+            given(passwordEncoder.matches(any(String.class), any(String.class))).willReturn(Boolean.TRUE);
 
+            String password = PASSWORD;
+
+            //when
+            Boolean aBoolean = userService.matchPassword(USERNAME, password);
+
+            //then
+            assertThat(aBoolean).isTrue();
+
+            //verify
+            verify(userRepository, times(1)).findByUsername(any(String.class));
+            verify(passwordEncoder, times(1)).matches(any(String.class), any(String.class));
+        }
+
+        @Test
+        @DisplayName("비밀번호가 불일치하여 false를 반환한다.")
+        void test02() {
+            //given
+            User user = getUser();
+            given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+            given(passwordEncoder.matches(any(String.class), any(String.class))).willReturn(Boolean.FALSE);
+
+            String notMatchPassword = PASSWORD + "wrong";
+
+            //when
+            Boolean aBoolean = userService.matchPassword(USERNAME, notMatchPassword);
+
+            //then
+            assertThat(aBoolean).isFalse();
+
+            //verify
+            verify(userRepository, times(1)).findByUsername(any(String.class));
+            verify(passwordEncoder, times(1)).matches(any(String.class), any(String.class));
+        }
+
+        @Test
+        @DisplayName("username = taewoong 으로 조회실패하고 UserNotFoundException 이 발생한다.")
+        void test03() {
+            //given
+            given_user_not_found_exception();
+
+            //expected
+            assertThatThrownBy(() -> userService.matchPassword(USERNAME_NOT_FOUND, PASSWORD))
+                    .isInstanceOf(UsernameNotFoundException.class)
+                    .hasMessage(USERNAME_NOT_FOUND_MESSAGE.formatted(USERNAME_NOT_FOUND));
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자_아이디_중복체크하면_")
+    class ExistsUsername {
+        @Test
+        @DisplayName("중복된 아이디가 있고 true를 반환한다.")
+        void test01() {
+            //given
+            User user = getUser();
+            given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+
+            //when
+            Boolean aBoolean = userService.existsUsername(USERNAME);
+
+            //then
+            assertThat(aBoolean).isTrue();
+
+            //verify
+            verify(userRepository, times(1)).findByUsername(any(String.class));
+        }
+
+        @Test
+        @DisplayName("중복된 아이디가 없고 false를 반환한다.")
+        void test02() {
+            //given
+            User user = getUser();
+            given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(null));
+
+            //when
+            Boolean aBoolean = userService.existsUsername(USERNAME_NOT_FOUND);
+
+            //then
+            assertThat(aBoolean).isFalse();
+
+            //verify
+            verify(userRepository, times(1)).findByUsername(any(String.class));
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자_회원탈퇴하면_")
+    class Leave {
+        User user;
+        @BeforeEach
+        void init() {
+            user = getUser();
+        }
+
+        @Nested
+        @DisplayName("WOORINPANG_로그인일때_")
+        class WoorinpangLogin {
+            @Test
+            @DisplayName("사용자 상태코드를 LEAVE로 수정한다.")
+            void test01() {
+                //given
+                given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+                given(passwordEncoder.matches(any(String.class), any(String.class))).willReturn(Boolean.TRUE);
+
+                UserLeaveCommand command = UserLeaveCommand.builder()
+                        .password(user.getPassword())
+                        .provider(Provider.WOORINPANG)
+                        .build();
+
+                //when
+                Boolean aBoolean = userService.leave(USERNAME, command);
+
+                //then
+                assertThat(aBoolean).isTrue();
+                assertThat(user.getUserState()).isEqualTo(UserState.LEAVE);
+            }
+
+            @Test
+            @DisplayName("로그인 정보가 없으면 BusinessMessageException이 발생한다.")
+            void test02() {
+                //given
+                UserLeaveCommand command = UserLeaveCommand.builder()
+                        .password(user.getPassword())
+                        .provider(Provider.WOORINPANG)
+                        .build();
+
+                //expected
+                assertThatThrownBy(() -> userService.leave("", command))
+                        .isInstanceOf(BusinessMessageException.class)
+                        .hasMessage("로그인이 필요합니다.");
+            }
+
+            @Test
+            @DisplayName("로그인 아이디가 존재하지 않으면 UsernameNotFoundException이 발생한다.")
+            void test03() {
+                //given
+                given_username_not_found_exception();
+                UserLeaveCommand command = UserLeaveCommand.builder()
+                        .password(user.getPassword())
+                        .provider(Provider.WOORINPANG)
+                        .build();
+
+                //expected
+                assertThatThrownBy(() -> userService.leave(USERNAME_NOT_FOUND, command))
+                        .isInstanceOf(UsernameNotFoundException.class)
+                        .hasMessage(USERNAME_NOT_FOUND_MESSAGE);
+            }
+
+            @Test
+            @DisplayName("로그인 아이디의 비밀번호가 일치하지 않으면 PasswordNotMatchException이 발생한다.")
+            void test04() {
+                //given
+                given(userRepository.findByUsername(any(String.class))).willReturn(Optional.ofNullable(user));
+                given(passwordEncoder.matches(any(String.class), any(String.class))).willReturn(Boolean.FALSE);
+                UserLeaveCommand command = UserLeaveCommand.builder()
+                        .password(PASSWORD_NOT_MATCH_MESSAGE)
+                        .provider(Provider.WOORINPANG)
+                        .build();
+
+                //expected
+                assertThatThrownBy(() -> userService.leave(USERNAME, command))
+                        .isInstanceOf(PasswordNotMatchException.class)
+                        .hasMessage(PASSWORD_NOT_MATCH_MESSAGE);
+            }
+        }
+    }
 
     private void given_optional_of_nullable_user(User user) {
         given(userRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(user));
@@ -381,5 +560,9 @@ class UserServiceTest extends UnitTest {
 
     private void given_email_already_exists_exception() {
         given(userRepository.existsByEmail(any(String.class))).willThrow(new EmailAlreadyExistsException(EMAIL));
+    }
+
+    private void given_username_not_found_exception() {
+        given(userRepository.findByUsername(any(String.class))).willThrow(new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
     }
 }

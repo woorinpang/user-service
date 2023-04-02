@@ -1,35 +1,38 @@
 package com.woorinpang.userservice.domain.user.application;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.woorinpang.userservice.domain.user.application.dto.UserCommandMapper;
-import com.woorinpang.userservice.domain.user.application.dto.command.UserJoinCommand;
-import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
-import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
-import com.woorinpang.userservice.domain.user.application.dto.command.SaveUserCommand;
-import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
+import com.woorinpang.userservice.domain.user.application.dto.command.*;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.exception.EmailAlreadyExistsException;
+import com.woorinpang.userservice.domain.user.exception.PasswordNotMatchException;
 import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
 import com.woorinpang.userservice.domain.user.exception.UsernameAlreadyExistsException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
-import com.woorinpang.userservice.domain.user.presentation.request.SocialUserResponse;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserLeaveRequest;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
+import com.woorinpang.userservice.global.common.entity.Provider;
 import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.hasText;
 
@@ -39,10 +42,30 @@ import static org.springframework.util.StringUtils.hasText;
 @Transactional(readOnly = true)
 public class UserService {
 
+    /**
+     * 구글 클라이언트 ID
+     */
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String GOOGLE_CLIENT_ID;
+
+    /**
+     * 카카오 사용자 정보 URL
+     */
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String KAKAO_USER_INFO_URI;
+
+    /**
+     * 네이버 사용자 정보 URL
+     */
+    @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")
+    private String NAVER_USER_INFO_URI;
+
+
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserCommandMapper mapper;
+    private final RestTemplate restTemplate;
 
     /**
      * 사용자 목록조회
@@ -118,138 +141,60 @@ public class UserService {
     }
 
     /**
-     * 로그인아이디로 사용자를 찾아 반환한다.
+     * 사용자 비밀번호 확인
      */
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("없음"));
-    }
-
-    /**
-     * 모든 사용자를 생성일 역순으로 정렬 조회하여 반환한다.
-     */
-    public List<FindPageUserDto> findAllDesc() {
-        return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate")).stream()
-                .map(FindPageUserDto::new)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * 이메일 중복 확인
-     */
-    public Boolean existsEmail(String email, String username) {
-        if (!hasText(email)) {
-            throw new IllegalArgumentException("이메일 없음");
+    public Boolean matchPassword(String username, String password) {
+        try {
+            this.findUserVerifyPassword(username, password);
+        } catch (PasswordNotMatchException e) {
+            log.error("error message = {}", e);
+            return false;
         }
+        return true;
+    }
 
+    /**
+     * 사용자 아이디 중복확인
+     */
+    public Boolean existsUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    /**
+     * 사용자 회원탈퇴
+     */
+    @Transactional
+    public Boolean leave(String username, UserLeaveCommand command) {
+        User findUser = findUserVerify(username, command);
+        findUser.updateUserStateCode(UserState.LEAVE);
+        return true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * 사용자 검증 및 조회
+     */
+    private User findUserVerify(String username, UserLeaveCommand command) {
         if (!hasText(username)) {
-            return userRepository.findByEmail(email).isPresent();
-        } else {
-            return userRepository.findByEmailAndUsernameNot(email, username).isPresent();
-        }
-    }
-
-    public SocialUserResponse getSocialUserInfo(String provider, String token) {
-        SocialUserResponse social = null;
-        switch (provider) {
-            case "google":
-                social = getGoogleUserInfo(token);
-                break;
-            case "naver":
-                social = getNaverUserInfo(token);
-                break;
-            case "kakao":
-                social = getKakaoUserInfo(token);
-                break;
-            default:
-                break;
-        }
-
-        if (social == null) throw new IllegalArgumentException("소셜 없음");
-
-        return social;
-    }
-
-    private SocialUserResponse getGoogleUserInfo(String token) {
-        return null;
-    }
-
-    private SocialUserResponse getNaverUserInfo(String token) {
-        return null;
-    }
-
-    private SocialUserResponse getKakaoUserInfo(String token) {
-        return null;
-    }
-
-    /**
-     * 소셜 사용자 엔티티 조회
-     */
-    private User findSocialUser(String providerCode, String providerId) {
-        Optional<User> user;
-
-        //공급자 id 로 조회
-        switch (providerCode) {
-            case "google":
-                user = userRepository.findByGoogleId(providerId);
-                break;
-            case "naver":
-                user = userRepository.findByNaverId(providerId);
-                break;
-            case "kakao":
-                user = userRepository.findByKakaoId(providerId);
-                break;
-            default:
-                user = Optional.empty();
-                break;
-        }
-
-        return user.orElse(null);
-    }
-
-
-
-    public User findUserVerifyPassword(String username, String password) {
-        User entity = this.findByUsername(username);
-        if (!passwordEncoder.matches(password, entity.getPassword())) {
-            throw new BusinessMessageException("틀려");
-        }
-        return entity;
-    }
-
-    public User findUserVerify(String username, UserLeaveRequest request) {
-        if (!hasText(username)) {
-            throw new BusinessMessageException("에러");
+            throw new BusinessMessageException("로그인이 필요합니다.");
         }
 
         User user = null;
 
-        if ("password".equals(request.getProvider())) {
-            user = findUserVerifyPassword(username, request.getPassword());
+        if (Provider.WOORINPANG.equals(command.provider())) {
+            user = findUserVerifyPassword(username, command.password());
         } else {
-            user = findSocialUserByToken(request.getProvider(), request.getToken());
+            user = findSocialUserByToken(command.provider(), command.token());
 
             if (user == null) {
-                throw new BusinessMessageException("없음");
+                throw new BusinessMessageException("사용자 정보가 올바르지 않습니다.");
             }
 
             if (!username.equals(user.getUsername())) {
-                throw new BusinessMessageException("ㄴㄴㄴㄴ");
+                throw new BusinessMessageException("사용자 정보가 올바르지 않습니다.");
             }
         }
         return user;
-    }
-
-    @Transactional
-    public Boolean leave(String username, UserLeaveRequest request) {
-        User entity = findUserVerify(username, request);
-        entity.updateUserStateCode(UserState.LEAVE);
-        return true;
-    }
-
-    private User findSocialUserByToken(String provider, String token) {
-        SocialUserResponse response = getSocialUserInfo(provider, token);
-        return findSocialUser(provider, response.getId());
     }
 
     /**
@@ -261,14 +206,129 @@ public class UserService {
     }
 
     /**
-     * Username And Email 중복확인
+     * Username 중복확인
      */
     private void checkDuplicateUsername(String username) {
         if (userRepository.existsByUsername(username)) throw new UsernameAlreadyExistsException(username);
     }
 
+    /**
+     * Email 중복확인
+     */
     private void checkDuplicateEmail(String email) {
         if (userRepository.existsByEmail(email)) throw new EmailAlreadyExistsException(email);
     }
 
+    /**
+     * 사용자 조회, 비밀번호 검증
+     */
+    private User findUserVerifyPassword(String username, String password) {
+        User findUser = this.findByUsername(username);
+        if (!passwordEncoder.matches(password, findUser.getPassword())) {
+            throw new PasswordNotMatchException();
+        }
+        return findUser;
+    }
+
+    /**
+     * 로그인아이디로 사용자를 찾아 반환한다.
+     */
+    private User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username=%s은 존재하지 않는 사용자입니다.".formatted(username)));
+    }
+
+    /**
+     * 사용자 단건 조회 By Token
+     */
+    private User findSocialUserByToken(Provider provider, String token) {
+        SocialUserCommand command = getSocialUserInfo(provider, token);
+        return findSocialUser(provider, command.id());
+    }
+
+    private SocialUserCommand getSocialUserInfo(Provider provider, String token) {
+        SocialUserCommand social = null;
+        switch (provider) {
+            case GOOGLE:
+                social = getGoogleUserInfo(token);
+                break;
+            case NAVER:
+                social = getNaverUserInfo(token);
+                break;
+            case KAKAO:
+                social = getKakaoUserInfo(token);
+                break;
+            default:
+                break;
+        }
+
+        if (social == null) throw new IllegalArgumentException("소셜 없음");
+
+        return social;
+    }
+
+    /**
+     * 구글 사용자 정보 조회
+     */
+    private SocialUserCommand getGoogleUserInfo(String token) {
+        try {
+            NetHttpTransport transport = new NetHttpTransport();
+            GsonFactory gsonFactory = new GsonFactory();
+
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, gsonFactory)
+                    .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(token);
+
+            if (idToken != null) {
+                GoogleIdToken.Payload payload = idToken.getPayload();
+                log.info("google oauth2: {}", payload.toString());
+
+                return SocialUserCommand.builder()
+                        .id(payload.getSubject())
+                        .email(payload.getEmail())
+                        .name((String) payload.get("name"))
+                        .build();
+            }
+
+            return null;
+        } catch (GeneralSecurityException e) {
+            log.error("GeneralSecurityException = {}", e);
+            throw new BusinessMessageException("사용자 유저가 아닙니다.");
+        } catch (IOException e) {
+            log.error("IOException = {}", e);
+            throw new BusinessMessageException("사용자 유저가 아닙니다.");
+        } catch (Exception e) {
+            log.error("Exception = {}", e);
+            throw new BusinessMessageException("사용자 유저가 아닙니다.");
+        }
+    }
+
+    /**
+     * 네이버 사용자 정보 조회
+     */
+    private SocialUserCommand getNaverUserInfo(String token) {
+        //TODO
+        return null;
+    }
+
+    private SocialUserCommand getKakaoUserInfo(String token) {
+        //TODO
+        return null;
+    }
+
+    /**
+     * 소셜 사용자 엔티티 조회
+     */
+    private User findSocialUser(Provider provider, String providerId) {
+        //공급자 id 로 조회
+        Optional<User> user = switch (provider) {
+            case GOOGLE -> userRepository.findByGoogleId(providerId);
+            case NAVER -> userRepository.findByNaverId(providerId);
+            case KAKAO -> userRepository.findByKakaoId(providerId);
+            default -> null;
+        };
+        return user.orElse(null);
+    }
 }

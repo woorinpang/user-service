@@ -11,8 +11,7 @@ import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.SaveUserRequest;
 import com.woorinpang.userservice.domain.user.presentation.admin.request.UpdateUserRequest;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserJoinRequest;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -40,9 +39,13 @@ public class UserSetup {
 
     //ERROR_MESSAGE
     public static final Long USER_NOT_FOUND_ID = 0L;
+    public static final String USERNAME_NOT_FOUND = "taewoong";
     public static final String USER_NOT_FOUND_MESSAGE = "UserId=" + USER_NOT_FOUND_ID + "은 존재하지 않습니다.";
     public static final String USERNAME_ALREADY_EXISTS_MESSAGE = "Username=%s은 이미 존재합니다.";
     public static final String EMAIL_ALREADY_EXISTS_MESSAGE = "Email=%s은 이미 존재합니다.";
+    public static final String PASSWORD_NOT_MATCH_MESSAGE = "패스워드가 일치하지 않습니다.";
+    public static final String USERNAME_NOT_FOUND_MESSAGE = "Username=%s은 존재하지 않는 사용자입니다.";
+
 
     //ADMIN_CONTROLLER_REQUEST_URI
     public static final String API_V1_ADMIN_GET_FIND_USERS = "/api/v1/admin/users";
@@ -55,6 +58,9 @@ public class UserSetup {
     public static final String API_V1_USER_POST_JOIN = "/api/v1/users/join";
     public static final String API_V1_USER_GET_INFO = "/api/v1/users/{userId}";
     public static final String API_V1_USER_PUT_UPDATE = "/api/v1/users/{userId}";
+    public static final String API_V1_USER_MATCH_PASSWORD = "/api/v1/users/password/match";
+    public static final String API_V1_USER_EXISTS_USERNAME = "/api/v1/users/username/exists";
+    public static final String API_V1_USER_LEAVE = "/api/v1/users/leave";
 
     public static User getUser() {
         return User.createBuilder()
@@ -153,6 +159,26 @@ public class UserSetup {
         return UserUpdateInfoRequest.builder()
                 .name(UPDATE_NAME)
                 .email(UPDATE_EMAIL)
+                .build();
+    }
+
+    public static UserMatchPasswordRequest getUserMatchPasswordRequest() {
+        return UserMatchPasswordRequest.builder()
+                .password(PASSWORD)
+                .build();
+    }
+
+    public static UserExistsUsernameRequest getUserExistsUsernameRequest() {
+        return UserExistsUsernameRequest.builder()
+                .username(USERNAME)
+                .build();
+    }
+
+    public static UserLeaveRequest getUserLeaveRequest(String password, String provider, String token) {
+        return UserLeaveRequest.builder()
+                .password(password)
+                .provider(provider)
+                .token(token)
                 .build();
     }
 
