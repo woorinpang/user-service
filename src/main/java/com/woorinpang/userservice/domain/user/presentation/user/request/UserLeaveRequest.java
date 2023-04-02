@@ -20,7 +20,7 @@ public class UserLeaveRequest {
     public UserLeaveCommand toCommand() {
         return UserLeaveCommand.builder()
                 .password(this.password)
-                .provider(Provider.GOOGLE)
+                .provider(Provider.findByCode(this.provider))
                 .token(this.token)
                 .build();
     }

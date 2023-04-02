@@ -1,10 +1,8 @@
 package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.domain.User;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserExistsUsernameRequest;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserJoinRequest;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserMatchPasswordRequest;
-import com.woorinpang.userservice.domain.user.presentation.user.request.UserUpdateInfoRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.request.*;
+import com.woorinpang.userservice.global.common.entity.Provider;
 import com.woorinpang.userservice.test.IntegrationTest;
 import com.woorinpang.userservice.test.WithMockCustomUser;
 import org.junit.jupiter.api.DisplayName;
@@ -218,6 +216,47 @@ class UserControllerTest extends IntegrationTest {
                                     fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
                                     fieldWithPath("code").type(JsonFieldType.STRING).description("코드"),
                                     fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
+                            )
+                    ))*/
+            ;
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자_회원탈퇴하면_")
+    class Leave {
+        @Test
+        @DisplayName("탈퇴처리하고 상태코드 200과 true를 반환한다.")
+        @WithMockCustomUser(username = USERNAME, password = PASSWORD)
+        void documentTest() throws Exception {
+            //given
+            User user = getUser();
+            em.persist(user);
+
+            UserLeaveRequest request = getUserLeaveRequest(PASSWORD, Provider.WOORINPANG.getCode(), "");
+
+            //expected
+            mockMvc.perform(post(API_V1_USER_LEAVE)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                    .andExpect(jsonPath("$.code").value("SUCCESS"))
+                    .andExpect(jsonPath("$.data").value(Boolean.TRUE))
+                    /*.andDo(document("exists-username",
+                            requestFields(
+                                    fieldWithPath("password").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                    fieldWithPath("provider").type(JsonFieldType.STRING).description("로그인 제공자 코드"),
+                                    fieldWithPath("token").type(JsonFieldType.STRING).description("사용자 토큰")
+                            ),
+                            responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
+                                    fieldWithPath("code").type(JsonFieldType.STRING).description("코드"),
+                                    fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("탈퇴 성공 여부")
                             )
                     ))*/
             ;

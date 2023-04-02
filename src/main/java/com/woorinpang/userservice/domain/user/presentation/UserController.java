@@ -78,15 +78,14 @@ public class UserController {
                 .body(JsonResponse.OK(userService.existsUsername(request.getUsername())));
     }
 
-    //TODO 사용자 회원탈퇴
+    /**
+     * 사용자 회원탈퇴
+    */
     @PostMapping("/leave")
     public ResponseEntity<JsonResponse> leave(@RequestBody @Valid UserLeaveRequest request) {
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserLeaveCommand userLeaveCommand = request.toCommand();
-        userService.leave(username, userLeaveCommand);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK());
+                .body(JsonResponse.OK(userService.leave(username, request.toCommand())));
     }
 }
