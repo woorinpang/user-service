@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class UserUpdateInfoRequest extends UserLeaveRequest {
+public class UserUpdateInfoRequest {
 
     private String name;
     private String email;

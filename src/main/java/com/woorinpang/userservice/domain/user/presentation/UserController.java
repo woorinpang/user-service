@@ -1,6 +1,7 @@
 package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.application.UserService;
+import com.woorinpang.userservice.domain.user.application.dto.command.UserLeaveCommand;
 import com.woorinpang.userservice.domain.user.presentation.user.request.*;
 import com.woorinpang.userservice.domain.user.presentation.user.response.UserInfoResponse;
 import com.woorinpang.userservice.domain.user.presentation.user.response.UserJoinResponse;
@@ -21,7 +22,9 @@ public class UserController {
 
     private final UserService userService;
 
-    //회원가입 -> 로그인 필요없음
+    /**
+     * 회원가입 -> 로그인 필요없음
+     */
     @PostMapping("/join")
     public ResponseEntity<JsonResponse> userJoin(@RequestBody @Valid UserJoinRequest request) {
         Long userId = userService.join(request.toCommand());
@@ -30,7 +33,9 @@ public class UserController {
                 .body(JsonResponse.CREATED(new UserJoinResponse(userId)));
     }
 
-    //내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함
+    /**
+     * 내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함
+     */
     @GetMapping("/{userId}")
     public ResponseEntity<JsonResponse> userInfo(@PathVariable("userId") Long userId) {
         return ResponseEntity
@@ -38,7 +43,9 @@ public class UserController {
                 .body(JsonResponse.OK(new UserInfoResponse(userService.findInfo(userId))));
     }
 
-    //TODO 내 정보 수정
+    /**
+     * 내 정보 수정
+     */
     @PutMapping("/{userId}")
     public ResponseEntity<JsonResponse> userUpdateInfo(@PathVariable("userId") Long userId,
                                                        @RequestBody @Valid UserUpdateInfoRequest request) {
@@ -50,32 +57,35 @@ public class UserController {
                 .body(JsonResponse.OK());
     }
 
-    //TODO 비밀번호 확인(password) - 로그인 상태
+    /**
+     * 내 비밀번호 확인
+     */
     @PostMapping("/password/match")
-    public Boolean matchPassword(@RequestBody @Valid UserMatchPasswordRequest request) {
-        final Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        return null;
+    public ResponseEntity<JsonResponse> matchPassword(@RequestBody @Valid UserMatchPasswordRequest request) {
+        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(JsonResponse.OK(userService.matchPassword(username, request.getPassword())));
     }
 
-    //TODO 아이디 중복확인(username) - 로그인 없이
+    /**
+     * 아이디 중복확인(username) - 로그인 없이
+     */
     @PostMapping("/username/exists")
-    public Boolean existsUsername(@RequestBody @Valid UserExistsUsernameRequest request) {
-
-        return null;
+    public ResponseEntity<JsonResponse> existsUsername(@RequestBody @Valid UserExistsUsernameRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(JsonResponse.OK(userService.existsUsername(request.getUsername())));
     }
 
-    //TODO 이메일 중복확인(email) - 로그인 없이
-    @PostMapping("/email/exists")
-    public Boolean existsEmail(@RequestBody @Valid UserExistsEmailRequest request) {
-
-        return null;
-    }
-
-    //TODO 회원탈퇴
+    /**
+     * 사용자 회원탈퇴
+    */
     @PostMapping("/leave")
-    public Boolean leave(@RequestBody @Valid UserLeaveRequest request) {
-
-        return null;
+    public ResponseEntity<JsonResponse> leave(@RequestBody @Valid UserLeaveRequest request) {
+        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(JsonResponse.OK(userService.leave(username, request.toCommand())));
     }
 }
