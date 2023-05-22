@@ -13,13 +13,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.List;
 
 import static com.woorinpang.userservice.domain.user.UserSetup.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +58,7 @@ class AdminUserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andExpect(jsonPath("$.data.content.length()", Matchers.is(5)))
                     .andDo(print())
-                    /*.andDo(document("admin-find-users",
+                    .andDo(document("admin-find-users",
                             queryParameters(
                                     parameterWithName("searchKeywordType").description("검색 조건 유형"),
                                     parameterWithName("searchKeyword").description("검색 키워드"),
@@ -77,7 +82,7 @@ class AdminUserControllerTest extends IntegrationTest {
                                     fieldWithPath("data.content[*].lastLoginDate").type(JsonFieldType.STRING).description("최신 로그인 시간"),
                                     fieldWithPath("data.content[*].loginFailCount").type(JsonFieldType.STRING).description("로그인 실패 횟수")
                             )
-                    ))*/
+                    ))
             ;
         }
     }
@@ -110,27 +115,28 @@ class AdminUserControllerTest extends IntegrationTest {
                     .andExpect(jsonPath("$.data.userStateCode").value(USER_STATE.getCode()))
                     .andExpect(jsonPath("$.data.hasPassword").value(Boolean.TRUE))
                     .andDo(print())
-                    /*.andDo(MockMvcRestDocumentation.document("admin-find-user",
+                    .andDo(document("admin-find-user",
                             pathParameters(
                                     parameterWithName("userId").description("사용자 고유 번호")
                             ),
                             responseFields(
-                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간,"),
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING).description("api 요청 시간"),
+                                    fieldWithPath("code").type(JsonFieldType.STRING).description("응답코드"),
                                     fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
-                                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태코드"),
-                                    fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 고유 번호"),
-                                    fieldWithPath("username").type(JsonFieldType.NUMBER).description("사용자 아이디"),
-                                    fieldWithPath("email").type(JsonFieldType.NUMBER).description("사용자 이메일"),
-                                    fieldWithPath("name").type(JsonFieldType.NUMBER).description("사용자 이름"),
-                                    fieldWithPath("roleCode").type(JsonFieldType.NUMBER).description("권한 코드"),
-                                    fieldWithPath("userStateCode").type(JsonFieldType.NUMBER).description("사용자 상태 코드"),
-                                    fieldWithPath("googleId").type(JsonFieldType.NUMBER).description("구글 아이디"),
-                                    fieldWithPath("kakaoId").type(JsonFieldType.NUMBER).description("카카오 아이디"),
-                                    fieldWithPath("naverId").type(JsonFieldType.NUMBER).description("네이버 아이디"),
-                                    fieldWithPath("isSocialUser").type(JsonFieldType.BOOLEAN).description("소셜 사용자 여부"),
-                                    fieldWithPath("hasPassword").type(JsonFieldType.BOOLEAN).description("비밀번호 여부")
+                                    fieldWithPath("status").type(JsonFieldType.NUMBER).description("상태코드"),
+                                    fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("사용자 고유번호"),
+                                    fieldWithPath("data.username").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                    fieldWithPath("data.email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                    fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자 이름"),
+                                    fieldWithPath("data.roleCode").type(JsonFieldType.STRING).description("권한 코드"),
+                                    fieldWithPath("data.userStateCode").type(JsonFieldType.STRING).description("사용자 상태코드"),
+                                    fieldWithPath("data.googleId").optional().type(JsonFieldType.STRING).description("구글 아이디"),
+                                    fieldWithPath("data.kakaoId").optional().type(JsonFieldType.STRING).description("카카오 아이디"),
+                                    fieldWithPath("data.naverId").optional().type(JsonFieldType.STRING).description("네이버 아이디"),
+                                    fieldWithPath("data.isSocialUser").optional().type(JsonFieldType.BOOLEAN).description("소셜 사용자 여부"),
+                                    fieldWithPath("data.hasPassword").type(JsonFieldType.BOOLEAN).description("비밀번호 여부")
                             )
-                    ))*/
+                    ))
             ;
         }
 
