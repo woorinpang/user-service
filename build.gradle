@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.6'
+    id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
 //    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
@@ -113,32 +113,25 @@ asciidoctor {
     configurations 'asciidoctorExt'
     dependsOn test
 }
+asciidoctor.doFirst {
+    delete file("src/main/resources/static/docs")
+}
 bootJar {
     dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
+    copy {
+        from ("${asciidoctor.outputDir}/html5") {
+            into 'static/docs'
+        }
     }
+    finalizedBy 'copyDocument'
+}
+//bootJar 실행 후 복사
+task copyDocument(type: Copy) {
+    dependsOn bootJar
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
 }
 
 clean {
     delete file('src/main/generated') //인텔리제이 Annotation processor 생성물
 }
-
-//querydsl
-//def querydslDir = "$buildDir/generated/querydsl"
-//querydsl {
-//    jpa = true
-//    querydslSourcesDir = querydslDir
-//}
-//sourceSets {
-//    main.java.srcDir querydslDir
-//}
-//compileQuerydsl {
-//    options.annotationProcessorPath = configurations.querydsl
-//}
-//configurations {
-//    compileOnly {
-//        extendsFrom annotationProcessor
-//    }
-//    querydsl.extendsFrom compileClasspath
-//}
