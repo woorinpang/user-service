@@ -32,7 +32,8 @@ public class UserQueryRepository {
      * 유저 목록 조회
      */
     public Page<FindPageUserResponse> findPageUser(UserSearchCondition condition, Pageable pageable) {
-        return PageableExecutionUtils.getPage(getUserList(condition, pageable),
+        return PageableExecutionUtils.getPage(
+                getUserList(condition, pageable),
                 pageable,
                 getUserListCount(condition)::fetchOne
         );

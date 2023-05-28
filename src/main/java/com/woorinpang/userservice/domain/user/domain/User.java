@@ -3,6 +3,7 @@ package com.woorinpang.userservice.domain.user.domain;
 import com.woorinpang.userservice.domain.user.application.dto.command.UpdateUserCommand;
 import com.woorinpang.userservice.domain.user.application.dto.command.UserUpdateInfoCommand;
 import com.woorinpang.userservice.global.common.entity.BaseEntity;
+import com.woorinpang.userservice.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,15 +19,15 @@ import java.time.LocalDateTime;
 import static org.springframework.util.StringUtils.*;
 
 @Entity
-@Table
+@Table(name = "users")
 @DynamicInsert
 @DynamicUpdate
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity {
+public class User extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id") @Comment("사용자 고유번호")
+    @Column(name = "user_id")
     private Long id;
 
     @Column(name = "username", unique = true, columnDefinition = "varchar(60) not null comment '아이디'")

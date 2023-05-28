@@ -1,7 +1,6 @@
 package com.woorinpang.userservice.domain.user.infrastructure;
 
 import com.woorinpang.userservice.domain.user.UserSetup;
-import com.woorinpang.userservice.domain.user.UserTestConfig;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserResponse;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.domain.Role;
@@ -9,8 +8,6 @@ import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
 import com.woorinpang.userservice.test.RepositoryTest;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -19,12 +16,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import(UserTestConfig.class)
-@DisplayName("UserQueryRepository 레포지토리 테스트")
+@DisplayName("[레포지토리 테스트] UserQueryRepository")
 class UserQueryRepositoryTest extends RepositoryTest {
-
-    @Autowired protected UserQueryRepository userQueryRepository;
-    @Autowired protected UserRepository userRepository;
 
     @BeforeAll
     void init() {
