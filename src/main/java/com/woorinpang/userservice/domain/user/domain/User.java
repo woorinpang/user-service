@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 import static org.springframework.util.StringUtils.*;
 
 @Entity
-@Table(name = "users")
+@Table
 @DynamicInsert
 @DynamicUpdate
 @Getter
@@ -25,39 +26,45 @@ import static org.springframework.util.StringUtils.*;
 public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "user_id") @Comment("사용자 고유번호")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "username", unique = true, columnDefinition = "varchar(60) not null comment '아이디'")
     private String username;
-    @Column(length = 100)
+
+    @Column(name = "password", columnDefinition = "varchar(120) default null comment '비밀번호'")
     private String password;
-    @Column(nullable = false, length = 60, unique = true)
+
+    @Column(name = "email", unique = true, columnDefinition = "varchar(60) not null comment '이메일'")
     private String email;
 
-    @Column(nullable = false, length = 60)
+    @Column(name = "name", columnDefinition = "varchar(60) not null comment '사용자 이름'")
     private String name;
+
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(name = "role", columnDefinition = "varchar(15) not null comment '사용자 역할'")
     private Role role;
+
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(name = "userState", columnDefinition = "varchar(15) not null comment '사용자 상태'")
     private UserState userState;
 
+    @Column(name = "refreshToken", columnDefinition = "varchar(255) default null comment '리프레시 토큰'")
     private String refreshToken;
-    @Column
+
+    @Column(name = "lastLoginDate", columnDefinition = "datetime(6) default null comment '최근 로그인 일자'")
     private LocalDateTime lastLoginDate;
 
-    @Column(nullable = false, columnDefinition = "tinyint default 0")
-    private Integer loginFailCount;
+    @Column(name = "loginFailCount", columnDefinition = "tinyint default 0 comment '로그인 실패 횟수'")
+    private int loginFailCount;
 
-    @Column(length = 100)
+    @Column(name = "googleId", columnDefinition = "varchar(60) default null comment '구글 아이디'")
     private String googleId;
 
-    @Column(length = 100)
+    @Column(name = "kakaoId", columnDefinition = "varchar(60) default null comment '카카오 아이디'")
     private String kakaoId;
 
-    @Column(length = 100)
+    @Column(name = "naverId", columnDefinition = "varchar(60) default null comment '네이버 아이디'")
     private String naverId;
 
     /**

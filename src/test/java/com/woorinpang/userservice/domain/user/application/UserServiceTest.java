@@ -11,7 +11,7 @@ import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
 import com.woorinpang.userservice.domain.user.exception.UsernameAlreadyExistsException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
-import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserResponse;
 import com.woorinpang.userservice.global.common.entity.Provider;
 import com.woorinpang.userservice.global.exception.BusinessMessageException;
 import com.woorinpang.userservice.test.UnitTest;
@@ -52,14 +52,14 @@ class UserServiceTest extends UnitTest {
         @DisplayName("10건 조회한다.")
         void test01() {
             //given
-            given(userQueryRepository.findPageUsers(any(UserSearchCondition.class), any(Pageable.class)))
+            given(userQueryRepository.findPageUser(any(UserSearchCondition.class), any(Pageable.class)))
                     .willReturn(new PageImpl<>(getFindPageUserDtos()));
 
             UserSearchCondition condition = UserSearchCondition.builder().build();
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             //when
-            Page<FindPageUserDto> content = userService.findUsers(condition, pageRequest);
+            Page<FindPageUserResponse> content = userService.findPageUser(condition, pageRequest);
 
             //then
             assertThat(content.getTotalElements()).isEqualTo(10);
@@ -67,7 +67,7 @@ class UserServiceTest extends UnitTest {
             assertThat(content.getTotalPages()).isEqualTo(1);
 
             //verify
-            verify(userQueryRepository, times(1)).findPageUsers(any(UserSearchCondition.class), any(PageRequest.class));
+            verify(userQueryRepository, times(1)).findPageUser(any(UserSearchCondition.class), any(PageRequest.class));
         }
     }
 

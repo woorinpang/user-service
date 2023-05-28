@@ -29,11 +29,11 @@ public class AdminUserController {
      * 사용자 목록조회
      */
     @GetMapping
-    public ResponseEntity<JsonResponse> findPageUsers(UserSearchCondition condition,
+    public ResponseEntity<JsonResponse> findPageUser(UserSearchCondition condition,
                                                   @PageableDefault(page = 0, size = 10) Pageable pageable) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(JsonResponse.OK(userService.findUsers(condition, pageable)));
+                .body(JsonResponse.OK(userService.findPageUser(condition, pageable)));
     }
 
     /**
