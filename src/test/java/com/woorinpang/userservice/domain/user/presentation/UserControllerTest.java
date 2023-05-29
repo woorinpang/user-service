@@ -6,26 +6,23 @@ import com.woorinpang.userservice.global.common.entity.Provider;
 import com.woorinpang.userservice.test.IntegrationTest;
 import com.woorinpang.userservice.test.WithMockCustomUser;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.payload.PayloadDocumentation;
-import org.springframework.restdocs.request.RequestDocumentation;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import static com.woorinpang.userservice.domain.user.UserSetup.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("[통합 테스트] UserController")
 class UserControllerTest extends IntegrationTest {
-    private final String IDENTIFIER = "admin-user-controller-test/%s";
+    private final String IDENTIFIER = "user-controller-test/%s";
 
     @Test
     @DisplayName("사용자_회원가입하면_상태코드 201과 joinedUserId 를 반환한다.")
@@ -39,9 +36,9 @@ class UserControllerTest extends IntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.CREATED.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("성공적으로 회원가입 되었습니다."))
                 .andExpect(jsonPath("$.data.userId").isNumber())
                 .andDo(document(IDENTIFIER.formatted("user-join"),
                         requestFields(
@@ -54,9 +51,9 @@ class UserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
-                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("status").type(NUMBER).description("상태코드"),
-                                fieldWithPath("code").type(STRING).description("코드"),
+                                fieldWithPath("code").type(STRING).description("응답코드"),
+                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("data.userId").type(NUMBER).description("회원가입된 유저 고유 번호")
                         )
                 ));
@@ -73,9 +70,9 @@ class UserControllerTest extends IntegrationTest {
         this.mockMvc.perform(get(API_V1_USER_GET_INFO, user.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data.userId").value(user.getId()))
                 .andExpect(jsonPath("$.data.username").value(USERNAME))
                 .andExpect(jsonPath("$.data.email").value(EMAIL))
@@ -88,9 +85,9 @@ class UserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
-                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("status").type(NUMBER).description("상태코드"),
-                                fieldWithPath("code").type(STRING).description("코드"),
+                                fieldWithPath("code").type(STRING).description("응답코드"),
+                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("data.userId").type(NUMBER).description("사용자 고유번호"),
                                 fieldWithPath("data.username").type(STRING).description("사용자 아이디"),
                                 fieldWithPath("data.email").type(STRING).description("사용자 이메일"),
@@ -116,19 +113,23 @@ class UserControllerTest extends IntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data").isEmpty())
                 .andDo(document(IDENTIFIER.formatted("user-update-info"),
                         pathParameters(
                                 parameterWithName("userId").description("사용자 고유번호")
                         ),
+                        requestFields(
+                                fieldWithPath("name").type(STRING).description("사용자 이름"),
+                                fieldWithPath("email").type(STRING).description("사용자 이메일")
+                        ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
-                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("status").type(NUMBER).description("상태코드"),
-                                fieldWithPath("code").type(STRING).description("코드"),
+                                fieldWithPath("code").type(STRING).description("응답코드"),
+                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("data").ignored()
                         )
                 ));
@@ -150,9 +151,9 @@ class UserControllerTest extends IntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data").value(Boolean.TRUE))
                 .andDo(document(IDENTIFIER.formatted("match-password"),
                         requestFields(
@@ -160,9 +161,9 @@ class UserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
-                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("status").type(NUMBER).description("상태코드"),
-                                fieldWithPath("code").type(STRING).description("코드"),
+                                fieldWithPath("code").type(STRING).description("응답코드"),
+                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("data").type(BOOLEAN).description("비밀번호 일치 여부")
                         )
                 ))
@@ -183,9 +184,9 @@ class UserControllerTest extends IntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data").value(Boolean.TRUE))
                 .andDo(document(IDENTIFIER.formatted("exists-username"),
                         requestFields(
@@ -193,9 +194,9 @@ class UserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
-                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("status").type(NUMBER).description("상태코드"),
-                                fieldWithPath("code").type(STRING).description("코드"),
+                                fieldWithPath("code").type(STRING).description("응답코드"),
+                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("data").type(BOOLEAN).description("비밀번호 일치 여부")
                         )
                 ));
@@ -204,7 +205,7 @@ class UserControllerTest extends IntegrationTest {
     @Test
     @DisplayName("사용자_회원탈퇴하면_탈퇴처리하고 상태코드 200과 true를 반환한다.")
     @WithMockCustomUser(username = USERNAME, password = PASSWORD)
-    void leave() throws Exception {
+    void userLeave() throws Exception {
         //given
         User user = getUser();
         em.persist(user);
@@ -217,11 +218,11 @@ class UserControllerTest extends IntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data").value(Boolean.TRUE))
-                .andDo(document("exists-username",
+                .andDo(document(IDENTIFIER.formatted("user-leave"),
                         requestFields(
                                 fieldWithPath("password").type(STRING).description("사용자 아이디"),
                                 fieldWithPath("provider").type(STRING).description("로그인 제공자 코드"),
@@ -229,9 +230,9 @@ class UserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
-                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("status").type(NUMBER).description("상태코드"),
-                                fieldWithPath("code").type(STRING).description("코드"),
+                                fieldWithPath("code").type(STRING).description("응답코드"),
+                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("data").type(BOOLEAN).description("탈퇴 성공 여부")
                         )
                 ));

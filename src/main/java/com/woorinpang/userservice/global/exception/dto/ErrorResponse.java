@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 public class ErrorResponse {
 
     private LocalDateTime timestamp;
-    private String message;
-    private int status;
     private String code;
+    private int status;
+    private String message;
     private List<FieldError> errors;
 
     private static final String DEFAULT_ERROR_MESSAGE = "ERROR";

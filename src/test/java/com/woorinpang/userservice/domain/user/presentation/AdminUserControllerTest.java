@@ -44,8 +44,9 @@ class AdminUserControllerTest extends IntegrationTest {
                         .queryParams(params))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data.content.length()", Matchers.is(5)))
                 .andDo(print())
                 .andDo(document(IDENTIFIER.formatted("find-page-user"),
@@ -59,9 +60,9 @@ class AdminUserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
-                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("code").type(STRING).description("상태코드"),
+                                fieldWithPath("message").type(STRING).description("메시지"),
                                 fieldWithPath("data.content[*].userId").type(NUMBER).description("사용자 고유번호"),
                                 fieldWithPath("data.content[*].username").type(STRING).description("사용자 아이디"),
                                 fieldWithPath("data.content[*].email").type(STRING).description("사용자 이메일"),
@@ -97,9 +98,9 @@ class AdminUserControllerTest extends IntegrationTest {
         this.mockMvc.perform(get(API_V1_ADMIN_GET_FIND_USER, user.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.data.userId").value(user.getId()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data.username").value(USERNAME))
                 .andExpect(jsonPath("$.data.email").value(EMAIL))
                 .andExpect(jsonPath("$.data.name").value(NAME))
@@ -113,9 +114,9 @@ class AdminUserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
+                                fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("code").type(STRING).description("응답코드"),
                                 fieldWithPath("message").type(STRING).description("메시지"),
-                                fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("data.userId").type(NUMBER).description("사용자 고유번호"),
                                 fieldWithPath("data.username").type(STRING).description("사용자 아이디"),
                                 fieldWithPath("data.email").type(STRING).description("사용자 이메일"),
@@ -143,8 +144,9 @@ class AdminUserControllerTest extends IntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.CREATED.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data.userId").isNotEmpty())
                 .andDo(print())
                 .andDo(document(IDENTIFIER.formatted("save-user"),
@@ -158,9 +160,9 @@ class AdminUserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
+                                fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("code").type(STRING).description("응답코드"),
                                 fieldWithPath("message").type(STRING).description("메시지"),
-                                fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("data.userId").type(NUMBER).description("저장된 사용자 고유번호")
                         )
                 ));
@@ -181,8 +183,9 @@ class AdminUserControllerTest extends IntegrationTest {
                         .content(this.objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(HttpStatus.OK.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data.userId").isNotEmpty())
                 .andDo(print())
                 .andDo(document(IDENTIFIER.formatted("update-user"),
@@ -195,9 +198,9 @@ class AdminUserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
+                                fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("code").type(STRING).description("응답코드"),
                                 fieldWithPath("message").type(STRING).description("메시지"),
-                                fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("data.userId").type(NUMBER).description("수정된 사용자 고유번호")
                         )
                 ))
@@ -214,8 +217,9 @@ class AdminUserControllerTest extends IntegrationTest {
         //expected
         this.mockMvc.perform(delete(API_V1_ADMIN_DELETE_DELETE_USER, user.getId()))
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.message").value(HttpStatus.NO_CONTENT.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.NO_CONTENT.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.NO_CONTENT.getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
                 .andExpect(jsonPath("$.data").isEmpty())
                 .andDo(print())
                 .andDo(document(IDENTIFIER.formatted("delete-user"),
@@ -224,9 +228,9 @@ class AdminUserControllerTest extends IntegrationTest {
                         ),
                         responseFields(
                                 fieldWithPath("timestamp").type(STRING).description("api 요청 시간"),
+                                fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("code").type(STRING).description("응답코드"),
                                 fieldWithPath("message").type(STRING).description("메시지"),
-                                fieldWithPath("status").type(NUMBER).description("상태코드"),
                                 fieldWithPath("data").ignored()
                         )
                 ));

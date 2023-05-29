@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -31,12 +32,13 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 @Import(IntegrationTestConfig.class)
 @ActiveProfiles(profiles = "test")
 @Transactional
-@AutoConfigureRestDocs(uriScheme = "https", uriHost = "woorinpang.user.com", uriPort = 9000)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "woorinpang.com", uriPort = 9000)
 public abstract class IntegrationTest {
     @PersistenceContext protected EntityManager em;
     @Autowired protected MockMvc mockMvc;
     @Autowired protected ObjectMapper objectMapper;
     @Autowired protected RestDocumentationResultHandler restDocumentationResultHandler;
+    @Autowired protected MessageSource messageSource;
 
     @BeforeEach
     void init(final WebApplicationContext context, final RestDocumentationContextProvider provider) {
