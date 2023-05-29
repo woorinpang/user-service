@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.List;
@@ -189,6 +190,9 @@ class AdminUserControllerTest extends IntegrationTest {
                 .andExpect(jsonPath("$.data.userId").isNotEmpty())
                 .andDo(print())
                 .andDo(document(IDENTIFIER.formatted("update-user"),
+                        pathParameters(
+                                parameterWithName("userId").description("사용자 고유번호")
+                        ),
                         requestFields(
                                 fieldWithPath("password").type(STRING).description("사용자 패스워드"),
                                 fieldWithPath("email").type(STRING).description("사용자 이메일"),
