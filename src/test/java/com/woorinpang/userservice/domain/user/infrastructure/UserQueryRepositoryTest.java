@@ -1,16 +1,13 @@
 package com.woorinpang.userservice.domain.user.infrastructure;
 
 import com.woorinpang.userservice.domain.user.UserSetup;
-import com.woorinpang.userservice.domain.user.UserTestConfig;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserResponse;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.domain.user.domain.Role;
 import com.woorinpang.userservice.domain.user.domain.User;
 import com.woorinpang.userservice.domain.user.domain.UserState;
-import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
 import com.woorinpang.userservice.test.RepositoryTest;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -19,12 +16,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import(UserTestConfig.class)
-@DisplayName("UserQueryRepository 레포지토리 테스트")
+@DisplayName("[레포지토리 테스트] UserQueryRepository")
 class UserQueryRepositoryTest extends RepositoryTest {
-
-    @Autowired protected UserQueryRepository userQueryRepository;
-    @Autowired protected UserRepository userRepository;
 
     @BeforeAll
     void init() {
@@ -45,7 +38,7 @@ class UserQueryRepositoryTest extends RepositoryTest {
                     .build();
 
             //when
-            Page<FindPageUserDto> content = userQueryRepository.findPageUsers(condition, pageRequest);
+            Page<FindPageUserResponse> content = userQueryRepository.findPageUser(condition, pageRequest);
 
             //then
             assertThat(content).extracting("userId").first().isInstanceOf(Long.class);
@@ -75,7 +68,7 @@ class UserQueryRepositoryTest extends RepositoryTest {
                     .build();
 
             //when
-            Page<FindPageUserDto> content = userQueryRepository.findPageUsers(condition, pageRequest);
+            Page<FindPageUserResponse> content = userQueryRepository.findPageUser(condition, pageRequest);
 
             //then
             assertThat(content.getTotalElements()).isEqualTo(10);
@@ -93,7 +86,7 @@ class UserQueryRepositoryTest extends RepositoryTest {
                     .build();
 
             //when
-            Page<FindPageUserDto> content = userQueryRepository.findPageUsers(condition, pageRequest);
+            Page<FindPageUserResponse> content = userQueryRepository.findPageUser(condition, pageRequest);
 
             //then
             assertThat(content.getTotalElements()).isEqualTo(5);
@@ -110,7 +103,7 @@ class UserQueryRepositoryTest extends RepositoryTest {
                     .build();
             
             //when
-            Page<FindPageUserDto> content = userQueryRepository.findPageUsers(condition, pageRequest);
+            Page<FindPageUserResponse> content = userQueryRepository.findPageUser(condition, pageRequest);
 
             //then
             assertThat(content.getTotalElements()).isEqualTo(5);
@@ -127,7 +120,7 @@ class UserQueryRepositoryTest extends RepositoryTest {
                     .build();
 
             //when
-            Page<FindPageUserDto> content = userQueryRepository.findPageUsers(condition, pageRequest);
+            Page<FindPageUserResponse> content = userQueryRepository.findPageUser(condition, pageRequest);
 
             //then
             assertThat(content.getTotalElements()).isEqualTo(5);
@@ -147,7 +140,7 @@ class UserQueryRepositoryTest extends RepositoryTest {
                     .build();
 
             //when
-            Page<FindPageUserDto> content = userQueryRepository.findPageUsers(condition, pageRequest);
+            Page<FindPageUserResponse> content = userQueryRepository.findPageUser(condition, pageRequest);
 
             //then
             assertThat(content.getTotalElements()).isZero();

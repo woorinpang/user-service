@@ -31,7 +31,7 @@ repositories {
 ext {
     asciidocVersion = "3.0.0"
     snippetsDir = file('build/generated-snippets')
-    set('springCloudVersion', "2022.0.1")
+    set('springCloudVersion', "2022.0.3")
 }
 
 dependencies {
@@ -113,32 +113,25 @@ asciidoctor {
     configurations 'asciidoctorExt'
     dependsOn test
 }
+asciidoctor.doFirst {
+    delete file("src/main/resources/static/docs")
+}
 bootJar {
     dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
+    copy {
+        from ("${asciidoctor.outputDir}/html5") {
+            into 'static/docs'
+        }
     }
+    finalizedBy 'copyDocument'
+}
+//bootJar 실행 후 복사
+task copyDocument(type: Copy) {
+    dependsOn bootJar
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
 }
 
 clean {
     delete file('src/main/generated') //인텔리제이 Annotation processor 생성물
 }
-
-//querydsl
-//def querydslDir = "$buildDir/generated/querydsl"
-//querydsl {
-//    jpa = true
-//    querydslSourcesDir = querydslDir
-//}
-//sourceSets {
-//    main.java.srcDir querydslDir
-//}
-//compileQuerydsl {
-//    options.annotationProcessorPath = configurations.querydsl
-//}
-//configurations {
-//    compileOnly {
-//        extendsFrom annotationProcessor
-//    }
-//    querydsl.extendsFrom compileClasspath
-//}

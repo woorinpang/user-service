@@ -14,7 +14,7 @@ import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
 import com.woorinpang.userservice.domain.user.exception.UsernameAlreadyExistsException;
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
-import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserDto;
+import com.woorinpang.userservice.domain.user.infrastructure.dto.FindPageUserResponse;
 import com.woorinpang.userservice.domain.user.infrastructure.dto.UserSearchCondition;
 import com.woorinpang.userservice.global.common.entity.Provider;
 import com.woorinpang.userservice.global.exception.BusinessMessageException;
@@ -70,8 +70,8 @@ public class UserService {
     /**
      * 사용자 목록조회
      */
-    public Page<FindPageUserDto> findUsers(UserSearchCondition condition, Pageable pageable) {
-        return userQueryRepository.findPageUsers(condition, pageable);
+    public Page<FindPageUserResponse> findPageUser(UserSearchCondition condition, Pageable pageable) {
+        return userQueryRepository.findPageUser(condition, pageable);
     }
 
     /**

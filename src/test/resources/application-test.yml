@@ -56,15 +56,16 @@ spring:
             user_name_attribute: id
   messages:
     basename: messages, errors
-  h2:
-    console:
-      enabled: true
-      path: /h2
 
 eureka:
   client:
     fetch-registry: false
     register-with-eureka: false
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
 
 # 2시간(7,200,000), 1일(86,400,000) jwt token
 token:
