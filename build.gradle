@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.1.0'
+    id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
 //    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
@@ -31,7 +31,7 @@ repositories {
 ext {
     asciidocVersion = "3.0.0"
     snippetsDir = file('build/generated-snippets')
-    set('springCloudVersion', "2022.0.1")
+    set('springCloudVersion', "2022.0.3")
 }
 
 dependencies {

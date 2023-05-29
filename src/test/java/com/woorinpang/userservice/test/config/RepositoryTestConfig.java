@@ -1,4 +1,4 @@
-package com.woorinpang.userservice.domain.user;
+package com.woorinpang.userservice.test.config;
 
 import com.woorinpang.userservice.domain.user.infrastructure.UserQueryRepository;
 import jakarta.persistence.EntityManager;
@@ -7,12 +7,12 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
 @TestConfiguration
-public class UserTestConfig {
+public class RepositoryTestConfig {
+    @PersistenceContext private EntityManager em;
 
-    @PersistenceContext protected EntityManager em;
-
+    //사용자
     @Bean
-    protected UserQueryRepository userQueryRepository() {
+    public UserQueryRepository userQueryRepository() {
         return new UserQueryRepository(em);
     }
 }

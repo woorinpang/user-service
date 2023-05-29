@@ -1,10 +1,10 @@
 package com.woorinpang.userservice.domain.user.presentation;
 
 import com.woorinpang.userservice.domain.user.application.UserService;
-import com.woorinpang.userservice.domain.user.application.dto.command.UserLeaveCommand;
 import com.woorinpang.userservice.domain.user.presentation.user.request.*;
 import com.woorinpang.userservice.domain.user.presentation.user.response.UserInfoResponse;
 import com.woorinpang.userservice.domain.user.presentation.user.response.UserJoinResponse;
+import com.woorinpang.userservice.global.common.cotroller.CommonController;
 import com.woorinpang.userservice.global.common.json.JsonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserController {
-
+public class UserController extends CommonController {
     private final UserService userService;
 
     /**
@@ -30,7 +29,7 @@ public class UserController {
         Long userId = userService.join(request.toCommand());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(JsonResponse.CREATED(new UserJoinResponse(userId)));
+                .body(JsonResponse.CREATED(this.getMessage("user.join.success"), new UserJoinResponse(userId)));
     }
 
     /**
@@ -82,7 +81,7 @@ public class UserController {
      * 사용자 회원탈퇴
     */
     @PostMapping("/leave")
-    public ResponseEntity<JsonResponse> leave(@RequestBody @Valid UserLeaveRequest request) {
+    public ResponseEntity<JsonResponse> userLeave(@RequestBody @Valid UserLeaveRequest request) {
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity
                 .status(HttpStatus.OK)
