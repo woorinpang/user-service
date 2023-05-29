@@ -36,14 +36,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@DisplayName("UserService 단위 테스트")
+@DisplayName("[단위 테스트] UserService")
 class UserServiceTest extends UnitTest {
-
     @InjectMocks private UserService userService;
-    @Mock private UserQueryRepository userQueryRepository;
-    @Mock private UserRepository userRepository;
-    @Mock private UserCommandMapper userCommandMapper;
-    @Mock private BCryptPasswordEncoder passwordEncoder;
 
     @Nested
     @DisplayName("사용자_목록_조회하면_")

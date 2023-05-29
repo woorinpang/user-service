@@ -19,14 +19,14 @@ public class JsonResponse<T> {
 
     private T data;
 
-    private static final String DEFAULT_SUCCESS_MESSAGE = "SUCCESS";
+    private static final String DEFAULT_SUCCESS_CODE = "SUCCESS";
 
     @Builder
     private JsonResponse(LocalDateTime timestamp, HttpStatus httpStatus, T data) {
         this.timestamp = timestamp;
         this.message = httpStatus.getReasonPhrase();
         this.status = httpStatus.value();
-        this.code = DEFAULT_SUCCESS_MESSAGE;
+        this.code = DEFAULT_SUCCESS_CODE;
         this.data = data;
     }
 
