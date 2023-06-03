@@ -143,3 +143,60 @@ include::{snippets}/user-controller-test/user-leave/request-fields.adoc[]
 .응답
 include::{snippets}/user-controller-test/user-leave/http-response.adoc[]
 include::{snippets}/user-controller-test/user-leave/response-fields.adoc[]
+
+
+
+= 관리자(Admin) API Document
+
+== 2. 관리자
+_/api/v1/admin/users/**_
+
+=== 2.1 사용자 목록 조회
+.요청
+include::{snippets}/admin-user-controller-test/find-page-user/http-request.adoc[]
+include::{snippets}/admin-user-controller-test/find-page-user/query-parameters.adoc[]
+
+.응답
+include::{snippets}/admin-user-controller-test/find-page-user/http-response.adoc[]
+include::{snippets}/admin-user-controller-test/find-page-user/response-fields.adoc[]
+
+
+=== 2.2 사용자 단건 조회
+.요청
+include::{snippets}/admin-user-controller-test/find-user/http-request.adoc[]
+include::{snippets}/admin-user-controller-test/find-user/path-parameters.adoc[]
+
+.응답
+include::{snippets}/admin-user-controller-test/find-user/http-response.adoc[]
+include::{snippets}/admin-user-controller-test/find-user/response-fields.adoc[]
+
+
+=== 2.3 사용자 저장
+.요청
+include::{snippets}/admin-user-controller-test/save-user/http-request.adoc[]
+include::{snippets}/admin-user-controller-test/save-user/request-fields.adoc[]
+
+.응답
+include::{snippets}/admin-user-controller-test/save-user/http-response.adoc[]
+include::{snippets}/admin-user-controller-test/save-user/response-fields.adoc[]
+
+
+=== 2.4 사용자 수정
+.요청
+include::{snippets}/admin-user-controller-test/update-user/http-request.adoc[]
+include::{snippets}/admin-user-controller-test/update-user/path-parameters.adoc[]
+include::{snippets}/admin-user-controller-test/update-user/request-fields.adoc[]
+
+.응답
+include::{snippets}/admin-user-controller-test/update-user/http-response.adoc[]
+include::{snippets}/admin-user-controller-test/update-user/response-fields.adoc[]
+
+
+=== 2.5 사용자 삭제
+.요청
+include::{snippets}/admin-user-controller-test/delete-user/http-request.adoc[]
+include::{snippets}/admin-user-controller-test/delete-user/path-parameters.adoc[]
+
+.응답
+include::{snippets}/admin-user-controller-test/delete-user/http-response.adoc[]
+include::{snippets}/admin-user-controller-test/delete-user/response-fields.adoc[]
