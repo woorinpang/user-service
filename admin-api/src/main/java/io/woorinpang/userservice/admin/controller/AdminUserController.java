@@ -2,6 +2,7 @@ package io.woorinpang.userservice.admin.controller;
 
 import io.woorinpang.userservice.admin.controller.request.AdminSaveUserRequest;
 import io.woorinpang.userservice.admin.controller.response.AdminFindUsersResponse;
+import io.woorinpang.userservice.storage.db.core.user.AdminUser;
 import io.woorinpang.userservice.storage.db.core.user.AdminUserSearchCondition;
 import io.woorinpang.userservice.admin.domain.AdminUserService;
 import io.woorinpang.userservice.admin.support.response.AdminApiResponse;
@@ -26,6 +27,8 @@ public class AdminUserController {
     ) {
         Page<AdminFindUsersResponse> response =
                 adminUserService.findUsers(condition, pageable).map(AdminFindUsersResponse::new);
+        Page<AdminUser> users = adminUserService.findUsers(condition, pageable);
+        Page<AdminFindUsersResponse> map = users.map(AdminFindUsersResponse::new);
         return ResponseEntity.ok().body(AdminApiResponse.success(response));
     }
 
