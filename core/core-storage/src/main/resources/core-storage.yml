@@ -7,6 +7,7 @@ jasypt:
       suffix: )
 
 spring:
+
   jpa:
     open-in-view: false
     hibernate:
@@ -31,7 +32,7 @@ spring:
 storage:
   datasource:
     core:
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      driver-class-name: org.h2.Driver
       jdbc-url: jdbc:h2:mem:core;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
       username: sa
       password:
