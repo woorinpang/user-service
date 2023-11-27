@@ -1,1 +1,13 @@
+pluginManagement {
+    plugins {
+        id 'org.springframework.boot' version "${springBootVersion}"
+        id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+        id 'org.asciidoctor.jvm.convert' version "${asciidoctorConvertVersion}"
+    }
+}
+
 rootProject.name = 'user-service'
+
+include 'core:core-api'
+include 'core:core-domain'
+include 'core:core-storage'
