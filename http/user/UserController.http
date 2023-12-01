@@ -9,3 +9,6 @@ Content-Type: application/json
   "roleCode" : "ROLE_USER",
   "userStateCode" :  "NORMAL"
 }
+
+###
+GET http://localhost:9000/health
