@@ -26,12 +26,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/auth")
 public class AuthController extends CommonController {
-
     private final TokenProvider tokenProvider;
     private final AuthService authService;
-    private final UserService userService;
 
     /**
      * refresh token 과 일치하는 사용자가 있으면 access token 을 새로 발급하여 리턴한다.

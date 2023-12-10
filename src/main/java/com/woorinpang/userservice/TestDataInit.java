@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 public class TestDataInit {
 
@@ -31,10 +31,10 @@ public class TestDataInit {
         private final TokenProvider tokenProvider;
         public void userInit() {
             User user = User.createBuilder()
-                    .username("spring")
-                    .email("spring@naver.com")
+                    .username("admin")
+                    .email("admin@woorinpang.com")
                     .password("1234")
-                    .name("스프링")
+                    .name("관리자")
                     .role(Role.ADMIN)
                     .userState(UserState.NORMAL)
                     .build();
