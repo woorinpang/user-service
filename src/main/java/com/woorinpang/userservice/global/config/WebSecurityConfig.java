@@ -17,9 +17,12 @@ import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -44,22 +47,21 @@ public class WebSecurityConfig {
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(HttpSecurity.class));
+        //AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(HttpSecurity.class));
+        AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, tokenProvider, authService);
 
         http
-                    .csrf().disable()
-                    .headers().frameOptions().disable()
-                .and()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //토큰 사용하기 때문에 세션은 비활성화
-                .and()
-                    .authorizeHttpRequests()
-                    .requestMatchers(GlobalConstant.SECURITY_PERMITAIL_ANTPATTERNS).permitAll()
-//                    .anyRequest().access(authorizationManager())
-                .and()
-                    .addFilter(getAuthenticationFilter(authenticationManager))
-                    .logout()
-                    .logoutSuccessUrl("/");
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(GlobalConstant.SECURITY_PERMITAIL_ANTPATTERNS).permitAll()
+//                        .anyRequest().access("@authorizationService.isAuthorization(request, authentication)") // 호출 시 권한 인가 데이터 확인
+                )
+                .addFilter(authenticationFilter)
+                .logout(logout -> logout.logoutSuccessUrl("/"))
+        ;
 
         return http.build();
     }
@@ -90,30 +92,12 @@ public class WebSecurityConfig {
 //    }
 
     //Filter 등록을 위한 Bean
-    protected AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
-        return new AuthenticationFilter(authenticationManager, tokenProvider, authService);
-    }
+//    protected AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
+//        return new AuthenticationFilter(authenticationManager, tokenProvider, authService);
+//    }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http)
-            throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(authService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
+        return authConfiguration.getAuthenticationManager();
     }
-
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration, AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(authService).passwordEncoder(passwordEncoder);
-//        return auth.build();
-//    }
-
-//    private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
-//        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, tokenProvider, authService);
-//        AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder(objectPostProcessor);
-//        authenticationFilter.setAuthenticationManager(authenticationManager(builder));
-//        return authenticationFilter;
-//    }
 }

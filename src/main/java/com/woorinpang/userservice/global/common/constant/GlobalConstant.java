@@ -4,7 +4,7 @@ public interface GlobalConstant {
 
     final String HEADER_SITE_ID = "X-Site-Id"; //header 에 어떤 사이트에서 보내는 요청인지 구분하기 위한 정보
     final String AUTHORIZATION_URI = "/api/v1/auth/check";
-    final String REFRESH_TOKEN_URI = "/api/v1/users/token/refresh";
+    final String REFRESH_TOKEN_URI = "/api/v1/auth/token/refresh";
     final String MESSAGES_URI = "/api/v1/messages/**";
     final String API_DOCS_URI = "/docs/**";
     final String LOGIN_URI = "/login";
