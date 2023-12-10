@@ -63,7 +63,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
 
     //database
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
     //querydsl springboot 3.0 이상
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'

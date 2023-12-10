@@ -6,13 +6,16 @@ spring:
     name: user-service
   config:
     import: optional:configserver:http://localhost:8888
+  datasource:
+    url: jdbc:mysql://localhost:3307/user_db?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: woorinpang_user
+    password: woorinpang_pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop
     properties:
       hibernate:
-#        dialect: org.hibernate.dialect.MySQL570Dialect
-#        storage_engine: innodb
         format_sql: true
         default_batch_fetch_size: 1000
         jdbc:
@@ -20,6 +23,9 @@ spring:
         order_inserts: true
         order_updates: true
     show-sql: true
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
     # oauth2 를 사용하기 위해서는 아래의 TODO 를 등록해야 함
   security:
     oauth2:
@@ -74,3 +80,12 @@ management:
 logging:
   level:
     root: info
+
+# 2시간(7,200,000), 1일(86,400,000) jwt token
+token:
+  access_expiration_time: 7200000
+  refresh_expiration_time: 86400000
+  secret-key: 'woorinpang_token_secret'
+
+apigateway:
+  host: http://${apigateway.hostname:localhost}:${server.port}
