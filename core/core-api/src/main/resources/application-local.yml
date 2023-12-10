@@ -1,11 +1,6 @@
 server:
   port: 9000
 
-token:
-  access_expiration_time: 7200000
-  refresh_expiration_time: 86400000
-  secret-key: 'woorinpang_token_secret'
-
 eureka:
   client:
     fetch-registry: false

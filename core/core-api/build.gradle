@@ -8,9 +8,4 @@ dependencies {
     //cloud
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
-    //token
-    implementation 'com.auth0:java-jwt:3.18.3'
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'javax.xml.bind:jaxb-api:2.3.0'
 }
