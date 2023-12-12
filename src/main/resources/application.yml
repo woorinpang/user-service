@@ -80,12 +80,3 @@ management:
 logging:
   level:
     root: info
-
-# 2시간(7,200,000), 1일(86,400,000) jwt token
-token:
-  access_expiration_time: 7200000
-  refresh_expiration_time: 86400000
-  secret-key: 'woorinpang_token_secret'
-
-apigateway:
-  host: http://${apigateway.hostname:localhost}:${server.port}
