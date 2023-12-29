@@ -52,6 +52,7 @@ public class TokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+
         // userid 가져오기
         User findUser = authService.findUserByUsername(username);
         Long userId = findUser.getId();
