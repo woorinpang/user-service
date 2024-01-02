@@ -1,14 +1,19 @@
-POST http://localhost:9000/api/v1/admin/users
+### 회원가입
+POST {{host}}/users/join
 Content-Type: application/json
 
 {
   "username" : "spring",
-  "password" :  "1234",
+  "password" : "Dlgmlcjf1!",
   "email" : "spring@woorinpang.com",
-  "name" : "baekho",
-  "roleCode" : "ROLE_USER",
-  "userStateCode" :  "NORMAL"
+  "name" : "baekho"
 }
 
-###
-GET http://localhost:9000/health
+### 로그인
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "username" : "spring",
+  "password" : "Dlgmlcjf1!"
+}

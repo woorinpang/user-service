@@ -1,10 +1,15 @@
 package com.woorinpang.userservice.domain.auth.presentation;
 
 import com.woorinpang.userservice.domain.auth.application.AuthService;
+import com.woorinpang.userservice.domain.user.application.UserService;
+import com.woorinpang.userservice.domain.user.presentation.user.request.UserJoinRequest;
+import com.woorinpang.userservice.domain.user.presentation.user.response.UserJoinResponse;
+import com.woorinpang.userservice.global.common.cotroller.CommonController;
 import com.woorinpang.userservice.global.common.json.JsonResponse;
 import com.woorinpang.userservice.global.config.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -21,9 +26,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
-public class AuthController {
-
+@RequestMapping("/auth")
+public class AuthController extends CommonController {
     private final TokenProvider tokenProvider;
     private final AuthService authService;
 

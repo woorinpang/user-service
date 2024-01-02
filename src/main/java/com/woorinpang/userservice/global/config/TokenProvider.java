@@ -52,6 +52,7 @@ public class TokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+
         // userid 가져오기
         User findUser = authService.findUserByUsername(username);
         Long userId = findUser.getId();
@@ -99,6 +100,7 @@ public class TokenProvider {
     public String refreshToken(String refreshToken, HttpServletResponse response) {
         // refresh token 으로 유효한 사용자가 있는지 찾는다.
         User findUser = authService.findByRefreshToken(refreshToken);
+
         // 사용자가 있으면 access token 을 새로 발급하여 리턴한다.
         String accessToken = createAccessToken(findUser.getRole().getCode(), findUser.getId(), findUser.getUsername());
 
