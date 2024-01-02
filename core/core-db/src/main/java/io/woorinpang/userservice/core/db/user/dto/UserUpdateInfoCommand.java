@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.domain.user.dto;
+package io.woorinpang.userservice.core.db.user.dto;
 
 import lombok.Builder;
 

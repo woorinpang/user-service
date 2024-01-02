@@ -1,5 +1,7 @@
 package io.woorinpang.userservice.core.db.user;
 
+import io.woorinpang.userservice.core.db.user.dto.ModifyUserCommand;
+import io.woorinpang.userservice.core.db.user.dto.UserUpdateInfoCommand;
 import io.woorinpang.userservice.core.support.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -15,10 +17,10 @@ import static org.springframework.util.StringUtils.*;
 
 @Entity
 @Table(name = "users")
-@DynamicInsert
-@DynamicUpdate
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
+@DynamicUpdate
 public class User extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +40,7 @@ public class User extends BaseTimeEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", columnDefinition = "varchar(15) not null comment '사용자 역할'")
+    @Column(name = "userRole", columnDefinition = "varchar(15) not null comment '사용자 역할'")
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
@@ -67,26 +69,21 @@ public class User extends BaseTimeEntity {
      * 사용자 생성
      */
     @Builder(builderMethodName = "createBuilder")
-    public User(String username, String password, String email,
-                String name, UserRole role, UserState userState,
-                String googleId, String kakaoId, String naverId) {
+    public User(String username, String password, String email, String name, UserRole role, UserState userState) {
         this.username = username;
-        this.password = new BCryptPasswordEncoder().encode(password);
+        this.password = password;
         this.email = email;
         this.name = name;
         this.role = role;
         this.userState = userState;
-        this.googleId = googleId;
-        this.kakaoId = kakaoId;
-        this.naverId = naverId;
     }
 
     /**
      * 사용자 수정
      */
-    public void update(UpdateUserCommand command) {
+    public void update(ModifyUserCommand command) {
         //새로운 비밀번호가 들어오면 인코드 아니면 기존 비밀번호 업데이트
-        this.password = hasText(command.password()) ? new BCryptPasswordEncoder().encode(command.password()) : this.password;
+        this.password = command.password();
         this.email = command.email();
         this.name = command.name();
         this.role = command.role();

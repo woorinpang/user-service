@@ -1,26 +1,11 @@
 package io.woorinpang.userservice.core.domain.auth;
 
-
-import com.woorinpang.userservice.domain.log.domain.UserLoginLog;
-import com.woorinpang.userservice.domain.log.infrastructure.UserLoginLogRepository;
-import com.woorinpang.userservice.domain.user.domain.UserTemp;
-import com.woorinpang.userservice.domain.user.domain.UserState;
-import com.woorinpang.userservice.domain.user.exception.UserNotFoundException;
-import com.woorinpang.userservice.domain.user.infrastructure.UserRepository;
-import com.woorinpang.userservice.global.config.dto.SocialUser;
-import jakarta.servlet.http.HttpServletRequest;
+import io.woorinpang.userservice.core.db.log.UserLoginLogRepository;
+import io.woorinpang.userservice.core.db.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
