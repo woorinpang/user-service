@@ -46,7 +46,6 @@ public class UserService {
 
     private final UserQueryRepository userQueryRepository;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
     private final UserCommandMapper mapper;
 
     /**
@@ -99,10 +98,7 @@ public class UserService {
         checkDuplicateUsername(command.username());
         checkDuplicateEmail(command.email());
 
-        //TODO Social Login
-        if (command.isProvider()) {
 
-        }
         return userRepository.save(mapper.toUser(command)).getId();
     }
 
