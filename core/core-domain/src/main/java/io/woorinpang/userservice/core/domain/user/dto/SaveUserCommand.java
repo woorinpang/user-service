@@ -1,0 +1,16 @@
+package io.woorinpang.userservice.core.domain.user.dto;
+
+import com.woorinpang.userservice.domain.user.domain.Role;
+import com.woorinpang.userservice.domain.user.domain.UserState;
+import lombok.Builder;
+
+@Builder
+public record SaveUserCommand(
+        String username,
+        String password,
+        String email,
+        String name,
+        Role role,
+        UserState userState
+) {
+}
