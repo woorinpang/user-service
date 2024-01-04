@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.domain.auth;
 
-import io.woorinpang.userservice.core.db.log.UserLoginLogRepository;
-import io.woorinpang.userservice.core.db.user.UserRepository;
+import io.woorinpang.userservice.core.db.log.UserLoginLogEntityRepository;
+import io.woorinpang.userservice.core.db.user.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,16 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.util.StringUtils.*;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final UserLoginLogRepository userLoginLogRepository;
+    private final UserEntityRepository userEntityRepository;
+    private final UserLoginLogEntityRepository userLoginLogRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -51,7 +49,7 @@ public class AuthService implements UserDetailsService {
 
     @Transactional
     public void loginCallback(Long siteId, String username, Boolean isSuccess, String failContent) {
-        UserTemp user = userRepository.findByUsername(username)
+        UserTemp user = userEntityRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found in the database"));
 
         if (Boolean.TRUE.equals(isSuccess)) {
@@ -82,7 +80,7 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public String updateRefreshToken(Long userId, String updateRefreshToken) {
 
-        UserTemp findUser = userRepository.findById(userId)
+        UserTemp findUser = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId)).updateRefreshToken(updateRefreshToken);
 
         return findUser.getRole().getCode();
@@ -92,17 +90,17 @@ public class AuthService implements UserDetailsService {
      * 토큰으로 사용자를 찾아 반환한다.
      */
     public UserTemp findByRefreshToken(String refreshToken) {
-        return userRepository.findByRefreshToken(refreshToken)
+        return userEntityRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new UsernameNotFoundException("notexists"));
     }
 
     private UserTemp findByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userEntityRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("nonononono"));
     }
 
     public Boolean isAuthorization(String username, String httpMethod, String requestPath) {
-        return userRepository.findByUsername(username).isPresent();
+        return userEntityRepository.findByUsername(username).isPresent();
     }
 
     public Boolean isAuthorization(HttpServletRequest request, Authentication authentication) {

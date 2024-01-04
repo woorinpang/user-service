@@ -64,7 +64,7 @@
 [[overview-header]]
 == 기본 정보
 
-Host : https://woorinpang.com/user-service/
+Host : https://woorinpang.com/userEntity-service/
 
 로그인 및 권한정보를 request header에 포함하여 인증
 
@@ -86,63 +86,63 @@ _/api/v1/users/**_
 
 === 1.1 회원가입
 .요청
-include::{snippets}/user-controller-test/user-join/http-request.adoc[]
-include::{snippets}/user-controller-test/user-join/request-fields.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-join/http-request.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-join/request-fields.adoc[]
 
 .응답
-include::{snippets}/user-controller-test/user-join/http-response.adoc[]
-include::{snippets}/user-controller-test/user-join/response-fields.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-join/http-response.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-join/response-fields.adoc[]
 
 
 === 1.2 내 정보 조회
 .요청
-include::{snippets}/user-controller-test/user-info/http-request.adoc[]
-include::{snippets}/user-controller-test/user-info/path-parameters.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-info/http-request.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-info/path-parameters.adoc[]
 
 .응답
-include::{snippets}/user-controller-test/user-info/http-response.adoc[]
-include::{snippets}/user-controller-test/user-info/response-fields.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-info/http-response.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-info/response-fields.adoc[]
 
 
 === 1.3 내 정보 수정
 .요청
-include::{snippets}/user-controller-test/user-update-info/http-request.adoc[]
-include::{snippets}/user-controller-test/user-update-info/path-parameters.adoc[]
-include::{snippets}/user-controller-test/user-update-info/request-fields.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-update-info/http-request.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-update-info/path-parameters.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-update-info/request-fields.adoc[]
 
 .응답
-include::{snippets}/user-controller-test/user-update-info/http-response.adoc[]
-include::{snippets}/user-controller-test/user-update-info/response-fields.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-update-info/http-response.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-update-info/response-fields.adoc[]
 
 
 === 1.4 내 비밀번호 확인
 .요청
-include::{snippets}/user-controller-test/match-password/http-request.adoc[]
-include::{snippets}/user-controller-test/match-password/request-fields.adoc[]
+include::{snippets}/userEntity-controller-test/match-password/http-request.adoc[]
+include::{snippets}/userEntity-controller-test/match-password/request-fields.adoc[]
 
 .응답
-include::{snippets}/user-controller-test/match-password/http-response.adoc[]
-include::{snippets}/user-controller-test/match-password/response-fields.adoc[]
+include::{snippets}/userEntity-controller-test/match-password/http-response.adoc[]
+include::{snippets}/userEntity-controller-test/match-password/response-fields.adoc[]
 
 
 === 1.5 아이디 중복확인
 .요청
-include::{snippets}/user-controller-test/match-password/http-request.adoc[]
-include::{snippets}/user-controller-test/match-password/request-fields.adoc[]
+include::{snippets}/userEntity-controller-test/match-password/http-request.adoc[]
+include::{snippets}/userEntity-controller-test/match-password/request-fields.adoc[]
 
 .응답
-include::{snippets}/user-controller-test/match-password/http-response.adoc[]
-include::{snippets}/user-controller-test/match-password/response-fields.adoc[]
+include::{snippets}/userEntity-controller-test/match-password/http-response.adoc[]
+include::{snippets}/userEntity-controller-test/match-password/response-fields.adoc[]
 
 
 === 1.6 사용자 회원탈퇴
 .요청
-include::{snippets}/user-controller-test/user-leave/http-request.adoc[]
-include::{snippets}/user-controller-test/user-leave/request-fields.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-leave/http-request.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-leave/request-fields.adoc[]
 
 .응답
-include::{snippets}/user-controller-test/user-leave/http-response.adoc[]
-include::{snippets}/user-controller-test/user-leave/response-fields.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-leave/http-response.adoc[]
+include::{snippets}/userEntity-controller-test/userEntity-leave/response-fields.adoc[]
 
 
 
@@ -153,50 +153,50 @@ _/api/v1/admin/users/**_
 
 === 2.1 사용자 목록 조회
 .요청
-include::{snippets}/admin-user-controller-test/find-page-user/http-request.adoc[]
-include::{snippets}/admin-user-controller-test/find-page-user/query-parameters.adoc[]
+include::{snippets}/admin-userEntity-controller-test/find-page-userEntity/http-request.adoc[]
+include::{snippets}/admin-userEntity-controller-test/find-page-userEntity/query-parameters.adoc[]
 
 .응답
-include::{snippets}/admin-user-controller-test/find-page-user/http-response.adoc[]
-include::{snippets}/admin-user-controller-test/find-page-user/response-fields.adoc[]
+include::{snippets}/admin-userEntity-controller-test/find-page-userEntity/http-response.adoc[]
+include::{snippets}/admin-userEntity-controller-test/find-page-userEntity/response-fields.adoc[]
 
 
 === 2.2 사용자 단건 조회
 .요청
-include::{snippets}/admin-user-controller-test/find-user/http-request.adoc[]
-include::{snippets}/admin-user-controller-test/find-user/path-parameters.adoc[]
+include::{snippets}/admin-userEntity-controller-test/find-userEntity/http-request.adoc[]
+include::{snippets}/admin-userEntity-controller-test/find-userEntity/path-parameters.adoc[]
 
 .응답
-include::{snippets}/admin-user-controller-test/find-user/http-response.adoc[]
-include::{snippets}/admin-user-controller-test/find-user/response-fields.adoc[]
+include::{snippets}/admin-userEntity-controller-test/find-userEntity/http-response.adoc[]
+include::{snippets}/admin-userEntity-controller-test/find-userEntity/response-fields.adoc[]
 
 
 === 2.3 사용자 저장
 .요청
-include::{snippets}/admin-user-controller-test/save-user/http-request.adoc[]
-include::{snippets}/admin-user-controller-test/save-user/request-fields.adoc[]
+include::{snippets}/admin-userEntity-controller-test/save-userEntity/http-request.adoc[]
+include::{snippets}/admin-userEntity-controller-test/save-userEntity/request-fields.adoc[]
 
 .응답
-include::{snippets}/admin-user-controller-test/save-user/http-response.adoc[]
-include::{snippets}/admin-user-controller-test/save-user/response-fields.adoc[]
+include::{snippets}/admin-userEntity-controller-test/save-userEntity/http-response.adoc[]
+include::{snippets}/admin-userEntity-controller-test/save-userEntity/response-fields.adoc[]
 
 
 === 2.4 사용자 수정
 .요청
-include::{snippets}/admin-user-controller-test/update-user/http-request.adoc[]
-include::{snippets}/admin-user-controller-test/update-user/path-parameters.adoc[]
-include::{snippets}/admin-user-controller-test/update-user/request-fields.adoc[]
+include::{snippets}/admin-userEntity-controller-test/update-userEntity/http-request.adoc[]
+include::{snippets}/admin-userEntity-controller-test/update-userEntity/path-parameters.adoc[]
+include::{snippets}/admin-userEntity-controller-test/update-userEntity/request-fields.adoc[]
 
 .응답
-include::{snippets}/admin-user-controller-test/update-user/http-response.adoc[]
-include::{snippets}/admin-user-controller-test/update-user/response-fields.adoc[]
+include::{snippets}/admin-userEntity-controller-test/update-userEntity/http-response.adoc[]
+include::{snippets}/admin-userEntity-controller-test/update-userEntity/response-fields.adoc[]
 
 
 === 2.5 사용자 삭제
 .요청
-include::{snippets}/admin-user-controller-test/delete-user/http-request.adoc[]
-include::{snippets}/admin-user-controller-test/delete-user/path-parameters.adoc[]
+include::{snippets}/admin-userEntity-controller-test/delete-userEntity/http-request.adoc[]
+include::{snippets}/admin-userEntity-controller-test/delete-userEntity/path-parameters.adoc[]
 
 .응답
-include::{snippets}/admin-user-controller-test/delete-user/http-response.adoc[]
-include::{snippets}/admin-user-controller-test/delete-user/response-fields.adoc[]
+include::{snippets}/admin-userEntity-controller-test/delete-userEntity/http-response.adoc[]
+include::{snippets}/admin-userEntity-controller-test/delete-userEntity/response-fields.adoc[]

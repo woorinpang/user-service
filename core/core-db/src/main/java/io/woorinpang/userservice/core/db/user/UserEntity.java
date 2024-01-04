@@ -2,11 +2,9 @@ package io.woorinpang.userservice.core.db.user;
 
 import io.woorinpang.userservice.core.db.user.dto.ModifyUserCommand;
 import io.woorinpang.userservice.core.db.user.dto.UserJoinCommand;
-import io.woorinpang.userservice.core.db.user.dto.UserUpdateInfoCommand;
 import io.woorinpang.userservice.core.support.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,16 +12,13 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
-import static org.springframework.util.StringUtils.*;
-
 @Entity
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @DynamicUpdate
-public class User extends BaseTimeEntity {
-
+public class UserEntity extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
@@ -48,16 +43,13 @@ public class User extends BaseTimeEntity {
     @Column(name = "userState", columnDefinition = "varchar(15) not null comment '사용자 상태'")
     private UserState state;
 
-    @Column(name = "refreshToken", columnDefinition = "varchar(255) default null comment '리프레시 토큰'")
-    private String refreshToken;
-
     @Column(name = "lastLoginDate", columnDefinition = "datetime(6) default null comment '최근 로그인 일자'")
     private LocalDateTime lastLoginDate;
 
     @Column(name = "loginFailCount", columnDefinition = "tinyint default 0 comment '로그인 실패 횟수'")
     private int loginFailCount;
 
-    public User(UserJoinCommand command) {
+    public UserEntity(UserJoinCommand command) {
         this.username = command.username();
         this.password = command.password();
         this.email = command.email();

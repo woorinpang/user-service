@@ -1,13 +1,7 @@
 package io.woorinpang.userservice.core.api.auth;
 
-import com.woorinpang.userservice.domain.auth.application.AuthService;
-import com.woorinpang.userservice.domain.user.application.UserService;
-import com.woorinpang.userservice.global.common.cotroller.CommonController;
-import com.woorinpang.userservice.global.common.json.JsonResponse;
-import com.woorinpang.userservice.global.config.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

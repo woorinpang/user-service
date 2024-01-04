@@ -1,11 +1,10 @@
 package io.woorinpang.userservice.core.domain.user;
 
-import io.woorinpang.userservice.core.db.user.User;
+import io.woorinpang.userservice.core.db.user.UserEntity;
 import io.woorinpang.userservice.core.db.user.UserQueryRepository;
-import io.woorinpang.userservice.core.db.user.UserRepository;
+import io.woorinpang.userservice.core.db.user.UserEntityRepository;
 import io.woorinpang.userservice.core.db.user.dto.FindPageUserProjection;
 import io.woorinpang.userservice.core.db.user.dto.UserSearchCondition;
-import io.woorinpang.userservice.core.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +16,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class UserFinder {
-    private final UserRepository userRepository;
+    private final UserEntityRepository userEntityRepository;
     private final UserQueryRepository userQueryRepository;
 
     @Transactional(readOnly = true)
@@ -27,14 +26,11 @@ public class UserFinder {
 
     @Transactional(readOnly = true)
     public FindUser findUser(long userId) {
-        return new FindUser(
-                userRepository.findById(userId)
-                        .orElseThrow(() -> new IllegalArgumentException(String.valueOf(userId)))
-        );
+        return new FindUser(UserHelper.findUserById(userEntityRepository, userId));
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<UserEntity> findUserByUsername(String username) {
+        return userEntityRepository.findByUsername(username);
     }
 }

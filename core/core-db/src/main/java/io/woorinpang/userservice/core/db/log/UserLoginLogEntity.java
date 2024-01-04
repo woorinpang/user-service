@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "user_login_log")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserLoginLog {
+public class UserLoginLogEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_login_log_id")
     private Long id;
@@ -29,7 +29,7 @@ public class UserLoginLog {
     private String failContent;
 
     @Builder(builderMethodName = "createUserLoginLog")
-    public UserLoginLog(Long siteId, String username, String remoteIp, Boolean isSuccess, String failContent) {
+    public UserLoginLogEntity(Long siteId, String username, String remoteIp, Boolean isSuccess, String failContent) {
         this.siteId = siteId;
         this.username = username;
         this.remoteIp = remoteIp;

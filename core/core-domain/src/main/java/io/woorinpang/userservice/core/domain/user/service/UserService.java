@@ -1,19 +1,10 @@
-package io.woorinpang.userservice.core.domain.user;
+package io.woorinpang.userservice.core.domain.user.service;
 
-import io.woorinpang.userservice.core.db.user.User;
+import io.woorinpang.userservice.core.domain.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-import static org.springframework.util.StringUtils.hasText;
-
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -61,7 +52,5 @@ public class UserService {
      */
     public void userLeave(UserTarget userTarget) {
         userRemover.leave(userTarget.id());
-
     }
-
 }

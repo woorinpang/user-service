@@ -2,7 +2,7 @@
         xmlns='http://www.ehcache.org/v3'
         xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
 
-    <cache alias="cache-user-authorization-by-roles"> <!-- 캐시 이름 -->
+    <cache alias="cache-userEntity-authorization-by-roles"> <!-- 캐시 이름 -->
         <key-type>java.util.List</key-type> <!-- 캐시 키 타입 -->
         <value-type>java.util.List</value-type> <!-- 캐시 저장 값 타입 -->
         <expiry>
@@ -25,7 +25,7 @@
         </resources>
     </cache>
 
-    <cache alias="cache-user-authorization-by-userid"> <!-- 캐시 이름 -->
+    <cache alias="cache-userEntity-authorization-by-userid"> <!-- 캐시 이름 -->
         <key-type>java.lang.String</key-type> <!-- 캐시 키 타입 -->
         <value-type>java.util.List</value-type> <!-- 캐시 저장 값 타입 -->
         <expiry>

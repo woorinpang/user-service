@@ -1,12 +1,11 @@
 package io.woorinpang.userservice.core.api.user;
 
 import io.woorinpang.userservice.core.api.user.request.ExistsUsernameRequest;
-import io.woorinpang.userservice.core.api.user.dto.user.request.UserLeaveRequest;
 import io.woorinpang.userservice.core.api.user.request.ModifyUserInfoRequest;
 import io.woorinpang.userservice.core.api.user.dto.user.response.FindUserInfoResponse;
 import io.woorinpang.userservice.core.api.user.request.JoinUserRequest;
 import io.woorinpang.userservice.core.api.user.response.DefaultSuccessIdResponse;
-import io.woorinpang.userservice.core.domain.user.UserService;
+import io.woorinpang.userservice.core.domain.user.service.UserService;
 import io.woorinpang.userservice.core.domain.user.UserTarget;
 import io.woorinpang.userservice.support.common.json.JsonResponse;
 import jakarta.validation.Valid;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 

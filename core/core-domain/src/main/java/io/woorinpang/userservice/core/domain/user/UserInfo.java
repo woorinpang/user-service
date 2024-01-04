@@ -11,7 +11,6 @@ public class UserInfo {
     private String email;
     private String name;
 
-
     public ModifyUserCommand toModifyUserCommand() {
         return ModifyUserCommand.builder()
                 .email(this.email)
