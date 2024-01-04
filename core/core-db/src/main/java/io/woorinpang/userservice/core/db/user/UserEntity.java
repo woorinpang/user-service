@@ -2,6 +2,8 @@ package io.woorinpang.userservice.core.db.user;
 
 import io.woorinpang.userservice.core.db.user.dto.ModifyUserCommand;
 import io.woorinpang.userservice.core.db.user.dto.UserJoinCommand;
+import io.woorinpang.userservice.core.enums.user.UserRole;
+import io.woorinpang.userservice.core.enums.user.UserState;
 import io.woorinpang.userservice.core.support.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,14 +15,14 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "Users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @DynamicUpdate
 public class UserEntity extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "userId")
     private Long id;
 
     @Column(name = "username", unique = true, columnDefinition = "varchar(60) not null comment '아이디'")
@@ -42,6 +44,9 @@ public class UserEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "userState", columnDefinition = "varchar(15) not null comment '사용자 상태'")
     private UserState state;
+
+    @Column(name = "refreshToken", columnDefinition = "varchar(255) default null comment '리프레시 토큰'")
+    private String refreshToken;
 
     @Column(name = "lastLoginDate", columnDefinition = "datetime(6) default null comment '최근 로그인 일자'")
     private LocalDateTime lastLoginDate;
@@ -91,5 +96,9 @@ public class UserEntity extends BaseTimeEntity {
     public void failLogin() {
         this.loginFailCount++;
         if (this.loginFailCount >= 5) this.state = UserState.HALT;
+    }
+
+    public void modifyRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

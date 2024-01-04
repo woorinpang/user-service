@@ -6,6 +6,8 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.woorinpang.userservice.core.db.user.dto.FindPageUserProjection;
 import io.woorinpang.userservice.core.db.user.dto.UserSearchCondition;
+import io.woorinpang.userservice.core.enums.user.UserRole;
+import io.woorinpang.userservice.core.enums.user.UserState;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static io.woorinpang.userservice.core.db.user.QUser.*;
+import static io.woorinpang.userservice.core.db.user.QUserEntity.*;
 import static org.springframework.util.StringUtils.hasText;
 
 @Repository
@@ -45,21 +47,21 @@ public class UserQueryRepository {
                 .select(
                         Projections.constructor(
                                 FindPageUserProjection.class,
-                                user.id,
-                                user.username,
-                                user.email,
-                                user.name,
-                                user.role,
-                                user.userState
+                                userEntity.id,
+                                userEntity.username,
+                                userEntity.email,
+                                userEntity.name,
+                                userEntity.role,
+                                userEntity.state
                         )
                 )
-                .from(user)
+                .from(userEntity)
                 .where(
                         searchKeywordContains(condition),
                         searchRoleEq(condition.getSearchRole()),
                         searchUserStateEq(condition.getSearchUserState())
                 )
-                .orderBy(user.id.desc())
+                .orderBy(userEntity.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -70,8 +72,8 @@ public class UserQueryRepository {
      */
     private JPAQuery<Long> getUserListCount(UserSearchCondition condition) {
         return queryFactory
-                .select(user.count())
-                .from(user)
+                .select(userEntity.count())
+                .from(userEntity)
                 .where(
                         searchKeywordContains(condition),
                         searchRoleEq(condition.getSearchRole()),
@@ -86,8 +88,8 @@ public class UserQueryRepository {
         if (condition.getSearchKeywordType() == null || !hasText(condition.getSearchKeyword())) return null;
 
         return switch (condition.getSearchKeywordType()) {
-            case NAME -> user.name.containsIgnoreCase(condition.getSearchKeyword());
-            case EMAIL -> user.email.containsIgnoreCase(condition.getSearchKeyword());
+            case NAME -> userEntity.name.containsIgnoreCase(condition.getSearchKeyword());
+            case EMAIL -> userEntity.email.containsIgnoreCase(condition.getSearchKeyword());
             default -> null;
         };
     }
@@ -95,14 +97,14 @@ public class UserQueryRepository {
     /**
      * where role = searchRole
      */
-    private BooleanExpression searchRoleEq(UserRole searchRole) {
-        return searchRole != null ? user.role.eq(searchRole) : null;
+    private BooleanExpression searchRoleEq(UserRole searchUserRole) {
+        return searchUserRole != null ? userEntity.role.eq(searchUserRole) : null;
     }
 
     /**
      * where userstate = searchUserState
      */
     private BooleanExpression searchUserStateEq(UserState searchUserState) {
-        return searchUserState != null ? user.userState.eq(searchUserState) : null;
+        return searchUserState != null ? userEntity.state.eq(searchUserState) : null;
     }
 }

@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.api.user.dto.user.response;
+package io.woorinpang.userservice.core.api.user.response;
 
 import io.woorinpang.userservice.core.domain.user.FindUser;
 import lombok.AccessLevel;
@@ -20,7 +20,7 @@ public class FindUserInfoResponse {
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.name = user.getName();
-        this.userRole = user.getUserRole();
-        this.userState = user.getUserState();
+        this.userRole = user.getUserRole().name();
+        this.userState = user.getUserState().name();
     }
 }

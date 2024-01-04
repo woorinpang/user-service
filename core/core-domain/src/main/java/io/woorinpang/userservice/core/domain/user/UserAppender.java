@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.domain.user;
 
 import io.woorinpang.userservice.core.db.user.UserEntity;
-import io.woorinpang.userservice.core.db.user.UserEntityRepository;
+import io.woorinpang.userservice.core.db.user.UserRepository;
 import io.woorinpang.userservice.core.db.user.dto.UserJoinCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import static io.woorinpang.userservice.core.domain.user.UserHelper.saveUser;
 @Component
 @RequiredArgsConstructor
 public class UserAppender {
-    private final UserEntityRepository userEntityRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public long append(UserLogin login, UserInfo info) {
@@ -23,6 +23,6 @@ public class UserAppender {
                 .name(info.getName())
                 .build();
 
-        return saveUser(userEntityRepository, new UserEntity(command)).getId();
+        return saveUser(userRepository, new UserEntity(command)).getId();
     }
 }

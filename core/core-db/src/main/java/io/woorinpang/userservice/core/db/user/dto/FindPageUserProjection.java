@@ -1,8 +1,8 @@
 package io.woorinpang.userservice.core.db.user.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import io.woorinpang.userservice.core.db.user.UserRole;
-import io.woorinpang.userservice.core.db.user.UserState;
+import io.woorinpang.userservice.core.enums.user.UserRole;
+import io.woorinpang.userservice.core.enums.user.UserState;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

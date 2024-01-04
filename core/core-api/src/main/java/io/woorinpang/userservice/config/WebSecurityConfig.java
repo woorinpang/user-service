@@ -1,6 +1,6 @@
 package io.woorinpang.userservice.config;
 
-import io.woorinpang.userservice.core.domain.auth.AuthService;
+import io.woorinpang.userservice.core.domain.user.service.AuthService;
 import io.woorinpang.userservice.support.common.constant.GlobalConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +35,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(GlobalConstant.SECURITY_PERMITALL_ANTPATTERNS).permitAll()
                         .requestMatchers("/admin/users/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**").hasRole("USER")
 //                        .anyRequest().access("@authorizationService.isAuthorization(request, authentication)") // 호출 시 권한 인가 데이터 확인
                 )
                 .addFilter(authenticationFilter)

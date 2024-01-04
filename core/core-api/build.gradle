@@ -2,6 +2,7 @@ bootJar.enabled = true
 jar.enabled = false
 
 dependencies {
+    implementation project(':core:core-enums')
     implementation project(':core:core-domain')
 
     //web

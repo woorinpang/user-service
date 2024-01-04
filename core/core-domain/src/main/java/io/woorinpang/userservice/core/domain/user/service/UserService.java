@@ -2,7 +2,6 @@ package io.woorinpang.userservice.core.domain.user.service;
 
 import io.woorinpang.userservice.core.domain.user.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,16 +12,6 @@ public class UserService {
     private final UserModifier userModifier;
     private final UserRemover userRemover;
     private final UserValidator userValidator;
-
-    /**
-     * 사용자 회원가입
-     */
-    public long userJoin(UserLogin login, UserInfo info) {
-        userValidator.duplicateLoginId(login.id());
-        userValidator.duplicateEmail(info.getEmail());
-
-        return userAppender.append(login, info);
-    }
 
     /**
      * 사용자 정보 조회
@@ -38,13 +27,6 @@ public class UserService {
         userValidator.duplicateEmail(info.getEmail());
 
         userModifier.modify(target, info);
-    }
-
-    /**
-     * 사용자 아이디 중복확인
-     */
-    public boolean existsUsername(String username) {
-        return userFinder.findUserByUsername(username).isPresent();
     }
 
     /**

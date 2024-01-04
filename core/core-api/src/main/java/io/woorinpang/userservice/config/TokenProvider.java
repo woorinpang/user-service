@@ -1,32 +1,27 @@
 package io.woorinpang.userservice.config;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.woorinpang.userservice.domain.auth.application.AuthService;
-import com.woorinpang.userservice.domain.user.domain.UserTemp;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.woorinpang.userservice.core.domain.user.FindUser;
+import io.woorinpang.userservice.core.domain.user.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class TokenProvider {
-
     private final AuthService authService;
-
-    public TokenProvider(AuthService authService) {
-        this.authService = authService;
-    }
 
     @Value("${token.access_expiration_time}")
     private String TOKEN_EXPIRATION_TIME;
@@ -52,22 +47,20 @@ public class TokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-
-        // userid 가져오기
-        UserTemp findUser = authService.findUserByUsername(username);
-        Long userId = findUser.getId();
+        FindUser findUser = authService.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found in the database!!"));
 
         // JWT Access 토큰 생성
-        String accessToken = createAccessToken(authorities,  userId, findUser.getUsername());
+        String accessToken = createAccessToken(authorities, findUser.getId(), findUser.getUsername());
 
         // JWT Refresh 토큰 생성 후 사용자 도메인에 저장하여 토큰 재생성 요청시 활용한다.
         String refreshToken = createRefreshToken();
-        authService.updateRefreshToken(userId, refreshToken);
+        authService.updateRefreshToken(findUser.getId(), refreshToken);
 
         // Header에 토큰 세팅
         response.addHeader(TOKEN_ACCESS_KEY, accessToken);
         response.addHeader(TOKEN_REFRESH_KEY, refreshToken);
-        response.addHeader(TOKEN_USER_ID, userId.toString());
+        response.addHeader(TOKEN_USER_ID, String.valueOf(findUser.getId()));
     }
 
     /**
@@ -99,17 +92,18 @@ public class TokenProvider {
      */
     public String refreshToken(String refreshToken, HttpServletResponse response) {
         // refresh token 으로 유효한 사용자가 있는지 찾는다.
-        UserTemp findUser = authService.findByRefreshToken(refreshToken);
+        FindUser findUser = authService.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new IllegalArgumentException("없음"));
 
         // 사용자가 있으면 access token 을 새로 발급하여 리턴한다.
-        String accessToken = createAccessToken(findUser.getRole().getCode(), findUser.getId(), findUser.getUsername());
+        String accessToken = createAccessToken(findUser.getUserRole().getCode(), findUser.getId(), findUser.getUsername());
 
         String filteredRefreshToken = refreshToken.replaceAll("\r", "").replaceAll("\n", "");
 
         // Header에 토큰 세팅
         response.addHeader(TOKEN_ACCESS_KEY, accessToken);
         response.addHeader(TOKEN_REFRESH_KEY, filteredRefreshToken);
-        response.addHeader(TOKEN_USER_ID, findUser.getId().toString());
+        response.addHeader(TOKEN_USER_ID, String.valueOf(findUser.getId()));
         return accessToken;
     }
 

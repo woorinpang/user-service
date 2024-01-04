@@ -1,7 +1,5 @@
-package io.woorinpang.userservice.support.common.entity;
+package io.woorinpang.userservice.core.enums.user;
 
-import io.woorinpang.userservice.support.common.exception.ProviderTypeMismatchException;
-import com.woorinpang.userservice.global.exception.EnumTypeMismatchException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,6 +20,6 @@ public enum Provider {
         return Arrays.stream(Provider.values())
                 .filter(provider -> provider.getCode().equals(code))
                 .findAny()
-                .orElseThrow(() -> new ProviderTypeMismatchException(code));
+                .orElseThrow(null);
     }
 }

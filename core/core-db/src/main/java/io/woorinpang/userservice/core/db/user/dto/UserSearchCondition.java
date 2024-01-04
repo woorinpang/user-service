@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.db.user.dto;
 
-import io.woorinpang.userservice.core.db.user.UserRole;
-import io.woorinpang.userservice.core.db.user.UserState;
+import io.woorinpang.userservice.core.enums.user.UserRole;
+import io.woorinpang.userservice.core.enums.user.UserState;
 import lombok.*;
 
 import java.util.Arrays;

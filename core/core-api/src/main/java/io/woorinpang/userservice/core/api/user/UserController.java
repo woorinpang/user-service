@@ -2,9 +2,9 @@ package io.woorinpang.userservice.core.api.user;
 
 import io.woorinpang.userservice.core.api.user.request.ExistsUsernameRequest;
 import io.woorinpang.userservice.core.api.user.request.ModifyUserInfoRequest;
-import io.woorinpang.userservice.core.api.user.dto.user.response.FindUserInfoResponse;
+import io.woorinpang.userservice.core.api.user.response.FindUserInfoResponse;
 import io.woorinpang.userservice.core.api.user.request.JoinUserRequest;
-import io.woorinpang.userservice.core.api.user.response.DefaultSuccessIdResponse;
+import io.woorinpang.userservice.support.common.json.DefaultSuccessIdResponse;
 import io.woorinpang.userservice.core.domain.user.service.UserService;
 import io.woorinpang.userservice.core.domain.user.UserTarget;
 import io.woorinpang.userservice.support.common.json.JsonResponse;
@@ -21,21 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-    private final BCryptPasswordEncoder passwordEncoder;
     private final UserService userService;
-
-    /**
-     * 회원가입 -> 로그인 필요없음
-     */
-    @PostMapping("/join")
-    public ResponseEntity<JsonResponse> joinUser(
-            @RequestBody @Valid JoinUserRequest request
-    ) {
-        long successId = userService.userJoin(request.toUserLogin(passwordEncoder), request.toUserInfo());
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(JsonResponse.CREATED(new DefaultSuccessIdResponse(successId)));
-    }
 
     /**
      * 내 정보 조회 : 내 정보를 클릭하여 조회한다. -> 로그인 필요함
@@ -59,16 +45,6 @@ public class UserController {
 
         userService.modifyUserInfo(new UserTarget(userId), request.toUserInfo());
         return ResponseEntity.ok(JsonResponse.OK());
-    }
-
-    /**
-     * 아이디 중복확인(username) - 로그인 없이
-     */
-    @PostMapping("/username/exists")
-    public ResponseEntity<JsonResponse> existsUsername(
-            @RequestBody @Valid ExistsUsernameRequest request
-    ) {
-        return ResponseEntity.ok(JsonResponse.OK(userService.existsUsername(request.getUsername())));
     }
 
     /**

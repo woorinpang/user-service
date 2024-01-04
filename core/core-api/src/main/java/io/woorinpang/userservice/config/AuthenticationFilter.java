@@ -1,11 +1,11 @@
 package io.woorinpang.userservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woorinpang.userservice.domain.auth.application.AuthService;
 import io.woorinpang.userservice.config.dto.LoginRequest;
-import com.woorinpang.userservice.global.exception.BusinessException;
-import com.woorinpang.userservice.global.util.LogUtil;
 import io.jsonwebtoken.Claims;
+import io.woorinpang.userservice.core.domain.user.service.AuthService;
+import io.woorinpang.userservice.support.exception.BusinessException;
+import io.woorinpang.userservice.support.util.LogUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -86,7 +86,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         // 토큰 생성 및 response header add
         tokenProvider.createTokenAndAddHeader(request, response, chain, authResult);
         // 로그인 성공 후처리
-        authService.loginCallback(LogUtil.getSiteId(request), authResult.getName(), true, "");
+        authService.loginCallback(LogUtil.getSiteId(request), LogUtil.getUserIp(), authResult.getName(), true, "");
     }
 
     @Transactional
@@ -102,7 +102,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         // 로그인 실패 후처리
         String username = (String) request.getAttribute("username");
-        authService.loginCallback(LogUtil.getSiteId(request), username, false, failContent);
+        authService.loginCallback(LogUtil.getSiteId(request), LogUtil.getUserIp(), username, false, failContent);
         super.unsuccessfulAuthentication(request, response, failed);
     }
 

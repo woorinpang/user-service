@@ -1,0 +1,27 @@
+### 아이디 중복 체크
+POST {{host}}/auth/username/exists
+Content-Type: application/json
+
+{
+  "username" : "spring"
+}
+
+### 회원가입
+POST {{host}}/auth/join
+Content-Type: application/json
+
+{
+  "username" : "spring",
+  "password" : "Tmvmfld1!",
+  "email" : "spring@woorinpang.com",
+  "name" : "스프링"
+}
+
+### 로그인
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "username" : "spring",
+  "password" : "Tmvmfld1!"
+}

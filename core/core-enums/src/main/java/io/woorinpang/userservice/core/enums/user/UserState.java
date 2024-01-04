@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.db.user;
+package io.woorinpang.userservice.core.enums.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
