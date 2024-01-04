@@ -6,8 +6,9 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'user-service'
+rootProject.name = 'WRP-USER-SERVICE'
 
 include 'core:core-api'
 include 'core:core-domain'
-include 'core:core-storage'
+include 'core:core-db'
+include 'core:core-enums'
