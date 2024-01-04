@@ -54,7 +54,7 @@ public class AuthController extends CommonController {
         // 권한으로 조회
 //        Boolean isAuth = authService.isAuthorization(roles, httpMethod, requestPath);
 
-        log.info("[isAuthorization={}] authentication.isAuthenticated()={}, userId={}, httpMethod={}, requestPath={}, roleList={}", isAuth, authentication.isAuthenticated(), username, httpMethod, requestPath, roles);
+        log.info("[isAuthorization={}] authentication.isAuthenticated()={}, id={}, httpMethod={}, requestPath={}, roleList={}", isAuth, authentication.isAuthenticated(), username, httpMethod, requestPath, roles);
 
         return isAuth;
     }

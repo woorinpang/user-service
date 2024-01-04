@@ -1,6 +1,7 @@
 package io.woorinpang.userservice.core.db.user;
 
 import io.woorinpang.userservice.core.db.user.dto.ModifyUserCommand;
+import io.woorinpang.userservice.core.db.user.dto.UserJoinCommand;
 import io.woorinpang.userservice.core.db.user.dto.UserUpdateInfoCommand;
 import io.woorinpang.userservice.core.support.entity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -45,7 +46,7 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "userState", columnDefinition = "varchar(15) not null comment '사용자 상태'")
-    private UserState userState;
+    private UserState state;
 
     @Column(name = "refreshToken", columnDefinition = "varchar(255) default null comment '리프레시 토큰'")
     private String refreshToken;
@@ -56,69 +57,32 @@ public class User extends BaseTimeEntity {
     @Column(name = "loginFailCount", columnDefinition = "tinyint default 0 comment '로그인 실패 횟수'")
     private int loginFailCount;
 
-    @Column(name = "googleId", columnDefinition = "varchar(60) default null comment '구글 아이디'")
-    private String googleId;
-
-    @Column(name = "kakaoId", columnDefinition = "varchar(60) default null comment '카카오 아이디'")
-    private String kakaoId;
-
-    @Column(name = "naverId", columnDefinition = "varchar(60) default null comment '네이버 아이디'")
-    private String naverId;
-
-    /**
-     * 사용자 생성
-     */
-    @Builder(builderMethodName = "createBuilder")
-    public User(String username, String password, String email, String name, UserRole role, UserState userState) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.name = name;
-        this.role = role;
-        this.userState = userState;
+    public User(UserJoinCommand command) {
+        this.username = command.username();
+        this.password = command.password();
+        this.email = command.email();
+        this.name = command.name();
+        this.role = UserRole.USER;
+        this.state = UserState.NORMAL;
     }
 
     /**
      * 사용자 수정
      */
-    public void update(ModifyUserCommand command) {
-        //새로운 비밀번호가 들어오면 인코드 아니면 기존 비밀번호 업데이트
-        this.password = command.password();
+    public void modify(ModifyUserCommand command) {
         this.email = command.email();
         this.name = command.name();
-        this.role = command.role();
-        this.userState = command.userState();
+    }
+
+    public void leave() {
+        this.updateUserState(UserState.LEAVE);
     }
 
     /**
      * 사용자 상태 코드 수정
      */
-    public void updateUserStateCode(UserState userState) {
-        this.userState = userState;
-    }
-
-    /**
-     * 사용자 정보 수정
-     */
-    public void updateInfo(UserUpdateInfoCommand command) {
-        this.name = command.name();
-        this.email = command.email();
-    }
-
-    /**
-     * 사용자 refresh token 정보를 필드에 입력
-     */
-    public User updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-        return this;
-    }
-
-    /**
-     * 사용자 비밀번호를 필드에 입력
-     */
-    public User updatePassword(String password) {
-        this.password = password;
-        return this;
+    private void updateUserState(UserState state) {
+        this.state = state;
     }
 
     /**
@@ -134,16 +98,6 @@ public class User extends BaseTimeEntity {
      */
     public void failLogin() {
         this.loginFailCount++;
-        if (this.loginFailCount >= 5) this.userState = UserState.HALT;
-    }
-
-    /**
-     * 소셜 사용자 여부 반환
-     */
-    public boolean isSocialUser() {
-        if (hasText(this.googleId)) return true;
-        else if (hasText(this.kakaoId)) return true;
-        else if (hasText(this.name)) return true;
-        return false;
+        if (this.loginFailCount >= 5) this.state = UserState.HALT;
     }
 }

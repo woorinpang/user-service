@@ -4,7 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.woorinpang.userservice.core.db.user.dto.FindPageUserResponse;
+import io.woorinpang.userservice.core.db.user.dto.FindPageUserProjection;
 import io.woorinpang.userservice.core.db.user.dto.UserSearchCondition;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -13,6 +13,9 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static io.woorinpang.userservice.core.db.user.QUser.*;
+import static org.springframework.util.StringUtils.hasText;
 
 @Repository
 public class UserQueryRepository {
@@ -26,7 +29,7 @@ public class UserQueryRepository {
     /**
      * 유저 목록 조회
      */
-    public Page<FindPageUserResponse> findPageUser(UserSearchCondition condition, Pageable pageable) {
+    public Page<FindPageUserProjection> findPageUser(UserSearchCondition condition, Pageable pageable) {
         return PageableExecutionUtils.getPage(
                 getUserList(condition, pageable),
                 pageable,
@@ -37,28 +40,26 @@ public class UserQueryRepository {
     /**
      * 유저 목록
      */
-    private List<FindPageUserResponse> getUserList(UserSearchCondition condition, Pageable pageable) {
+    private List<FindPageUserProjection> getUserList(UserSearchCondition condition, Pageable pageable) {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                FindPageUserResponse.class,
-                                QUser.user.id,
-                                QUser.user.username,
-                                QUser.user.email,
-                                QUser.user.name,
-                                QUser.user.role,
-                                QUser.user.userState,
-                                QUser.user.lastLoginDate,
-                                QUser.user.loginFailCount
+                                FindPageUserProjection.class,
+                                user.id,
+                                user.username,
+                                user.email,
+                                user.name,
+                                user.role,
+                                user.userState
                         )
                 )
-                .from(QUser.user)
+                .from(user)
                 .where(
                         searchKeywordContains(condition),
                         searchRoleEq(condition.getSearchRole()),
                         searchUserStateEq(condition.getSearchUserState())
                 )
-                .orderBy(QUser.user.id.desc())
+                .orderBy(user.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -69,8 +70,8 @@ public class UserQueryRepository {
      */
     private JPAQuery<Long> getUserListCount(UserSearchCondition condition) {
         return queryFactory
-                .select(QUser.user.count())
-                .from(QUser.user)
+                .select(user.count())
+                .from(user)
                 .where(
                         searchKeywordContains(condition),
                         searchRoleEq(condition.getSearchRole()),
@@ -85,8 +86,8 @@ public class UserQueryRepository {
         if (condition.getSearchKeywordType() == null || !hasText(condition.getSearchKeyword())) return null;
 
         return switch (condition.getSearchKeywordType()) {
-            case NAME -> QUser.user.name.containsIgnoreCase(condition.getSearchKeyword());
-            case EMAIL -> QUser.user.email.containsIgnoreCase(condition.getSearchKeyword());
+            case NAME -> user.name.containsIgnoreCase(condition.getSearchKeyword());
+            case EMAIL -> user.email.containsIgnoreCase(condition.getSearchKeyword());
             default -> null;
         };
     }
@@ -95,13 +96,13 @@ public class UserQueryRepository {
      * where role = searchRole
      */
     private BooleanExpression searchRoleEq(UserRole searchRole) {
-        return searchRole != null ? QUser.user.role.eq(searchRole) : null;
+        return searchRole != null ? user.role.eq(searchRole) : null;
     }
 
     /**
      * where userstate = searchUserState
      */
     private BooleanExpression searchUserStateEq(UserState searchUserState) {
-        return searchUserState != null ? QUser.user.userState.eq(searchUserState) : null;
+        return searchUserState != null ? user.userState.eq(searchUserState) : null;
     }
 }

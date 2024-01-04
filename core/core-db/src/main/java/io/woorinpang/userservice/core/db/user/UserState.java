@@ -8,7 +8,6 @@ import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum UserState {
-
     WAIT("WAIT", "대기"),
     NORMAL("NORMAL", "정상"),
     HALT("HALT", "정지"),

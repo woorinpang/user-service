@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.api.user;
+package io.woorinpang.userservice.core.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

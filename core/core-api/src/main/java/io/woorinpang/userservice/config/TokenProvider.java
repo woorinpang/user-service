@@ -77,7 +77,7 @@ public class TokenProvider {
         return Jwts.builder()
                 .setSubject(username)
                 .claim(TOKEN_CLAIM_NAME, authorities)
-                .claim("userId", userId)
+                .claim("id", userId)
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_EXPIRATION_TIME)))
                 .signWith(SignatureAlgorithm.HS512, TOKEN_SECRET)
                 .compact();

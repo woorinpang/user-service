@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.api.user.dto.user.request;
+package io.woorinpang.userservice.core.api.user.request;
 
 import lombok.*;
 
@@ -6,6 +6,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class UserExistsUsernameRequest {
+public class ExistsUsernameRequest {
     private String username;
 }
