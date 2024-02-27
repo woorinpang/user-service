@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.domain.user;
 
-import io.woorinpang.userservice.core.db.user.UserEntity;
-import io.woorinpang.userservice.core.db.user.UserRepository;
+import io.woorinpang.userservice.storage.core.db.user.UserEntity;
+import io.woorinpang.userservice.storage.core.db.user.UserRepository;
 
 public final class UserHelper {
     public static UserEntity findUserById(UserRepository userRepository, long userId) {

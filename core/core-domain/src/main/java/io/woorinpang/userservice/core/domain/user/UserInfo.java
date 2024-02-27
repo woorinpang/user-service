@@ -1,6 +1,6 @@
 package io.woorinpang.userservice.core.domain.user;
 
-import io.woorinpang.userservice.core.db.user.dto.ModifyUserCommand;
+import io.woorinpang.userservice.storage.core.db.user.dto.ModifyUserCommand;
 import lombok.*;
 
 @Getter

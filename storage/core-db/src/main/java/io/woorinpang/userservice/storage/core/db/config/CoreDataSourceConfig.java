@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.config;
+package io.woorinpang.userservice.storage.core.db.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

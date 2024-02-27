@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.db.user;
+package io.woorinpang.userservice.storage.core.db.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
