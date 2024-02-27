@@ -1,6 +1,5 @@
-# userEntity-service
+# user-service
 유저 서비스
-
 
 브렌치 전략
 - main : 제품으로 출시될 수 있는 브랜치

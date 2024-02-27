@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.config;
+package io.woorinpang.userservice.storage.core.db.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;

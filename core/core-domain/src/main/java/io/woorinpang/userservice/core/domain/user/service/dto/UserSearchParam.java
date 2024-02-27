@@ -1,8 +1,8 @@
 package io.woorinpang.userservice.core.domain.user.service.dto;
 
-import io.woorinpang.userservice.core.db.user.dto.UserSearchCondition;
 import io.woorinpang.userservice.core.enums.user.UserRole;
 import io.woorinpang.userservice.core.enums.user.UserState;
+import io.woorinpang.userservice.storage.core.db.user.dto.UserSearchCondition;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

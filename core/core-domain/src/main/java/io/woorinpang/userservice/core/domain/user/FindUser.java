@@ -1,8 +1,8 @@
 package io.woorinpang.userservice.core.domain.user;
 
-import io.woorinpang.userservice.core.db.user.UserEntity;
 import io.woorinpang.userservice.core.enums.user.UserRole;
 import io.woorinpang.userservice.core.enums.user.UserState;
+import io.woorinpang.userservice.storage.core.db.user.UserEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

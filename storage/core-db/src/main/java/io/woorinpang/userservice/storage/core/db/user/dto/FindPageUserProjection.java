@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.db.user.dto;
+package io.woorinpang.userservice.storage.core.db.user.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import io.woorinpang.userservice.core.enums.user.UserRole;

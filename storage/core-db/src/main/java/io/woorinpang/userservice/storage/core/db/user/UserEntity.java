@@ -1,10 +1,10 @@
-package io.woorinpang.userservice.core.db.user;
+package io.woorinpang.userservice.storage.core.db.user;
 
-import io.woorinpang.userservice.core.db.user.dto.ModifyUserCommand;
-import io.woorinpang.userservice.core.db.user.dto.UserJoinCommand;
 import io.woorinpang.userservice.core.enums.user.UserRole;
 import io.woorinpang.userservice.core.enums.user.UserState;
-import io.woorinpang.userservice.core.support.entity.BaseTimeEntity;
+import io.woorinpang.userservice.storage.core.db.support.entity.BaseTimeEntity;
+import io.woorinpang.userservice.storage.core.db.user.dto.ModifyUserCommand;
+import io.woorinpang.userservice.storage.core.db.user.dto.UserJoinCommand;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

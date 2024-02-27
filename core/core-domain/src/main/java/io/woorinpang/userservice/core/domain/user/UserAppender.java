@@ -1,8 +1,8 @@
 package io.woorinpang.userservice.core.domain.user;
 
-import io.woorinpang.userservice.core.db.user.UserEntity;
-import io.woorinpang.userservice.core.db.user.UserRepository;
-import io.woorinpang.userservice.core.db.user.dto.UserJoinCommand;
+import io.woorinpang.userservice.storage.core.db.user.UserEntity;
+import io.woorinpang.userservice.storage.core.db.user.UserRepository;
+import io.woorinpang.userservice.storage.core.db.user.dto.UserJoinCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

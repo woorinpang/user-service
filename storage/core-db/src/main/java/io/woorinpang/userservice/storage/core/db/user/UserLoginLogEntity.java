@@ -1,6 +1,6 @@
-package io.woorinpang.userservice.core.db.user;
+package io.woorinpang.userservice.storage.core.db.user;
 
-import io.woorinpang.userservice.core.db.user.dto.UserLoginLogCommand;
+import io.woorinpang.userservice.storage.core.db.user.dto.UserLoginLogCommand;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
