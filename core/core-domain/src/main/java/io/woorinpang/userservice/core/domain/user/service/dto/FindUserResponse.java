@@ -1,6 +1,6 @@
 package io.woorinpang.userservice.core.domain.user.service.dto;
 
-import io.woorinpang.userservice.core.db.user.UserEntity;
+import io.woorinpang.userservice.storage.core.db.user.UserEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

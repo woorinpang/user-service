@@ -1,6 +1,6 @@
 package io.woorinpang.userservice.core.domain.user.service.dto;
 
-import io.woorinpang.userservice.core.db.user.dto.FindPageUserProjection;
+import io.woorinpang.userservice.storage.core.db.user.dto.FindPageUserProjection;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

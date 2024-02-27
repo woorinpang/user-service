@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.support.entity;
+package io.woorinpang.userservice.storage.core.db.support.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

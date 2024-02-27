@@ -1,10 +1,10 @@
 package io.woorinpang.userservice.core.domain.user;
 
-import io.woorinpang.userservice.core.db.user.UserEntity;
-import io.woorinpang.userservice.core.db.user.UserQueryRepository;
-import io.woorinpang.userservice.core.db.user.UserRepository;
-import io.woorinpang.userservice.core.db.user.dto.FindPageUserProjection;
-import io.woorinpang.userservice.core.db.user.dto.UserSearchCondition;
+import io.woorinpang.userservice.storage.core.db.user.UserEntity;
+import io.woorinpang.userservice.storage.core.db.user.UserQueryRepository;
+import io.woorinpang.userservice.storage.core.db.user.UserRepository;
+import io.woorinpang.userservice.storage.core.db.user.dto.FindPageUserProjection;
+import io.woorinpang.userservice.storage.core.db.user.dto.UserSearchCondition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

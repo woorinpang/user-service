@@ -1,23 +1,23 @@
-package io.woorinpang.userservice.core.db.user;
+package io.woorinpang.userservice.storage.core.db.user;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.woorinpang.userservice.core.db.user.dto.FindPageUserProjection;
-import io.woorinpang.userservice.core.db.user.dto.UserSearchCondition;
 import io.woorinpang.userservice.core.enums.user.UserRole;
 import io.woorinpang.userservice.core.enums.user.UserState;
+import io.woorinpang.userservice.storage.core.db.user.dto.FindPageUserProjection;
+import io.woorinpang.userservice.storage.core.db.user.dto.UserSearchCondition;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static io.woorinpang.userservice.core.db.user.QUserEntity.*;
-import static org.springframework.util.StringUtils.hasText;
+import static io.woorinpang.userservice.storage.core.db.user.QUserEntity.userEntity;
 
 @Repository
 public class UserQueryRepository {
@@ -85,7 +85,7 @@ public class UserQueryRepository {
      * where searchKeywordType like '%searchKeyword%'
      */
     private BooleanExpression searchKeywordContains(UserSearchCondition condition) {
-        if (condition.getSearchKeywordType() == null || !hasText(condition.getSearchKeyword())) return null;
+        if (condition.getSearchKeywordType() == null || !StringUtils.hasText(condition.getSearchKeyword())) return null;
 
         return switch (condition.getSearchKeywordType()) {
             case NAME -> userEntity.name.containsIgnoreCase(condition.getSearchKeyword());

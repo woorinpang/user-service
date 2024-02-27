@@ -1,4 +1,4 @@
 dependencies {
     implementation project(':core:core-enums')
-    implementation project(':core:core-db')
+    implementation project(':storage:core-db')
 }
