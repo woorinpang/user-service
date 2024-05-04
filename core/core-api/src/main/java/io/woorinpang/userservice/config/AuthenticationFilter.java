@@ -12,6 +12,9 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -76,20 +80,22 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         }
     }
 
-    /**
-     * 로그인 인증 성공 후 호출된다.
-     * 토큰을 생성하여 헤더에 토큰 정보를 담는다.
-     */
-    @Transactional
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        // 토큰 생성 및 response header add
-        tokenProvider.createTokenAndAddHeader(request, response, chain, authResult);
+        String username = authResult.getName();
+        String authorities = authResult.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        String accessToken = tokenProvider.createAccessToken(username, authorities);
+
+        LoginResponse loginResponse = new LoginResponse(accessToken);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(loginResponse));
+
         // 로그인 성공 후처리
         authService.loginCallback(LogUtil.getSiteId(request), LogUtil.getUserIp(), authResult.getName(), true, "");
     }
 
-    @Transactional
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         String failContent = failed.getMessage();
@@ -106,11 +112,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         super.unsuccessfulAuthentication(request, response, failed);
     }
 
-    /**
-     * 로그인 요청 뿐만 아니라 모든 요청시마다 호출된다.
-     * 토큰에 담긴 정보로 Authentication 정보를 설정한다.
-     * 이 처리를 하지 않으면 AnonymousAuthenticationToken 으로 처리된다.
-     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         try {
@@ -145,6 +146,16 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    private static class LoginResponse {
+        private String accessToken;
+
+        public LoginResponse(String accessToken) {
+            this.accessToken = accessToken;
         }
     }
 }

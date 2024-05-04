@@ -61,7 +61,7 @@ public class AuthController {
     @PutMapping("/token/refresh")
     public ResponseEntity<JsonResponse> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        tokenProvider.refreshToken(refreshToken, response);
+        tokenProvider.createRefreshToken();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(JsonResponse.OK());

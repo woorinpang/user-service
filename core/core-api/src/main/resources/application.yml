@@ -70,7 +70,7 @@ logging:
 token:
   access_expiration_time: 7200000
   refresh_expiration_time: 86400000
-  secret-key: 'woorinpang_token_secret'
+  secret-key: 'dGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2U='
 
 eureka:
   instance:
@@ -83,4 +83,4 @@ eureka:
       defaultZone: http://admin:admin@${eureka.instance.hostname:localhost}:8761/eureka
 
 apigateway:
-  host: http://${apigateway.hostname:localhost}
+  host: http://${apigateway.hostname:localhost}:${server.port}
