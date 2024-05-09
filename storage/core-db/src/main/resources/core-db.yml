@@ -25,6 +25,36 @@ spring:
 storage:
   datasource:
     core:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:core;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password:
+      pool-name: main-db-pool
+      data-source-properties:
+        rewriteBatchedStatements: true
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: debug
+
+---
+spring.config.activate.on-profile: local-dev
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_log: true
+        format_sql: true
+    show-sql: true
+
+storage:
+  datasource:
+    core:
       driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: jdbc:mysql://localhost:3307/user_db?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
       username: woorinpang_user
@@ -96,4 +126,3 @@ storage:
         cacheServerConfiguration: true
         elideSetAutoCommits: true
         maintainTimeStats: false
-
