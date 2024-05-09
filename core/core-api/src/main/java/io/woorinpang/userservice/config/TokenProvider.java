@@ -32,10 +32,12 @@ public class TokenProvider {
     public static final String TOKEN_ACCESS_KEY = "access-token";
     public static final String TOKEN_REFRESH_KEY = "refresh-token";
 
-    public String createAccessToken(String username, String authorities) {
+    public String createAccessToken(String username, String authorities, String payload) {
         return Jwts.builder()
                 .setSubject(username)
+//                .setPayload(payload)
                 .claim(TOKEN_CLAIM_NAME, authorities)
+                .claim("user", payload)
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_ACCESS_TIME)))
                 .signWith(this.getSecretKey(), SignatureAlgorithm.HS512)
                 .compact();
