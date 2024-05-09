@@ -3,6 +3,8 @@ package io.woorinpang.userservice.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.woorinpang.userservice.config.dto.LoginRequest;
 import io.jsonwebtoken.Claims;
+import io.woorinpang.userservice.config.dto.LoginUser;
+import io.woorinpang.userservice.core.domain.user.FindUser;
 import io.woorinpang.userservice.core.domain.user.service.AuthService;
 import io.woorinpang.userservice.support.exception.BusinessException;
 import io.woorinpang.userservice.support.util.LogUtil;
@@ -27,6 +29,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,9 +90,16 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        String accessToken = tokenProvider.createAccessToken(username, authorities);
+        FindUser findUser = authService.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("username not found"));
 
-        LoginResponse loginResponse = new LoginResponse(accessToken);
+        LoginUser loginUser = new LoginUser(findUser);
+        String payload = new ObjectMapper().writeValueAsString(loginUser);
+
+        String accessToken = tokenProvider.createAccessToken(username, authorities, payload);
+        String refreshToken = tokenProvider.createRefreshToken();
+
+        LoginResponse loginResponse = new LoginResponse(accessToken, refreshToken);
         response.getWriter().write(new ObjectMapper().writeValueAsString(loginResponse));
 
         // 로그인 성공 후처리
@@ -153,9 +163,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     private static class LoginResponse {
         private String accessToken;
+        private String refreshToken;
 
-        public LoginResponse(String accessToken) {
+        public LoginResponse(String accessToken, String refreshToken) {
             this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
         }
     }
 }
