@@ -3,15 +3,15 @@ GET {{host}}/users/1
 Authorization: {{access-token}}
 
 ### 내 정보 수정
-PUT {{host}}/users/2
+PUT {{host}}/users/1
 Content-Type: application/json
 Authorization: {{access-token}}
 
 {
   "email" : "boot@woorinpang.com",
-  "name" : "부트"
+  "name" : "aaaaaa"
 }
 
 ### 회원탈퇴
-DELETE {{host}}/users/2
+DELETE {{host}}/users/1
 Authorization: {{access-token}}

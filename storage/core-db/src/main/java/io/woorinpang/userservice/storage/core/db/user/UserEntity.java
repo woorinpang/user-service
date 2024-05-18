@@ -21,10 +21,6 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @DynamicUpdate
 public class UserEntity extends BaseTimeEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
-    private Long id;
-
     @Column(name = "username", unique = true, columnDefinition = "varchar(60) not null comment '아이디'")
     private String username;
 
