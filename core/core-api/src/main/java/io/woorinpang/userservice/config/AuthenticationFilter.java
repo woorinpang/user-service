@@ -1,8 +1,8 @@
 package io.woorinpang.userservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.woorinpang.userservice.config.dto.LoginRequest;
 import io.jsonwebtoken.Claims;
+import io.woorinpang.userservice.config.dto.LoginRequest;
 import io.woorinpang.userservice.config.dto.LoginUser;
 import io.woorinpang.userservice.core.domain.user.FindUser;
 import io.woorinpang.userservice.core.domain.user.service.AuthService;
@@ -31,7 +31,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;

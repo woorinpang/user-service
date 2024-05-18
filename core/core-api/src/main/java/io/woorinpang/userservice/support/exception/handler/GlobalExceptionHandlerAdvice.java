@@ -1,5 +1,6 @@
 package io.woorinpang.userservice.support.exception.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.woorinpang.userservice.support.exception.BusinessException;
 import io.woorinpang.userservice.support.exception.BusinessMessageException;
 import io.woorinpang.userservice.support.exception.dto.ErrorCode;
@@ -23,8 +24,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandlerAdvice {
-
     protected final MessageSource messageSource;
+    protected final ObjectMapper objectMapper;
 
     /**
      * 모든 컨트롤러로 들어오는 요청을 초기화 한다.

@@ -35,7 +35,6 @@ public class TokenProvider {
     public String createAccessToken(String username, String authorities, String payload) {
         return Jwts.builder()
                 .setSubject(username)
-//                .setPayload(payload)
                 .claim(TOKEN_CLAIM_NAME, authorities)
                 .claim("user", payload)
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_ACCESS_TIME)))
@@ -51,8 +50,9 @@ public class TokenProvider {
     }
 
     public Claims getClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(this.getSecretKey())
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(Base64.getDecoder().decode(TOKEN_SECRET_KEY)))
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
