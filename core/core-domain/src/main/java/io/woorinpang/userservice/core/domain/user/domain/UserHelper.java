@@ -8,8 +8,8 @@ public final class UserHelper {
                 .orElseThrow(() -> new IllegalArgumentException("없음"));
     }
 
-    public static User findUserByUsername(UserRepository userRepository, String username) {
-        return userRepository.findByEmail(username)
+    public static User findUserByEmail(UserRepository userRepository, String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("없음"));
     }
 

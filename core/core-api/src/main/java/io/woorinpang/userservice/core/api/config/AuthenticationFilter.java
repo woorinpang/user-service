@@ -7,7 +7,7 @@ import io.woorinpang.userservice.core.api.config.dto.LoginUser;
 import io.woorinpang.userservice.core.api.support.error.CoreApiException;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
-import io.woorinpang.userservice.support.util.LogUtil;
+import io.woorinpang.userservice.core.api.support.util.LogUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -148,7 +148,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         } catch (CoreApiException e) {
             SecurityContextHolder.getContext().setAuthentication(null);
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            httpServletResponse.setStatus(e.getErrorType().getStatus().value());
+            httpServletResponse.setStatus(e.getType().getStatus().value());
             log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
         } catch (ServletException | IOException e) {
             SecurityContextHolder.getContext().setAuthentication(null);

@@ -45,10 +45,10 @@ public class AuthController {
      * 회원가입 -> 로그인 필요없음
      */
     @PostMapping("/join")
-    public ResponseEntity<ApiResponse> joinUser(
+    public ResponseEntity<ApiResponse<DefaultIdResponse>> joinUser(
             @RequestBody @Valid JoinUserRequest request
     ) {
-        long successId = authService.userJoin(request.toUserLogin(passwordEncoder), request.toUserInfo());
+        long successId = authService.userJoin(request.toUserLogin(passwordEncoder), request.getName());
         return ResponseEntity.ok(ApiResponse.success(new DefaultIdResponse(successId)));
     }
 
@@ -66,16 +66,17 @@ public class AuthController {
     public Boolean isAuthorization(@RequestParam("httpMethod") String httpMethod, @RequestParam("requestPath") String requestPath) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String username = authentication.getName();
+        String email = authentication.getName();
         List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::toString).collect(Collectors.toList());
 
         // 사용자 아이디로 조회
-         Boolean isAuth =  authService.isAuthorization(username, httpMethod, requestPath);
+        boolean isAuth = false;
+        isAuth = authService.isAuthorized(email);
 
         // 권한으로 조회
-        //Boolean isAuth = authService.isAuthorization(roles, httpMethod, requestPath);
+        isAuth = authService.isAuthenticated(email, roles);
 
-        log.info("[isAuthorization={}] authentication.isAuthenticated()={}, email={}, httpMethod={}, requestPath={}, roleList={}", isAuth, authentication.isAuthenticated(), username, httpMethod, requestPath, roles);
+        log.info("[isAuthorization={}] authentication.isAuthenticated()={}, email={}, httpMethod={}, requestPath={}, roleList={}", isAuth, authentication.isAuthenticated(), email, httpMethod, requestPath, roles);
 
         return isAuth;
     }

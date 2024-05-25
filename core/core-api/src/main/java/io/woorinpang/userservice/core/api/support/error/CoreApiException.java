@@ -4,19 +4,19 @@ import lombok.Getter;
 
 @Getter
 public class CoreApiException extends RuntimeException {
-    private final ErrorType errorType;
+    private final ErrorType type;
 
     private final Object data;
 
-    public CoreApiException(ErrorType errorType) {
-        super(errorType.getMessage());
-        this.errorType = errorType;
+    public CoreApiException(ErrorType type) {
+        super(type.getMessage());
+        this.type = type;
         this.data = null;
     }
 
-    public CoreApiException(ErrorType errorType, Object data) {
-        super(errorType.getMessage());
-        this.errorType = errorType;
+    public CoreApiException(ErrorType type, Object data) {
+        super(type.getMessage());
+        this.type = type;
         this.data = data;
     }
 }

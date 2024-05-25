@@ -1,5 +1,6 @@
-package io.woorinpang.userservice.core.domain.user.domain;
+package io.woorinpang.userservice.core.api.controller.user.response;
 
+import io.woorinpang.userservice.core.domain.user.domain.FindPageUser;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class FindPageUserResponse {
     private String userState;
     private String userStateDescription;
 
-    public FindPageUserResponse(FindPageUserProjection projection) {
+    public FindPageUserResponse(FindPageUser projection) {
         this.userId = projection.getUserId();
         this.email = projection.getEmail();
         this.name = projection.getName();

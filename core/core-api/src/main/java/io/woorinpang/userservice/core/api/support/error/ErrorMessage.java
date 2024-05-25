@@ -10,6 +10,12 @@ public class ErrorMessage {
 
     private final Object data;
 
+    public ErrorMessage(String code, String message) {
+        this.code = code;
+        this.message = message;
+        this.data = null;
+    }
+
     public ErrorMessage(ErrorType errorType) {
         this.code = errorType.getCode().name();
         this.message = errorType.getMessage();

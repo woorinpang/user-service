@@ -14,7 +14,6 @@ public class UserRemover {
 
     @Transactional
     public void leave(long userId) {
-        findUserById(userRepository, userId)
-                .leave();
+        findUserById(userRepository, userId).leave();
     }
 }

@@ -13,11 +13,11 @@ public class UserAppender {
     private final UserRepository userRepository;
 
     @Transactional
-    public long append(UserLogin login, UserInfo info) {
-        UserJoinCommand command = UserJoinCommand.builder()
+    public long append(LoginUser login, String name) {
+        JoinUser command = JoinUser.builder()
                 .email(login.email())
                 .password(login.password())
-                .name(info.getName())
+                .name(name)
                 .build();
 
         return saveUser(userRepository, new User(command)).getId();

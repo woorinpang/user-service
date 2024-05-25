@@ -19,7 +19,7 @@ public class UserFinder {
     private final UserQueryRepository userQueryRepository;
 
     @Transactional(readOnly = true)
-    public Page<FindPageUserProjection> findPageUser(UserSearchCondition condition, Pageable pageable) {
+    public Page<FindPageUser> findPageUser(UserSearchCondition condition, Pageable pageable) {
         return userQueryRepository.findPageUser(condition, pageable);
     }
 

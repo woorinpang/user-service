@@ -4,7 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.woorinpang.userservice.core.domain.user.domain.FindPageUserProjection;
+import io.woorinpang.userservice.core.domain.user.domain.FindPageUser;
 import io.woorinpang.userservice.core.domain.user.domain.UserSearchCondition;
 import io.woorinpang.userservice.core.enums.user.UserRole;
 import io.woorinpang.userservice.core.enums.user.UserState;
@@ -31,7 +31,7 @@ public class UserQueryRepository {
     /**
      * 유저 목록 조회
      */
-    public Page<FindPageUserProjection> findPageUser(UserSearchCondition condition, Pageable pageable) {
+    public Page<FindPageUser> findPageUser(UserSearchCondition condition, Pageable pageable) {
         return PageableExecutionUtils.getPage(
                 getUserList(condition, pageable),
                 pageable,
@@ -42,11 +42,11 @@ public class UserQueryRepository {
     /**
      * 유저 목록
      */
-    private List<FindPageUserProjection> getUserList(UserSearchCondition condition, Pageable pageable) {
+    private List<FindPageUser> getUserList(UserSearchCondition condition, Pageable pageable) {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                FindPageUserProjection.class,
+                                FindPageUser.class,
                                 user.id,
                                 user.email,
                                 user.name,

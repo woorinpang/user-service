@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.support.util;
+package io.woorinpang.userservice.core.api.support.util;
 
 import io.woorinpang.userservice.core.api.support.constant.GlobalConstant;
 import jakarta.servlet.http.HttpServletRequest;

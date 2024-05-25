@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,10 +27,10 @@ public class AuthService {
     /**
      * 사용자 회원가입
      */
-    public long userJoin(UserLogin login, UserInfo info) {
+    public long userJoin(LoginUser login, String name) {
         userValidator.duplicateLoginId(login.email());
 
-        return userAppender.append(login, info);
+        return userAppender.append(login, name);
     }
 
     public Optional<FindUser> findUser(String email) {
@@ -60,7 +61,13 @@ public class AuthService {
         userLogger.log(command);
     }
 
-    public boolean isAuthorization(String username, String httpMethod, String requestPath) {
-        return userFinder.findByEmail(username).isPresent();
+    public boolean isAuthorized(String email) {
+        return userFinder.findByEmail(email).isPresent();
+    }
+
+    public boolean isAuthenticated(String email, List<String> roles) {
+        User findUser = userFinder.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found in the database!!"));
+        return roles.contains(findUser.getRole().getCode());
     }
 }

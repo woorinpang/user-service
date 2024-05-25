@@ -23,14 +23,14 @@ public class UserService {
     /**
      * 사용자 정보 수정
      */
-    public void modifyUserInfo(UserTarget target, UserInfo info) {
-        userModifier.modify(target, info);
+    public void modifyUser(UserTarget target, String name) {
+        userModifier.modify(target, name);
     }
 
     /**
      * 사용자 회원탈퇴
      */
-    public void userLeave(UserTarget userTarget) {
+    public void leaveUser(UserTarget userTarget) {
         userRemover.leave(userTarget.id());
     }
 }

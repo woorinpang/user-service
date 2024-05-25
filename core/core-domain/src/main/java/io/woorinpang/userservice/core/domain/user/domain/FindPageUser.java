@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FindPageUserProjection {
+public class FindPageUser {
     private long userId;
     private String email;
     private String name;
@@ -19,7 +19,7 @@ public class FindPageUserProjection {
     private String userStateDescription;
 
     @QueryProjection
-    public FindPageUserProjection(long userId, String email, String name, UserRole role, UserState state) {
+    public FindPageUser(long userId, String email, String name, UserRole role, UserState state) {
         this.userId = userId;
         this.email = email;
         this.name = name;

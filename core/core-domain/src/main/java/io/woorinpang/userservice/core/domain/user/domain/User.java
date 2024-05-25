@@ -42,7 +42,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "loginFailCount", columnDefinition = "tinyint default 0 comment '로그인 실패 횟수'")
     private int loginFailCount;
 
-    public User(UserJoinCommand command) {
+    public User(JoinUser command) {
         this.email = command.email();
         this.password = command.password();
         this.name = command.name();
@@ -53,8 +53,8 @@ public class User extends BaseTimeEntity {
     /**
      * 사용자 수정
      */
-    public void modify(ModifyUserCommand command) {
-        this.name = command.name();
+    public void modify(String name) {
+        this.name = name;
     }
 
     public void leave() {

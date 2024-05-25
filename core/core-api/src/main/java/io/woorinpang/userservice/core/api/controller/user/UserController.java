@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.api.controller.user;
 
-import io.woorinpang.userservice.core.api.controller.user.request.ModifyUserInfoRequest;
-import io.woorinpang.userservice.core.api.controller.user.response.FindUserInfoResponse;
+import io.woorinpang.userservice.core.api.controller.user.request.ModifyUserRequest;
+import io.woorinpang.userservice.core.api.controller.user.response.FindUserResponse;
 import io.woorinpang.userservice.core.api.support.response.ApiResponse;
 import io.woorinpang.userservice.core.domain.user.application.UserService;
 import io.woorinpang.userservice.core.domain.user.domain.UserTarget;
@@ -19,28 +19,28 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<FindUserInfoResponse>> findUserInfo(
+    public ResponseEntity<ApiResponse<FindUserResponse>> findUser(
             @PathVariable("userId") Long userId
     ) {
-        return ResponseEntity.ok(ApiResponse.success(new FindUserInfoResponse(userService.findUserInfo(userId))));
+        return ResponseEntity.ok(ApiResponse.success(new FindUserResponse(userService.findUserInfo(userId))));
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<ApiResponse<?>> modifyUserInfo(
+    public ResponseEntity<ApiResponse<?>> modifyUser(
             @PathVariable("userId") Long userId,
-            @RequestBody @Valid ModifyUserInfoRequest request
+            @RequestBody @Valid ModifyUserRequest request
     ) {
         request.validate();
 
-        userService.modifyUserInfo(new UserTarget(userId), request.toUserInfo());
+        userService.modifyUser(new UserTarget(userId), request.getName());
         return ResponseEntity.ok(ApiResponse.success());
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse<?>> userLeave(
+    public ResponseEntity<ApiResponse<?>> leaveUser(
             @PathVariable long userId
     ) {
-        userService.userLeave(new UserTarget(userId));
+        userService.leaveUser(new UserTarget(userId));
 
         return ResponseEntity.ok(ApiResponse.success());
     }

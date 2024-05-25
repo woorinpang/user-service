@@ -1,14 +1,14 @@
 package io.woorinpang.userservice.core.api.controller.user.request;
 
-import io.woorinpang.userservice.core.domain.user.domain.UserInfo;
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class ModifyUserInfoRequest {
+public class ModifyUserRequest {
+    @NotBlank(message = "이름은 필수입니다.")
     private String name;
 
     public void validate() {

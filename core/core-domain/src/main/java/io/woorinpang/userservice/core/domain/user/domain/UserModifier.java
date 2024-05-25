@@ -13,20 +13,17 @@ public class UserModifier {
     private final UserRepository userRepository;
 
     @Transactional
-    public void modify(UserTarget target, UserInfo info) {
-        findUserById(userRepository, target.id())
-                .modify(info.toModifyUserCommand());
+    public void modify(UserTarget target, String name) {
+        findUserById(userRepository, target.id()).modify(name);
     }
 
     @Transactional
     public void successLogin(UserTarget target) {
-        findUserById(userRepository, target.id())
-                .successLogin();
+        findUserById(userRepository, target.id()).successLogin();
     }
 
     @Transactional
     public void failLogin(UserTarget target) {
-        findUserById(userRepository, target.id())
-                .failLogin();
+        findUserById(userRepository, target.id()).failLogin();
     }
 }

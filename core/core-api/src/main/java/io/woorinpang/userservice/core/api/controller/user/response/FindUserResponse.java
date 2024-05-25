@@ -7,18 +7,18 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FindUserInfoResponse {
-    private Long userId;
+public class FindUserResponse {
+    private long userId;
     private String email;
     private String name;
     private String userRole;
     private String userState;
 
-    public FindUserInfoResponse(FindUser user) {
+    public FindUserResponse(FindUser user) {
         this.userId = user.getId();
         this.email = user.getEmail();
         this.name = user.getName();
-        this.userRole = user.getUserRole().name();
-        this.userState = user.getUserState().name();
+        this.userRole = user.getUserRole().getCode();
+        this.userState = user.getUserState().getCode();
     }
 }

@@ -1,6 +1,6 @@
 package io.woorinpang.userservice.core.domain.user.domain;
 
-public record UserLogin(
+public record LoginUser(
         String email,
         String password
 ) {
