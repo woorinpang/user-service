@@ -1,6 +1,6 @@
 package io.woorinpang.userservice.support.util;
 
-import io.woorinpang.userservice.support.common.constant.GlobalConstant;
+import io.woorinpang.userservice.core.api.support.constant.GlobalConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

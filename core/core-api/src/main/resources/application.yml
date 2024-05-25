@@ -7,7 +7,7 @@ spring:
   config:
     import:
       - optional:configserver:http://localhost:8888
-      - core-db.yml
+      - core-domain.yml
   cache:
     jcache:
       config: classpath:ehcache.xml

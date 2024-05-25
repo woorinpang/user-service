@@ -8,10 +8,10 @@ import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum Provider {
-    WOORINPANG("Woorinpang", "우린팡"),
-    GOOGLE("Google", "구글"),
-    NAVER("Naver", "네이버"),
-    KAKAO("Kakao", "카카오");
+    WOORINPANG("WOORINPANG", "우린팡"),
+    GOOGLE("GOOGLE", "구글"),
+    NAVER("NAVER", "네이버"),
+    KAKAO("KAKAO", "카카오");
 
     private final String code;
     private final String description;

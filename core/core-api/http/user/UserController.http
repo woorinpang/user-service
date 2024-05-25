@@ -8,8 +8,8 @@ Content-Type: application/json
 Authorization: {{access-token}}
 
 {
-  "email" : "boot@woorinpang.com",
-  "name" : "aaaaaa"
+  "email" : "spring@woorinpang.com",
+  "name" : "스프링"
 }
 
 ### 회원탈퇴

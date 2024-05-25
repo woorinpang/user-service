@@ -11,5 +11,3 @@ rootProject.name = 'WRP-USER-SERVICE'
 include 'core:core-api'
 include 'core:core-domain'
 include 'core:core-enums'
-
-include 'storage:core-db'
