@@ -10,4 +10,5 @@ public enum DomainErrorCode {
     E7000,
     E8000,
     E9000,
+    E9999,
 }
