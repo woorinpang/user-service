@@ -3,7 +3,6 @@ package io.woorinpang.userservice.core.api.controller;
 import io.woorinpang.userservice.core.api.support.error.CoreApiException;
 import io.woorinpang.userservice.core.api.support.error.ErrorType;
 import io.woorinpang.userservice.core.api.support.response.ApiResponse;
-import io.woorinpang.userservice.core.api.support.response.ResultType;
 import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
