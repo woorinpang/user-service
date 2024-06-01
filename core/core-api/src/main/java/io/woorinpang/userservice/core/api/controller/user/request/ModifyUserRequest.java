@@ -14,10 +14,4 @@ public class ModifyUserRequest {
     public void validate() {
         //validate
     }
-
-    public UserInfo toUserInfo() {
-        return UserInfo.builder()
-                .name(this.name)
-                .build();
-    }
 }

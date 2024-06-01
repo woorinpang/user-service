@@ -41,7 +41,6 @@ public class UserController {
             @PathVariable long userId
     ) {
         userService.leaveUser(new UserTarget(userId));
-
         return ResponseEntity.ok(ApiResponse.success());
     }
 }

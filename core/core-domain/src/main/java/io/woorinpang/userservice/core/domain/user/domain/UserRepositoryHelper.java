@@ -4,7 +4,7 @@ import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
 import io.woorinpang.userservice.core.domain.support.error.DomainErrorType;
 import io.woorinpang.userservice.core.domain.user.repository.UserRepository;
 
-public final class UserHelper {
+public final class UserRepositoryHelper {
     public static User findUserById(UserRepository userRepository, long userId) {
         return userRepository
                 .findById(userId)

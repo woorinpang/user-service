@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ApiControllerAdvice {
 
-
     @ExceptionHandler(CoreApiException.class)
     public ResponseEntity<ApiResponse<?>> handleCoreApiException(CoreApiException e) {
         switch (e.getType().getLogLevel()) {

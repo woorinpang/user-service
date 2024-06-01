@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static io.woorinpang.userservice.core.domain.user.domain.UserHelper.*;
+import static io.woorinpang.userservice.core.domain.user.domain.UserRepositoryHelper.*;
 
 @Component
 @RequiredArgsConstructor
