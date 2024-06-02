@@ -3,8 +3,10 @@ package io.woorinpang.userservice.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
-import io.woorinpang.userservice.config.dto.LoginUser;
-import io.woorinpang.userservice.core.domain.user.FindUser;
+import io.woorinpang.userservice.core.api.config.TokenProvider;
+import io.woorinpang.userservice.core.api.config.dto.LoginUser;
+import io.woorinpang.userservice.core.domain.user.domain.FindUser;
+import io.woorinpang.userservice.core.domain.user.domain.User;
 import io.woorinpang.userservice.core.enums.user.UserRole;
 import io.woorinpang.userservice.core.enums.user.UserState;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,8 @@ class TokenProviderTest {
 
     @Test
     void createAccessToken() {
-        FindUser findUser = new FindUser(1L, "spring", "", "spring@woorinpang.com", "스프링", UserRole.USER, UserState.NORMAL);
+
+        FindUser findUser = new FindUser(1L, "spring@woorinpang.com", "", "스프링", UserRole.ROLE_USER, UserState.NORMAL);
         LoginUser loginUser = new LoginUser(findUser);
         try {
             String payload = new ObjectMapper().writeValueAsString(loginUser);

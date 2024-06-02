@@ -7,7 +7,7 @@ spring:
   config:
     import:
       - optional:configserver:http://localhost:8888
-      - core-db.yml
+      - core-domain.yml
   cache:
     jcache:
       config: classpath:ehcache.xml
@@ -18,8 +18,8 @@ spring:
         registration:
           # /oauth2/authorization/google
           google:
-            client-id: google_client_id # TODO https://console.cloud.google.com
-            client-secret: google_client_secret # TODO
+            client-id: 60521490311-o1mr1phq57ida8vsqiig72r5e4fbu332.apps.googleusercontent.com
+            client-secret: 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
             scope: profile,email
           # 네이버는 Spring Security를 공식 지원하지 않기 때문에 CommonOAuth2Provider 에서 해주는 값들을 수동으로 입력한다.
           # /oauth2/authorization/naver
