@@ -2,6 +2,7 @@ package io.woorinpang.userservice.core.domain.user.application;
 
 import io.woorinpang.userservice.core.domain.user.domain.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,24 @@ public class AuthService {
     private final UserModifier userModifier;
     private final UserValidator userValidator;
     private final UserLogger userLogger;
+
+    /**
+     * 구글 클라이언트 ID
+     */
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String GOOGLE_CLIENT_ID;
+
+    /**
+     * 카카오 사용자 정보 URL
+     */
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String KAKAO_USER_INFO_URI;
+
+    /**
+     * 네이버 사용자 정보 URL
+     */
+    @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")
+    private String NAVER_USER_INFO_URI;
 
     /**
      * 사용자 아이디 중복확인
@@ -38,10 +57,9 @@ public class AuthService {
                 .map(FindUser::new);
     }
 
-
     @Transactional
-    public void loginCallback(Long siteId, String remoteIp, String username,  boolean success, String failContent) {
-        FindUser findUser = this.findUser(username)
+    public void loginCallback(Long siteId, String remoteIp, String email,  boolean success, String failContent) {
+        FindUser findUser = this.findUser(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found in the database!!"));
 
         if (Boolean.TRUE.equals(success)) {
@@ -53,7 +71,7 @@ public class AuthService {
         // 로그인 로그 입력
         UserLoginLogCommand command = UserLoginLogCommand.builder()
                 .siteId(siteId)
-                .username(username)
+                .email(email)
                 .remoteIp(remoteIp)
                 .success(success)
                 .failContent(failContent)
@@ -61,13 +79,23 @@ public class AuthService {
         userLogger.log(command);
     }
 
-    public boolean isAuthorized(String email) {
-        return userFinder.findByEmail(email).isPresent();
-    }
-
-    public boolean isAuthenticated(String email, List<String> roles) {
+    public boolean isAuthorization(String email, List<String> roles) {
         User findUser = userFinder.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found in the database!!"));
         return roles.contains(findUser.getRole().getCode());
+    }
+
+    public FindUser loadUserBySocial(String email, String name) {
+        UserTarget.UserTargetBuilder targetBuilder = UserTarget.builder();
+        userFinder.findByEmail(email).ifPresentOrElse(user -> {
+            userModifier.modify(new UserTarget(user.getId()), name);
+            targetBuilder.id(user.getId());
+
+        }, () -> {
+            long appendedId = userAppender.append(new LoginUser(email, null), name);
+            targetBuilder.id(appendedId);
+        });
+
+        return userFinder.findUser(targetBuilder.build());
     }
 }

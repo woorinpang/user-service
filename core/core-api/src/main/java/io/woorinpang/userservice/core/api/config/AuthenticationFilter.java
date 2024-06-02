@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.woorinpang.userservice.core.api.config.dto.LoginRequest;
 import io.woorinpang.userservice.core.api.config.dto.LoginUser;
+import io.woorinpang.userservice.core.api.config.dto.SocialUser;
 import io.woorinpang.userservice.core.api.support.error.CoreApiException;
+import io.woorinpang.userservice.core.api.support.error.ErrorType;
+import io.woorinpang.userservice.core.api.support.util.LogUtil;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
-import io.woorinpang.userservice.core.api.support.util.LogUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -27,6 +29,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,11 +48,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final TokenProvider tokenProvider;
     private final AuthService authService;
+    private final GoogleLogin googleLogin;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, AuthService authService) {
+
+
+    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, AuthService authService, GoogleLogin googleLogin) {
         super(authenticationManager);
         this.tokenProvider = tokenProvider;
         this.authService = authService;
+        this.googleLogin = googleLogin;
     }
 
     /**
@@ -62,10 +69,17 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             // 사용자가 입력한 인증정보 받기, POST method 값이기 때문에 input stream으로 받았다.
             LoginRequest credential = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
 
-            UsernamePasswordAuthenticationToken authenticationToken = null;
+            Authentication authenticationToken = null;
+
             if (credential.getProvider() != null && !"email".equals(credential.getProvider())) {
-                //TODO social login
-                return null;
+                SocialUser socialUser = verifySocialUser(credential);
+
+                FindUser findUser = authService.loadUserBySocial(socialUser.getEmail(), socialUser.getName());
+
+                authenticationToken = new UsernamePasswordAuthenticationToken(
+                        findUser.getEmail(),
+                        null,
+                        AuthorityUtils.createAuthorityList(findUser.getUserRole().getCode()));
             } else {
                 authenticationToken = new UsernamePasswordAuthenticationToken(
                         credential.getEmail(),
@@ -74,8 +88,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 );
 
                 // 인증정보 만들기
-                return getAuthenticationManager().authenticate(authenticationToken);
+                authenticationToken = getAuthenticationManager().authenticate(authenticationToken);
             }
+
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            return authenticationToken;
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());
             throw new RuntimeException(e);
@@ -168,5 +185,26 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             this.accessToken = accessToken;
             this.refreshToken = refreshToken;
         }
+    }
+
+    private SocialUser verifySocialUser(LoginRequest credential) {
+        SocialUser socialUser = null;
+        String token = credential.getToken();
+
+        switch (credential.getProvider()) {
+            case "GOOGLE":
+                socialUser = googleLogin.verify(token);
+                break;
+            case "KAKAO":
+                // Kakao 로그인 처리
+                break;
+            case "NAVER":
+                // Naver 로그인 처리
+                break;
+            default:
+                throw new CoreApiException(ErrorType.PROVIDER_MISMATCH);
+        }
+
+        return socialUser;
     }
 }

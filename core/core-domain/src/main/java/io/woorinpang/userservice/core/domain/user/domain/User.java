@@ -53,8 +53,9 @@ public class User extends BaseTimeEntity {
     /**
      * 사용자 수정
      */
-    public void modify(String name) {
+    public User modify(String name) {
         this.name = name;
+        return this;
     }
 
     public void leave() {

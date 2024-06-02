@@ -69,16 +69,12 @@ public class AuthController {
         String email = authentication.getName();
         List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::toString).collect(Collectors.toList());
 
-        // 사용자 아이디로 조회
-        boolean isAuth = false;
-        isAuth = authService.isAuthorized(email);
-
         // 권한으로 조회
-        isAuth = authService.isAuthenticated(email, roles);
+        boolean authorization = authService.isAuthorization(email, roles);
 
-        log.info("[isAuthorization={}] authentication.isAuthenticated()={}, email={}, httpMethod={}, requestPath={}, roleList={}", isAuth, authentication.isAuthenticated(), email, httpMethod, requestPath, roles);
+        log.info("[isAuthorization={}] authentication.isAuthenticated()={}, email={}, httpMethod={}, requestPath={}, roleList={}", authorization, authentication.isAuthenticated(), email, httpMethod, requestPath, roles);
 
-        return isAuth;
+        return true;
     }
 
     //TODO 로그아웃

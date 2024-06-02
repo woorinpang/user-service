@@ -24,3 +24,14 @@ Content-Type: application/json
   "email" : "spring@woorinpang.com",
   "password" : "Tmvmfld1!"
 }
+
+### 구글 로그인
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": "",
+  "token": "{{id_token}}",
+  "provider" : "GOOGLE"
+}
