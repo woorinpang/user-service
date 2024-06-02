@@ -22,7 +22,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<FindUserResponse>> findUser(
             @PathVariable("userId") Long userId
     ) {
-        return ResponseEntity.ok(ApiResponse.success(new FindUserResponse(userService.findUserInfo(userId))));
+        return ResponseEntity.ok(ApiResponse.success(new FindUserResponse(userService.findUserInfo(new UserTarget(userId)))));
     }
 
     @PutMapping("/{userId}")

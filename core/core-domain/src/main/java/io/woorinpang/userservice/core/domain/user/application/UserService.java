@@ -16,8 +16,8 @@ public class UserService {
     /**
      * 사용자 정보 조회
      */
-    public FindUser findUserInfo(long userId) {
-        return userFinder.findUser(userId);
+    public FindUser findUserInfo(UserTarget target) {
+        return userFinder.findUser(target);
     }
 
     /**

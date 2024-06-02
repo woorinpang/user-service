@@ -12,6 +12,10 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Getter
 @AllArgsConstructor
 public enum ErrorType {
+    GOOGLE_TOKEN_INVALID(INTERNAL_SERVER_ERROR, E500, "구글 토큰이 유효하지 않습니다.", ERROR),
+
+    PROVIDER_MISMATCH(INTERNAL_SERVER_ERROR, E500, "provider mismatch", ERROR),
+
     DEFAULT_ERROR(INTERNAL_SERVER_ERROR, E500, "An unexpected error has occurred.", ERROR);
 
     private final HttpStatus status;

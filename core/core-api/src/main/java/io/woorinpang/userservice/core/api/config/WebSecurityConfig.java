@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.api.config;
 
-import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import io.woorinpang.userservice.core.api.support.constant.GlobalConstant;
+import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,11 +22,12 @@ public class WebSecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final AuthService authService;
+    private final GoogleLogin googleLogin;
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, tokenProvider, authService);
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, tokenProvider, authService, googleLogin);
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -34,12 +35,13 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(GlobalConstant.SECURITY_PERMITALL_ANTPATTERNS).permitAll()
-                        .requestMatchers("/admin/users/**").hasRole("ADMIN")
-                        .requestMatchers("/users/**").hasRole("USER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("**").hasRole("USER")
 //                        .anyRequest().access("@authorizationService.isAuthorization(request, authentication)") // 호출 시 권한 인가 데이터 확인
                 )
                 .addFilter(authenticationFilter)
-                .logout(logout -> logout.logoutSuccessUrl("/"));
+                .logout(logout -> logout.logoutSuccessUrl("/"))
+        ;
 
         return http.build();
     }

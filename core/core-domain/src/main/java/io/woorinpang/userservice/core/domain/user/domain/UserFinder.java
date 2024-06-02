@@ -24,8 +24,8 @@ public class UserFinder {
     }
 
     @Transactional(readOnly = true)
-    public FindUser findUser(long userId) {
-        return new FindUser(findUserById(userRepository, userId));
+    public FindUser findUser(UserTarget target) {
+        return new FindUser(findUserById(userRepository, target.id()));
     }
 
     @Transactional(readOnly = true)

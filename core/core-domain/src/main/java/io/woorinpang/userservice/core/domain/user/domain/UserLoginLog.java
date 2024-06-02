@@ -15,8 +15,8 @@ public class UserLoginLog extends BaseTimeEntity {
     @Column(name = "siteId", columnDefinition = "bigint null comment '사이트 아이디'")
     private Long siteId;
 
-    @Column(name = "username", columnDefinition = "varchar(100) not null comment '아이디'")
-    private String username;
+    @Column(name = "email", columnDefinition = "varchar(100) not null comment '이메일'")
+    private String email;
 
     @Column(name = "remoteIp", columnDefinition = "varchar(100) null comment '아이피'")
     private String remoteIp;
@@ -30,7 +30,7 @@ public class UserLoginLog extends BaseTimeEntity {
     @Builder(builderMethodName = "createUserLoginLog")
     public UserLoginLog(UserLoginLogCommand command) {
         this.siteId = command.siteId();
-        this.username = command.username();
+        this.email = command.email();
         this.remoteIp = command.remoteIp();
         this.success = command.success();
         this.failContent = command.failContent();
