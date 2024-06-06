@@ -1,6 +1,7 @@
 package io.woorinpang.userservice.core.domain.user.application;
 
 import io.woorinpang.userservice.core.domain.user.domain.*;
+import io.woorinpang.userservice.core.enums.user.Provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,10 +47,10 @@ public class AuthService {
     /**
      * 사용자 회원가입
      */
-    public long userJoin(LoginUser login, String name) {
+    public long userJoin(LoginUser login, String name, Provider provider) {
         userValidator.duplicateLoginId(login.email());
 
-        return userAppender.append(login, name);
+        return userAppender.append(login, name, provider);
     }
 
     public Optional<FindUser> findUser(String email) {
@@ -85,14 +86,13 @@ public class AuthService {
         return roles.contains(findUser.getRole().getCode());
     }
 
-    public FindUser loadUserBySocial(String email, String name) {
+    public FindUser loadUserBySocial(String email, String name, Provider provider) {
         UserTarget.UserTargetBuilder targetBuilder = UserTarget.builder();
         userFinder.findByEmail(email).ifPresentOrElse(user -> {
-            userModifier.modify(new UserTarget(user.getId()), name);
             targetBuilder.id(user.getId());
 
         }, () -> {
-            long appendedId = userAppender.append(new LoginUser(email, null), name);
+            long appendedId = userAppender.append(new LoginUser(email, null), name, provider);
             targetBuilder.id(appendedId);
         });
 

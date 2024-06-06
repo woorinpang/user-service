@@ -22,4 +22,8 @@ public enum Provider {
                 .findAny()
                 .orElseThrow(null);
     }
+
+    public static boolean verify(String code) {
+        return Provider.GOOGLE.getCode().equals(code) || Provider.NAVER.getCode().equals(code) || Provider.KAKAO.getCode().equals(code);
+    }
 }
