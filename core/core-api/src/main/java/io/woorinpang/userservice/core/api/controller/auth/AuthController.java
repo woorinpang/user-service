@@ -6,6 +6,7 @@ import io.woorinpang.userservice.core.api.controller.user.request.JoinUserReques
 import io.woorinpang.userservice.core.api.support.response.ApiResponse;
 import io.woorinpang.userservice.core.api.support.response.DefaultIdResponse;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
+import io.woorinpang.userservice.core.enums.user.Provider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -48,7 +49,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<DefaultIdResponse>> joinUser(
             @RequestBody @Valid JoinUserRequest request
     ) {
-        long successId = authService.userJoin(request.toUserLogin(passwordEncoder), request.getName());
+        long successId = authService.userJoin(request.toUserLogin(passwordEncoder), request.getName(), Provider.WOORINPANG);
         return ResponseEntity.ok(ApiResponse.success(new DefaultIdResponse(successId)));
     }
 

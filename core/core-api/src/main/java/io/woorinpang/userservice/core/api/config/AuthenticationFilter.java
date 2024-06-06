@@ -10,6 +10,7 @@ import io.woorinpang.userservice.core.api.support.error.ErrorType;
 import io.woorinpang.userservice.core.api.support.util.LogUtil;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
+import io.woorinpang.userservice.core.enums.user.Provider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -49,14 +50,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final TokenProvider tokenProvider;
     private final AuthService authService;
     private final GoogleLogin googleLogin;
+    private final KakaoLogin kakaoLogin;
 
 
-
-    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, AuthService authService, GoogleLogin googleLogin) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, AuthService authService, GoogleLogin googleLogin, KakaoLogin kakaoLogin) {
         super(authenticationManager);
         this.tokenProvider = tokenProvider;
         this.authService = authService;
         this.googleLogin = googleLogin;
+        this.kakaoLogin = kakaoLogin;
     }
 
     /**
@@ -71,10 +73,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
             Authentication authenticationToken = null;
 
-            if (credential.getProvider() != null && !"email".equals(credential.getProvider())) {
+            if (credential.getProvider() != null && Provider.verify(credential.getProvider())) {
                 SocialUser socialUser = verifySocialUser(credential);
 
-                FindUser findUser = authService.loadUserBySocial(socialUser.getEmail(), socialUser.getName());
+                FindUser findUser = authService.loadUserBySocial(socialUser.getEmail(), socialUser.getName(), Provider.findByCode(credential.getProvider()));
 
                 authenticationToken = new UsernamePasswordAuthenticationToken(
                         findUser.getEmail(),
@@ -196,7 +198,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 socialUser = googleLogin.verify(token);
                 break;
             case "KAKAO":
-                // Kakao 로그인 처리
+                socialUser = kakaoLogin.verify(token);
                 break;
             case "NAVER":
                 // Naver 로그인 처리

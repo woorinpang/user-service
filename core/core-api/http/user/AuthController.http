@@ -32,6 +32,17 @@ Content-Type: application/json
 {
   "email": "",
   "password": "",
-  "token": "{{id_token}}",
+  "token": "{{google_token}}",
   "provider" : "GOOGLE"
+}
+
+### 카카오 로그인
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": "",
+  "token": "{{kakao_token}}",
+  "provider" : "KAKAO"
 }

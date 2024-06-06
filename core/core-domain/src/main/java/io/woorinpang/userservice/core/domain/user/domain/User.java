@@ -1,6 +1,7 @@
 package io.woorinpang.userservice.core.domain.user.domain;
 
 import io.woorinpang.userservice.core.domain.support.entity.BaseTimeEntity;
+import io.woorinpang.userservice.core.enums.user.Provider;
 import io.woorinpang.userservice.core.enums.user.UserRole;
 import io.woorinpang.userservice.core.enums.user.UserState;
 import jakarta.persistence.*;
@@ -36,6 +37,10 @@ public class User extends BaseTimeEntity {
     @Column(name = "userState", columnDefinition = "varchar(15) not null comment '사용자 상태'")
     private UserState state;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider", columnDefinition = "varchar(15) not null comment '로그인 제공자'")
+    private Provider provider;
+
     @Column(name = "lastLoginDate", columnDefinition = "datetime(6) default null comment '최근 로그인 일자'")
     private LocalDateTime lastLoginDate;
 
@@ -48,14 +53,14 @@ public class User extends BaseTimeEntity {
         this.name = command.name();
         this.role = UserRole.ROLE_USER;
         this.state = UserState.NORMAL;
+        this.provider = command.provider();
     }
 
     /**
      * 사용자 수정
      */
-    public User modify(String name) {
+    public void modify(String name) {
         this.name = name;
-        return this;
     }
 
     public void leave() {

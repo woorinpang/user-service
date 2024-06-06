@@ -32,8 +32,8 @@ spring:
             client-name: Naver
           # /oauth2/authorization/kakao
           kakao:
-            client-id: kakao_client_id # TODO https://developers.kakao.com/product/kakaoLogin
-            client-secret: kakao_client_secret # TODO
+            client-id: ef894dffc8321ce842e3c795856ffb11
+            client-secret: bPT5zAs3xfc67kAMcPJwtPW3KhDwWskO
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
