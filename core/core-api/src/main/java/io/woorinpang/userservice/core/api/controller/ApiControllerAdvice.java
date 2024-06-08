@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.api.controller;
 
 import io.woorinpang.userservice.core.api.support.error.CoreApiException;
-import io.woorinpang.userservice.core.api.support.error.ErrorType;
+import io.woorinpang.userservice.core.api.support.error.ApiErrorType;
 import io.woorinpang.userservice.core.api.support.response.ApiResponse;
 import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +37,6 @@ public class ApiControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
         log.error("Exception : {}", e.getMessage(), e);
-        return new ResponseEntity<>(ApiResponse.error(ErrorType.DEFAULT_ERROR), ErrorType.DEFAULT_ERROR.getStatus());
+        return new ResponseEntity<>(ApiResponse.error(ApiErrorType.DEFAULT_ERROR), ApiErrorType.DEFAULT_ERROR.getStatus());
     }
 }

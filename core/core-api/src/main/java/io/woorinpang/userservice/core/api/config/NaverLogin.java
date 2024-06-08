@@ -2,8 +2,8 @@ package io.woorinpang.userservice.core.api.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.woorinpang.userservice.core.api.config.dto.SocialUser;
-import io.woorinpang.userservice.core.api.support.error.ApiErrorType;
 import io.woorinpang.userservice.core.api.support.error.CoreApiException;
+import io.woorinpang.userservice.core.api.support.error.ApiErrorType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,14 +14,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @Component
-public class KakaoLogin implements SocialLogin{
+public class NaverLogin implements SocialLogin {
     private final SocialLoginProperties properties;
 
-    public KakaoLogin(SocialLoginProperties socialLoginProperties) {
+    public NaverLogin(SocialLoginProperties socialLoginProperties) {
         this.properties = socialLoginProperties;
     }
 
@@ -29,7 +27,7 @@ public class KakaoLogin implements SocialLogin{
     public SocialUser verify(String token) {
         SocialUser.SocialUserBuilder socialUserBuilder = SocialUser.builder();
 
-        KakaoIdToken payload = WebClient.create(properties.getKakaoUserInfoUri())
+        NaverIdToken payload = WebClient.create(properties.getNaverUserInfoUri())
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
@@ -38,17 +36,18 @@ public class KakaoLogin implements SocialLogin{
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new CoreApiException(ApiErrorType.INVALID_PARAMETER)))
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new CoreApiException(ApiErrorType.DEFAULT_ERROR)))
-                .bodyToMono(KakaoIdToken.class)
+                .bodyToMono(NaverIdToken.class)
                 .block();
 
         if (payload == null) {
-            throw new CoreApiException(ApiErrorType.KAKAO_TOKEN_INVALID);
+            throw new CoreApiException(ApiErrorType.NAVER_TOKEN_INVALID);
         } else {
             socialUserBuilder
-                    .id(String.valueOf(payload.getId()))
-                    .name(payload.getAccount().getProfile().getNickname())
-                    .email(payload.getAccount().getEmail())
-                    .profile(payload.getAccount().getProfile().getProfileImage());
+                    .id(String.valueOf(payload.getAccount().getId()))
+                    .name(payload.getAccount().getName())
+                    .email(payload.getAccount().getId())
+                    .profile(payload.getAccount().getProfileImage())
+            ;
         }
 
         return socialUserBuilder.build();
@@ -56,30 +55,28 @@ public class KakaoLogin implements SocialLogin{
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    private static class KakaoIdToken {
-        private long id;
+    private static class NaverIdToken {
+        @JsonProperty("resultcode")
+        private String code;
 
-        @JsonProperty(value = "connected_at")
-        private LocalDateTime connectedAt;
+        private String message;
 
-        @JsonProperty(value = "kakao_account")
-        private KakaoAccount account;
+        @JsonProperty("response")
+        private NaverAccount account;
 
         @Getter
         @NoArgsConstructor(access = AccessLevel.PROTECTED)
-        private static class KakaoAccount {
-            private String email;
+        private static class NaverAccount {
+            private String id;
 
-            private KakaoProfile profile;
+            private String name;
 
-            @Getter
-            @NoArgsConstructor(access = AccessLevel.PROTECTED)
-            private static class KakaoProfile {
-                private String nickname;
+            private String nickname;
 
-                @JsonProperty("profile_image_url")
-                private String profileImage;
-            }
+            @JsonProperty("profile_image")
+            private String profileImage;
+
+            private String mobile;
         }
     }
 }

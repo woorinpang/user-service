@@ -1,7 +1,6 @@
 package io.woorinpang.userservice.core.domain.user.domain;
 
 import io.woorinpang.userservice.core.domain.user.repository.UserRepository;
-import io.woorinpang.userservice.core.enums.user.Provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +14,13 @@ public class UserAppender {
 
     @Transactional
     public long append(LoginUser login, String name, Provider provider) {
-        JoinUser command = JoinUser.builder()
+        JoinUser user = JoinUser.builder()
                 .email(login.email())
+                .provider(provider)
                 .password(login.password())
                 .name(name)
-                .provider(provider)
                 .build();
 
-        return saveUser(userRepository, new User(command)).getId();
+        return saveUser(userRepository, new User(user)).getId();
     }
 }

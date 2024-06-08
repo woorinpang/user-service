@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.core.api.controller.user.request;
+package io.woorinpang.userservice.core.api.controller.auth.request;
 
 import lombok.*;
 

@@ -1,5 +1,7 @@
-package io.woorinpang.userservice.core.enums.user;
+package io.woorinpang.userservice.core.domain.user.domain;
 
+import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
+import io.woorinpang.userservice.core.domain.support.error.DomainErrorType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,7 +22,7 @@ public enum Provider {
         return Arrays.stream(Provider.values())
                 .filter(provider -> provider.getCode().equals(code))
                 .findAny()
-                .orElseThrow(null);
+                .orElseThrow(() -> new CoreDomainException(DomainErrorType.DEFAULT_ERROR));
     }
 
     public static boolean verify(String code) {

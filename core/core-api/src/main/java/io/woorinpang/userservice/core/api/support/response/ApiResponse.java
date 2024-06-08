@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.api.support.response;
 
-import io.woorinpang.userservice.core.api.support.error.ErrorMessage;
-import io.woorinpang.userservice.core.api.support.error.ErrorType;
+import io.woorinpang.userservice.core.api.support.error.ApiErrorMessage;
+import io.woorinpang.userservice.core.api.support.error.ApiErrorType;
 import lombok.Getter;
 
 @Getter
@@ -10,15 +10,15 @@ public class ApiResponse<T> {
 
     private final T data;
 
-    private final ErrorMessage error;
+    private final ApiErrorMessage error;
 
-    private ApiResponse(ResultType result, T data, ErrorMessage error) {
+    private ApiResponse(ResultType result, T data, ApiErrorMessage error) {
         this.result = result;
         this.data = data;
         this.error = error;
     }
 
-    public static ApiResponse<?> success() {
+    public static ApiResponse<Void> success() {
         return new ApiResponse<>(ResultType.SUCCESS, null, null);
     }
 
@@ -27,14 +27,14 @@ public class ApiResponse<T> {
     }
 
     public static ApiResponse<?> error(String code, String message) {
-        return new ApiResponse<>(ResultType.ERROR, null, new ErrorMessage(code, message));
+        return new ApiResponse<>(ResultType.ERROR, null, new ApiErrorMessage(code, message));
     }
 
-    public static ApiResponse<?> error(ErrorType error) {
-        return new ApiResponse<>(ResultType.ERROR, null, new ErrorMessage(error));
+    public static ApiResponse<?> error(ApiErrorType error) {
+        return new ApiResponse<>(ResultType.ERROR, null, new ApiErrorMessage(error));
     }
 
-    public static ApiResponse<?> error(ErrorType error, Object errorData) {
-        return new ApiResponse<>(ResultType.ERROR, null, new ErrorMessage(error, errorData));
+    public static ApiResponse<?> error(ApiErrorType error, Object errorData) {
+        return new ApiResponse<>(ResultType.ERROR, null, new ApiErrorMessage(error, errorData));
     }
 }

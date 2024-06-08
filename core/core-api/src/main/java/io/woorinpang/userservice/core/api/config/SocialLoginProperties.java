@@ -24,4 +24,10 @@ public class SocialLoginProperties {
 
     @Value(value = "${spring.security.oauth2.client.registration.naver.client-id}")
     private String naverClientSecret;
+
+    @Value(value = "${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String kakaoUserInfoUri;
+
+    @Value(value = "${spring.security.oauth2.client.provider.naver.user-info-uri}")
+    private String naverUserInfoUri;
 }

@@ -1,7 +1,5 @@
 package io.woorinpang.userservice.core.domain.user.domain;
 
-import io.woorinpang.userservice.core.enums.user.UserRole;
-import io.woorinpang.userservice.core.enums.user.UserState;
 import lombok.*;
 
 import java.util.Arrays;

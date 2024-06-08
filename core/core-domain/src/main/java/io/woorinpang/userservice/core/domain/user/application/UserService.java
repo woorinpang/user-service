@@ -30,7 +30,7 @@ public class UserService {
     /**
      * 사용자 회원탈퇴
      */
-    public void leaveUser(UserTarget userTarget) {
-        userRemover.leave(userTarget.id());
+    public void leaveUser(UserTarget target) {
+        userRemover.leave(target);
     }
 }

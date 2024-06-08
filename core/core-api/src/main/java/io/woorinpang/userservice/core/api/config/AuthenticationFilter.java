@@ -6,11 +6,10 @@ import io.woorinpang.userservice.core.api.config.dto.LoginRequest;
 import io.woorinpang.userservice.core.api.config.dto.LoginUser;
 import io.woorinpang.userservice.core.api.config.dto.SocialUser;
 import io.woorinpang.userservice.core.api.support.error.CoreApiException;
-import io.woorinpang.userservice.core.api.support.error.ErrorType;
 import io.woorinpang.userservice.core.api.support.util.LogUtil;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
-import io.woorinpang.userservice.core.enums.user.Provider;
+import io.woorinpang.userservice.core.domain.user.domain.Provider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -43,22 +42,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.jsonwebtoken.lang.Strings.hasLength;
+import static org.springframework.util.StringUtils.hasText;
 
 @Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final TokenProvider tokenProvider;
     private final AuthService authService;
-    private final GoogleLogin googleLogin;
-    private final KakaoLogin kakaoLogin;
+    private final SocialLoginHandler socialLoginBridge;
 
-
-    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, AuthService authService, GoogleLogin googleLogin, KakaoLogin kakaoLogin) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, AuthService authService, SocialLoginHandler socialLoginBridge) {
         super(authenticationManager);
         this.tokenProvider = tokenProvider;
         this.authService = authService;
-        this.googleLogin = googleLogin;
-        this.kakaoLogin = kakaoLogin;
+        this.socialLoginBridge = socialLoginBridge;
     }
 
     /**
@@ -70,11 +67,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         try {
             // 사용자가 입력한 인증정보 받기, POST method 값이기 때문에 input stream으로 받았다.
             LoginRequest credential = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
-
             Authentication authenticationToken = null;
 
-            if (credential.getProvider() != null && Provider.verify(credential.getProvider())) {
-                SocialUser socialUser = verifySocialUser(credential);
+            if (hasText(credential.getProvider()) && Provider.verify(credential.getProvider())) {
+                SocialUser socialUser = socialLoginBridge.verifySocialUser(credential);
 
                 FindUser findUser = authService.loadUserBySocial(socialUser.getEmail(), socialUser.getName(), Provider.findByCode(credential.getProvider()));
 
@@ -92,7 +88,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 // 인증정보 만들기
                 authenticationToken = getAuthenticationManager().authenticate(authenticationToken);
             }
-
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             return authenticationToken;
         } catch (IOException e) {
@@ -108,8 +103,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        FindUser findUser = authService.findUser(email)
-                .orElseThrow(() -> new UsernameNotFoundException("username not found"));
+        FindUser findUser = authService.findUser(email);
 
         LoginUser loginUser = new LoginUser(findUser);
         String payload = new ObjectMapper().writeValueAsString(loginUser);
@@ -168,12 +162,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(null);
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(e.getType().getStatus().value());
-            log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
+            log.error("AuthenticationFilter doFilter error: {}", e.getMessage(), e);
         } catch (ServletException | IOException e) {
             SecurityContextHolder.getContext().setAuthentication(null);
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-            log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
+            log.error("AuthenticationFilter doFilter error: {}", e.getMessage(), e);
         }
     }
 
@@ -187,26 +181,5 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             this.accessToken = accessToken;
             this.refreshToken = refreshToken;
         }
-    }
-
-    private SocialUser verifySocialUser(LoginRequest credential) {
-        SocialUser socialUser = null;
-        String token = credential.getToken();
-
-        switch (credential.getProvider()) {
-            case "GOOGLE":
-                socialUser = googleLogin.verify(token);
-                break;
-            case "KAKAO":
-                socialUser = kakaoLogin.verify(token);
-                break;
-            case "NAVER":
-                // Naver 로그인 처리
-                break;
-            default:
-                throw new CoreApiException(ErrorType.PROVIDER_MISMATCH);
-        }
-
-        return socialUser;
     }
 }

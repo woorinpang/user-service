@@ -1,12 +1,12 @@
 package io.woorinpang.userservice.core.api.controller.auth;
 
 import io.woorinpang.userservice.core.api.config.TokenProvider;
-import io.woorinpang.userservice.core.api.controller.user.request.ExistsUsernameRequest;
+import io.woorinpang.userservice.core.api.controller.auth.request.ExistsUsernameRequest;
 import io.woorinpang.userservice.core.api.controller.user.request.JoinUserRequest;
 import io.woorinpang.userservice.core.api.support.response.ApiResponse;
 import io.woorinpang.userservice.core.api.support.response.DefaultIdResponse;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
-import io.woorinpang.userservice.core.enums.user.Provider;
+import io.woorinpang.userservice.core.domain.user.domain.Provider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -33,7 +33,7 @@ public class AuthController {
     private final AuthService authService;
 
     /**
-     * 아이디 중복확인(username) - 로그인 없이
+     * 이메일 중복확인
      */
     @PostMapping("/username/exists")
     public ResponseEntity<ApiResponse<Boolean>> existsUsername(
@@ -43,13 +43,13 @@ public class AuthController {
     }
 
     /**
-     * 회원가입 -> 로그인 필요없음
+     * 회원가입
      */
     @PostMapping("/join")
     public ResponseEntity<ApiResponse<DefaultIdResponse>> joinUser(
             @RequestBody @Valid JoinUserRequest request
     ) {
-        long successId = authService.userJoin(request.toUserLogin(passwordEncoder), request.getName(), Provider.WOORINPANG);
+        long successId = authService.joinUser(request.toUserLogin(passwordEncoder), request.getName(), Provider.WOORINPANG);
         return ResponseEntity.ok(ApiResponse.success(new DefaultIdResponse(successId)));
     }
 
@@ -57,7 +57,7 @@ public class AuthController {
      * refresh token 과 일치하는 사용자가 있으면 access token 을 새로 발급하여 리턴한다.
      */
     @PutMapping("/token/refresh")
-    public ResponseEntity<ApiResponse<?>> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<Void>> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         tokenProvider.createRefreshToken();
         return ResponseEntity.ok(ApiResponse.success());
@@ -77,6 +77,4 @@ public class AuthController {
 
         return true;
     }
-
-    //TODO 로그아웃
 }

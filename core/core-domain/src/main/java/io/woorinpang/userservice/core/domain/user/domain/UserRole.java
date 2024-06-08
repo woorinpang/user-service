@@ -1,5 +1,7 @@
-package io.woorinpang.userservice.core.enums.user;
+package io.woorinpang.userservice.core.domain.user.domain;
 
+import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
+import io.woorinpang.userservice.core.domain.support.error.DomainErrorType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,6 +22,6 @@ public enum UserRole{
         return Arrays.stream(UserRole.values())
                 .filter(role -> role.getCode().equals(code))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("UserRole code not found"));
+                .orElseThrow(() -> new CoreDomainException(DomainErrorType.DEFAULT_ERROR));
     }
 }

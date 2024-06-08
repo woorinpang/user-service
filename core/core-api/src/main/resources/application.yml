@@ -24,8 +24,8 @@ spring:
           # 네이버는 Spring Security를 공식 지원하지 않기 때문에 CommonOAuth2Provider 에서 해주는 값들을 수동으로 입력한다.
           # /oauth2/authorization/naver
           naver:
-            client-id: naver_client_id # TODO https://developers.naver.com/apps/#/register?api=nvlogin
-            client-secret: naver_client_secret # TODO
+            client-id: PssWEmT4iZYQ32lSdz0A # TODO https://developers.naver.com/apps/#/register?api=nvlogin
+            client-secret: Tp01KAWHXh # TODO
             redirect_uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization_grant_type: authorization_code
             scope: name,email,profile_image
