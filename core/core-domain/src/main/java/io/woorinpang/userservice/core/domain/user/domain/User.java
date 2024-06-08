@@ -1,9 +1,6 @@
 package io.woorinpang.userservice.core.domain.user.domain;
 
 import io.woorinpang.userservice.core.domain.support.entity.BaseTimeEntity;
-import io.woorinpang.userservice.core.enums.user.Provider;
-import io.woorinpang.userservice.core.enums.user.UserRole;
-import io.woorinpang.userservice.core.enums.user.UserState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,6 +20,10 @@ public class User extends BaseTimeEntity {
     @Column(name = "email", unique = true, columnDefinition = "varchar(60) not null comment '이메일'")
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider", columnDefinition = "varchar(15) not null comment '로그인 제공자'")
+    private Provider provider;
+
     @Column(name = "password", columnDefinition = "varchar(120) default null comment '비밀번호'")
     private String password;
 
@@ -37,10 +38,6 @@ public class User extends BaseTimeEntity {
     @Column(name = "userState", columnDefinition = "varchar(15) not null comment '사용자 상태'")
     private UserState state;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "provider", columnDefinition = "varchar(15) not null comment '로그인 제공자'")
-    private Provider provider;
-
     @Column(name = "lastLoginDate", columnDefinition = "datetime(6) default null comment '최근 로그인 일자'")
     private LocalDateTime lastLoginDate;
 
@@ -49,11 +46,11 @@ public class User extends BaseTimeEntity {
 
     public User(JoinUser command) {
         this.email = command.email();
+        this.provider = command.provider();
         this.password = command.password();
         this.name = command.name();
         this.role = UserRole.ROLE_USER;
         this.state = UserState.NORMAL;
-        this.provider = command.provider();
     }
 
     /**

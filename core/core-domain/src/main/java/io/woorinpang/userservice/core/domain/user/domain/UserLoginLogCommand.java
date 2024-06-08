@@ -6,6 +6,7 @@ import lombok.Builder;
 public record UserLoginLogCommand(
         Long siteId,
         String email,
+        Provider provider,
         String remoteIp,
         boolean success,
         String failContent

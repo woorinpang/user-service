@@ -6,11 +6,10 @@ import io.woorinpang.userservice.core.api.config.dto.LoginRequest;
 import io.woorinpang.userservice.core.api.config.dto.LoginUser;
 import io.woorinpang.userservice.core.api.config.dto.SocialUser;
 import io.woorinpang.userservice.core.api.support.error.CoreApiException;
-import io.woorinpang.userservice.core.api.support.error.ErrorType;
 import io.woorinpang.userservice.core.api.support.util.LogUtil;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
-import io.woorinpang.userservice.core.enums.user.Provider;
+import io.woorinpang.userservice.core.domain.user.domain.Provider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -43,22 +42,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.jsonwebtoken.lang.Strings.hasLength;
+import static org.springframework.util.StringUtils.hasText;
 
 @Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final TokenProvider tokenProvider;
     private final AuthService authService;
-    private final GoogleLogin googleLogin;
-    private final KakaoLogin kakaoLogin;
+    private final SocialLoginHandler socialLoginBridge;
 
-
-    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, AuthService authService, GoogleLogin googleLogin, KakaoLogin kakaoLogin) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, AuthService authService, SocialLoginHandler socialLoginBridge) {
         super(authenticationManager);
         this.tokenProvider = tokenProvider;
         this.authService = authService;
-        this.googleLogin = googleLogin;
-        this.kakaoLogin = kakaoLogin;
+        this.socialLoginBridge = socialLoginBridge;
     }
 
     /**
@@ -73,8 +70,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
             Authentication authenticationToken = null;
 
-            if (credential.getProvider() != null && Provider.verify(credential.getProvider())) {
-                SocialUser socialUser = verifySocialUser(credential);
+            if (hasText(credential.getProvider()) && Provider.verify(credential.getProvider())) {
+                SocialUser socialUser = socialLoginBridge.verifySocialUser(credential);
 
                 FindUser findUser = authService.loadUserBySocial(socialUser.getEmail(), socialUser.getName(), Provider.findByCode(credential.getProvider()));
 
@@ -187,26 +184,5 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             this.accessToken = accessToken;
             this.refreshToken = refreshToken;
         }
-    }
-
-    private SocialUser verifySocialUser(LoginRequest credential) {
-        SocialUser socialUser = null;
-        String token = credential.getToken();
-
-        switch (credential.getProvider()) {
-            case "GOOGLE":
-                socialUser = googleLogin.verify(token);
-                break;
-            case "KAKAO":
-                socialUser = kakaoLogin.verify(token);
-                break;
-            case "NAVER":
-                // Naver 로그인 처리
-                break;
-            default:
-                throw new CoreApiException(ErrorType.PROVIDER_MISMATCH);
-        }
-
-        return socialUser;
     }
 }

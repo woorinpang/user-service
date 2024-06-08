@@ -46,3 +46,14 @@ Content-Type: application/json
   "token": "{{kakao_token}}",
   "provider" : "KAKAO"
 }
+
+### 네이버 로그인
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": "",
+  "token": "{{naver_token}}",
+  "provider" : "NAVER"
+}

@@ -18,6 +18,10 @@ public class UserLoginLog extends BaseTimeEntity {
     @Column(name = "email", columnDefinition = "varchar(100) not null comment '이메일'")
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider", columnDefinition = "varchar(15) not null comment '로그인 제공자'")
+    private Provider provider;
+
     @Column(name = "remoteIp", columnDefinition = "varchar(100) null comment '아이피'")
     private String remoteIp;
 
@@ -31,6 +35,7 @@ public class UserLoginLog extends BaseTimeEntity {
     public UserLoginLog(UserLoginLogCommand command) {
         this.siteId = command.siteId();
         this.email = command.email();
+        this.provider = command.provider();
         this.remoteIp = command.remoteIp();
         this.success = command.success();
         this.failContent = command.failContent();

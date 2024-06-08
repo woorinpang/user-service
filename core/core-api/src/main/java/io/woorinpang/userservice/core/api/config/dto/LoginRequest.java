@@ -1,6 +1,5 @@
 package io.woorinpang.userservice.core.api.config.dto;
 
-import io.woorinpang.userservice.core.enums.user.Provider;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

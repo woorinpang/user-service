@@ -14,10 +14,13 @@ public class SocialUser {
 
     private String name;
 
+    private String profile;
+
     @Builder
-    public SocialUser(String id, String email, String name) {
+    public SocialUser(String id, String email, String name, String profile) {
         this.id = id;
         this.email = email;
         this.name = name;
+        this.profile = profile;
     }
 }

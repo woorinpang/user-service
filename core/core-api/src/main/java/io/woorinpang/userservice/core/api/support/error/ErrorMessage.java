@@ -16,13 +16,13 @@ public class ErrorMessage {
         this.data = null;
     }
 
-    public ErrorMessage(ErrorType errorType) {
+    public ErrorMessage(ApiErrorType errorType) {
         this.code = errorType.getCode().name();
         this.message = errorType.getMessage();
         this.data = null;
     }
 
-    public ErrorMessage(ErrorType errorType, Object data) {
+    public ErrorMessage(ApiErrorType errorType, Object data) {
         this.code = errorType.getCode().name();
         this.message = errorType.getMessage();
         this.data = data;

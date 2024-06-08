@@ -2,7 +2,7 @@ package io.woorinpang.userservice.core.api.config;
 
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
-import io.woorinpang.userservice.core.enums.user.UserState;
+import io.woorinpang.userservice.core.domain.user.domain.UserState;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

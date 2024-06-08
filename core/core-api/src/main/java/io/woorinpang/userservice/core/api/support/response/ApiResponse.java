@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.api.support.response;
 
 import io.woorinpang.userservice.core.api.support.error.ErrorMessage;
-import io.woorinpang.userservice.core.api.support.error.ErrorType;
+import io.woorinpang.userservice.core.api.support.error.ApiErrorType;
 import lombok.Getter;
 
 @Getter
@@ -30,11 +30,11 @@ public class ApiResponse<T> {
         return new ApiResponse<>(ResultType.ERROR, null, new ErrorMessage(code, message));
     }
 
-    public static ApiResponse<?> error(ErrorType error) {
+    public static ApiResponse<?> error(ApiErrorType error) {
         return new ApiResponse<>(ResultType.ERROR, null, new ErrorMessage(error));
     }
 
-    public static ApiResponse<?> error(ErrorType error, Object errorData) {
+    public static ApiResponse<?> error(ApiErrorType error, Object errorData) {
         return new ApiResponse<>(ResultType.ERROR, null, new ErrorMessage(error, errorData));
     }
 }

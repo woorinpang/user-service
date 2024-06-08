@@ -13,6 +13,8 @@ public enum DomainErrorType {
     GOOGLE(E1000, "", ERROR),
 
     USER_NOT_FOUND(E1000, "User not found", ERROR),
+    ALREADY_EXISTS_EMAIL(E1000, "동일한 이메일이 존재합니다.", ERROR),
+    ALREADY_EXISTS_EMAIL_OTHER_PROVIDER(E1000, "다른 Provider 에서 사용하는 이메일이 이미 존재합니다.", ERROR),
 
     DEFAULT_ERROR(E9999, "Core domain default error.", ERROR)
     ;

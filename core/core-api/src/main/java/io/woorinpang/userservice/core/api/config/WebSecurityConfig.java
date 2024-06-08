@@ -22,13 +22,12 @@ public class WebSecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final AuthService authService;
-    private final GoogleLogin googleLogin;
-    private final KakaoLogin kakaoLogin;
+    private final SocialLoginHandler socialLoginBridge;
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, tokenProvider, authService, googleLogin, kakaoLogin);
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, tokenProvider, authService, socialLoginBridge);
 
         http
                 .csrf(AbstractHttpConfigurer::disable)

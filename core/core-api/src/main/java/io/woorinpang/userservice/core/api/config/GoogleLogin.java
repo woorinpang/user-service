@@ -6,8 +6,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import io.woorinpang.userservice.core.api.config.dto.SocialUser;
+import io.woorinpang.userservice.core.api.support.error.ApiErrorType;
 import io.woorinpang.userservice.core.api.support.error.CoreApiException;
-import io.woorinpang.userservice.core.api.support.error.ErrorType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -38,14 +38,16 @@ public class GoogleLogin implements SocialLogin {
             GoogleIdToken idToken = verifier.verify(token);
 
             if (idToken == null) {
-                throw new CoreApiException(ErrorType.DEFAULT_ERROR);
+                throw new CoreApiException(ApiErrorType.GOOGLE_TOKEN_INVALID);
             } else {
                 GoogleIdToken.Payload payload = idToken.getPayload();
                 log.info("google oauth2: {}", payload.toString());
 
-                socialUserBuilder.id(payload.getSubject())
+                socialUserBuilder
+                        .id(payload.getSubject())
                         .email(payload.getEmail())
-                        .name((String) payload.get("name"));
+                        .name((String) payload.get("name"))
+                        .profile((String) payload.get("picture"));
             }
 
         } catch (GeneralSecurityException | IOException e) {

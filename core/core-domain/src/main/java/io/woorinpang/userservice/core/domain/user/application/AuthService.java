@@ -1,7 +1,7 @@
 package io.woorinpang.userservice.core.domain.user.application;
 
 import io.woorinpang.userservice.core.domain.user.domain.*;
-import io.woorinpang.userservice.core.enums.user.Provider;
+import io.woorinpang.userservice.core.domain.user.domain.Provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,36 +19,12 @@ public class AuthService {
     private final UserValidator userValidator;
     private final UserLogger userLogger;
 
-    /**
-     * 구글 클라이언트 ID
-     */
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String GOOGLE_CLIENT_ID;
-
-    /**
-     * 카카오 사용자 정보 URL
-     */
-    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
-    private String KAKAO_USER_INFO_URI;
-
-    /**
-     * 네이버 사용자 정보 URL
-     */
-    @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")
-    private String NAVER_USER_INFO_URI;
-
-    /**
-     * 사용자 아이디 중복확인
-     */
     public boolean existsEmail(String email) {
         return userFinder.findByEmail(email).isPresent();
     }
 
-    /**
-     * 사용자 회원가입
-     */
     public long userJoin(LoginUser login, String name, Provider provider) {
-        userValidator.duplicateLoginId(login.email());
+        userValidator.validEmail(login.email());
 
         return userAppender.append(login, name, provider);
     }
@@ -73,6 +49,7 @@ public class AuthService {
         UserLoginLogCommand command = UserLoginLogCommand.builder()
                 .siteId(siteId)
                 .email(email)
+                .provider(findUser.getProvider())
                 .remoteIp(remoteIp)
                 .success(success)
                 .failContent(failContent)
@@ -88,6 +65,9 @@ public class AuthService {
 
     public FindUser loadUserBySocial(String email, String name, Provider provider) {
         UserTarget.UserTargetBuilder targetBuilder = UserTarget.builder();
+
+        userValidator.validEmailAndProvider(new UserEmailWithProvider(email, provider));
+
         userFinder.findByEmail(email).ifPresentOrElse(user -> {
             targetBuilder.id(user.getId());
 
