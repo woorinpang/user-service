@@ -26,9 +26,6 @@ public class SocialLoginHandler {
         Function<String, SocialUser> loginMethod = loginProviders.get(credential.getProvider());
         log.info("{} login provider", credential.getProvider());
 
-        if(loginMethod == null) {
-            throw new CoreApiException(ApiErrorType.PROVIDER_MISMATCH);
-        }
         return loginMethod.apply(credential.getToken());
     }
 }

@@ -7,16 +7,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.woorinpang.userservice.core.domain.user.domain.UserRepositoryHelper.*;
+
 @Component
 @RequiredArgsConstructor
 public class UserValidator {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public void validEmail(String email) {
-        if (!userRepository.existsByEmail(email)) return;
+    public boolean existsEmail(String email) {
+        return existsByEmail(userRepository, email);
+    }
 
-        throw new CoreDomainException(DomainErrorType.USER_NOT_FOUND);
+    @Transactional(readOnly = true)
+    public void validEmail(String email) {
+        if (!existsByEmail(userRepository, email)) return;
+
+        throw new CoreDomainException(DomainErrorType.ALREADY_EXISTS_EMAIL);
     }
 
     @Transactional(readOnly = true)

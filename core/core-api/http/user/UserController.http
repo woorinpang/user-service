@@ -1,16 +1,16 @@
 ### 내 정보 조회
-GET {{host}}/users/7
-Authorization: {{access-token}}
+GET {{host}}/users/16
+Authorization: {{access_token}}
 
 ### 내 정보 수정
-PUT {{host}}/users/2
+PUT {{host}}/users/16
 Content-Type: application/json
-Authorization: {{access-token}}
+Authorization: {{access_token}}
 
 {
   "name" : "스프링수정"
 }
 
 ### 회원탈퇴
-DELETE {{host}}/users/2
-Authorization: {{access-token}}
+DELETE {{host}}/users/16
+Authorization: {{access_token}}

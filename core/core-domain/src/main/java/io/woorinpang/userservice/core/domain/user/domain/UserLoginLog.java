@@ -31,13 +31,12 @@ public class UserLoginLog extends BaseTimeEntity {
     @Column(name = "failContent", columnDefinition = "varchar(100) null comment '실패 내용'")
     private String failContent;
 
-    @Builder(builderMethodName = "createUserLoginLog")
-    public UserLoginLog(UserLoginLogCommand command) {
-        this.siteId = command.siteId();
-        this.email = command.email();
-        this.provider = command.provider();
-        this.remoteIp = command.remoteIp();
-        this.success = command.success();
-        this.failContent = command.failContent();
+    public UserLoginLog(UserLoginLogCommand log) {
+        this.siteId = log.siteId();
+        this.email = log.email();
+        this.provider = log.provider();
+        this.remoteIp = log.remoteIp();
+        this.success = log.success();
+        this.failContent = log.failContent();
     }
 }

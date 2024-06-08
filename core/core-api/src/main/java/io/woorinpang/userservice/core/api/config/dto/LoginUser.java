@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginUser {
     private long userId;
+
     private String email;
+
     private String name;
+
     private String role;
 
     public LoginUser(FindUser user) {

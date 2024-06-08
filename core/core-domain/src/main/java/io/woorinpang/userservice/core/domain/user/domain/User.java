@@ -44,18 +44,15 @@ public class User extends BaseTimeEntity {
     @Column(name = "loginFailCount", columnDefinition = "tinyint default 0 comment '로그인 실패 횟수'")
     private int loginFailCount;
 
-    public User(JoinUser command) {
-        this.email = command.email();
-        this.provider = command.provider();
-        this.password = command.password();
-        this.name = command.name();
+    public User(JoinUser user) {
+        this.email = user.email();
+        this.provider = user.provider();
+        this.password = user.password();
+        this.name = user.name();
         this.role = UserRole.ROLE_USER;
         this.state = UserState.NORMAL;
     }
 
-    /**
-     * 사용자 수정
-     */
     public void modify(String name) {
         this.name = name;
     }
@@ -64,26 +61,17 @@ public class User extends BaseTimeEntity {
         this.updateUserState(UserState.LEAVE);
     }
 
-    /**
-     * 사용자 상태 코드 수정
-     */
     private void updateUserState(UserState state) {
         this.state = state;
     }
 
-    /**
-     * 로그인 성공 시 로그인 실패수와 마지막 로그인 일지 정보를 갱신한다.
-     */
     public void successLogin() {
         this.loginFailCount = 0;
         this.lastLoginDate = LocalDateTime.now();
     }
 
-    /**
-     * 로그인 실패 시 로그인 실패수를 증가시키고 5회 이상 실패한 경우 회원상태를 정지로 변경
-     */
     public void failLogin() {
         this.loginFailCount++;
-        if (this.loginFailCount >= 5) this.state = UserState.HALT;
+        if (this.loginFailCount >= 5) updateUserState(UserState.HALT);
     }
 }

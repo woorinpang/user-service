@@ -17,21 +17,20 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 public class NaverLogin implements SocialLogin {
-    private final SocialLoginProperties socialLoginProperties;
+    private final SocialLoginProperties properties;
 
     public NaverLogin(SocialLoginProperties socialLoginProperties) {
-        this.socialLoginProperties = socialLoginProperties;
+        this.properties = socialLoginProperties;
     }
 
     @Override
     public SocialUser verify(String token) {
         SocialUser.SocialUserBuilder socialUserBuilder = SocialUser.builder();
 
-        NaverIdToken payload = WebClient.create("https://openapi.naver.com")
+        NaverIdToken payload = WebClient.create(properties.getNaverUserInfoUri())
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
-                        .path("/v1/nid/me")
                         .build(true))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()

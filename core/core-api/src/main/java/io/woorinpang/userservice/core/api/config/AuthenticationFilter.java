@@ -67,7 +67,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         try {
             // 사용자가 입력한 인증정보 받기, POST method 값이기 때문에 input stream으로 받았다.
             LoginRequest credential = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
-
             Authentication authenticationToken = null;
 
             if (hasText(credential.getProvider()) && Provider.verify(credential.getProvider())) {
@@ -89,7 +88,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 // 인증정보 만들기
                 authenticationToken = getAuthenticationManager().authenticate(authenticationToken);
             }
-
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             return authenticationToken;
         } catch (IOException e) {
@@ -105,8 +103,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        FindUser findUser = authService.findUser(email)
-                .orElseThrow(() -> new UsernameNotFoundException("username not found"));
+        FindUser findUser = authService.findUser(email);
 
         LoginUser loginUser = new LoginUser(findUser);
         String payload = new ObjectMapper().writeValueAsString(loginUser);
@@ -165,12 +162,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(null);
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(e.getType().getStatus().value());
-            log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
+            log.error("AuthenticationFilter doFilter error: {}", e.getMessage(), e);
         } catch (ServletException | IOException e) {
             SecurityContextHolder.getContext().setAuthentication(null);
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-            log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
+            log.error("AuthenticationFilter doFilter error: {}", e.getMessage(), e);
         }
     }
 

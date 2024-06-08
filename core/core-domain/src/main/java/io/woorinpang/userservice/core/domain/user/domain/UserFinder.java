@@ -1,7 +1,9 @@
 package io.woorinpang.userservice.core.domain.user.domain;
 
-import io.woorinpang.userservice.core.domain.user.repository.UserRepository;
+import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
+import io.woorinpang.userservice.core.domain.support.error.DomainErrorType;
 import io.woorinpang.userservice.core.domain.user.repository.UserQueryRepository;
+import io.woorinpang.userservice.core.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static io.woorinpang.userservice.core.domain.user.domain.UserRepositoryHelper.*;
+import static io.woorinpang.userservice.core.domain.user.domain.UserRepositoryHelper.findUserById;
 
 @Component
 @RequiredArgsConstructor
@@ -29,9 +31,15 @@ public class UserFinder {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public FindUser findByEmail(String email) {
+        return userRepository
+                .findByEmail(email)
+                .map(FindUser::new)
+                .orElseThrow(() -> new CoreDomainException(DomainErrorType.USER_ENTITY_NOT_FOUND));
     }
 
-
+    @Transactional(readOnly = true)
+    public Optional<User> findProviderUser(UserEmailWithProvider user) {
+        return userRepository.findByEmailAndProvider(user.email(), user.provider());
+    }
 }

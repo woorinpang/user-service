@@ -13,7 +13,7 @@ public class UserRemover {
     private final UserRepository userRepository;
 
     @Transactional
-    public void leave(long userId) {
-        findUserById(userRepository, userId).leave();
+    public void leave(UserTarget target) {
+        findUserById(userRepository, target.id()).leave();
     }
 }

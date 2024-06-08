@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<ApiResponse<?>> modifyUser(
+    public ResponseEntity<ApiResponse<Void>> modifyUser(
             @PathVariable("userId") Long userId,
             @RequestBody @Valid ModifyUserRequest request
     ) {
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse<?>> leaveUser(
+    public ResponseEntity<ApiResponse<Void>> leaveUser(
             @PathVariable long userId
     ) {
         userService.leaveUser(new UserTarget(userId));

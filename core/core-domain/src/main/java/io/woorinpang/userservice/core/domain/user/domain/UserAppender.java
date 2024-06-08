@@ -14,13 +14,13 @@ public class UserAppender {
 
     @Transactional
     public long append(LoginUser login, String name, Provider provider) {
-        JoinUser command = JoinUser.builder()
+        JoinUser user = JoinUser.builder()
                 .email(login.email())
                 .provider(provider)
                 .password(login.password())
                 .name(name)
                 .build();
 
-        return saveUser(userRepository, new User(command)).getId();
+        return saveUser(userRepository, new User(user)).getId();
     }
 }

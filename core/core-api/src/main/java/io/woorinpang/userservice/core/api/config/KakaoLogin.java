@@ -19,21 +19,20 @@ import java.time.LocalDateTime;
 @Slf4j
 @Component
 public class KakaoLogin implements SocialLogin{
-    private final SocialLoginProperties socialLoginProperties;
+    private final SocialLoginProperties properties;
 
     public KakaoLogin(SocialLoginProperties socialLoginProperties) {
-        this.socialLoginProperties = socialLoginProperties;
+        this.properties = socialLoginProperties;
     }
 
     @Override
     public SocialUser verify(String token) {
         SocialUser.SocialUserBuilder socialUserBuilder = SocialUser.builder();
 
-        KakaoIdToken payload = WebClient.create("https://kapi.kakao.com")
+        KakaoIdToken payload = WebClient.create(properties.getKakaoUserInfoUri())
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
-                        .path("/v2/user/me")
                         .build(true))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()

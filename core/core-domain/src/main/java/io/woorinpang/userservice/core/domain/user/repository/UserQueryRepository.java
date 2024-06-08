@@ -28,9 +28,6 @@ public class UserQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    /**
-     * 유저 목록 조회
-     */
     public Page<FindPageUser> findPageUser(UserSearchCondition condition, Pageable pageable) {
         return PageableExecutionUtils.getPage(
                 getUserList(condition, pageable),
@@ -39,9 +36,6 @@ public class UserQueryRepository {
         );
     }
 
-    /**
-     * 유저 목록
-     */
     private List<FindPageUser> getUserList(UserSearchCondition condition, Pageable pageable) {
         return queryFactory
                 .select(
@@ -66,9 +60,6 @@ public class UserQueryRepository {
                 .fetch();
     }
 
-    /**
-     * 유저 목록 카운트
-     */
     private JPAQuery<Long> getUserListCount(UserSearchCondition condition) {
         return queryFactory
                 .select(user.count())
@@ -80,9 +71,6 @@ public class UserQueryRepository {
                 );
     }
 
-    /**
-     * where searchKeywordType like '%searchKeyword%'
-     */
     private BooleanExpression searchKeywordContains(UserSearchCondition condition) {
         if (condition.getSearchKeywordType() == null || !StringUtils.hasText(condition.getSearchKeyword())) return null;
 
@@ -93,16 +81,10 @@ public class UserQueryRepository {
         };
     }
 
-    /**
-     * where role = searchRole
-     */
     private BooleanExpression searchRoleEq(UserRole searchUserRole) {
         return searchUserRole != null ? user.role.eq(searchUserRole) : null;
     }
 
-    /**
-     * where userstate = searchUserState
-     */
     private BooleanExpression searchUserStateEq(UserState searchUserState) {
         return searchUserState != null ? user.state.eq(searchUserState) : null;
     }

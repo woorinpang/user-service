@@ -3,7 +3,6 @@ package io.woorinpang.userservice.core.domain.user.application;
 import io.woorinpang.userservice.core.domain.user.domain.*;
 import io.woorinpang.userservice.core.domain.user.domain.Provider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,24 +19,22 @@ public class AuthService {
     private final UserLogger userLogger;
 
     public boolean existsEmail(String email) {
-        return userFinder.findByEmail(email).isPresent();
+        return userValidator.existsEmail(email);
     }
 
-    public long userJoin(LoginUser login, String name, Provider provider) {
+    public long joinUser(LoginUser login, String name, Provider provider) {
         userValidator.validEmail(login.email());
 
         return userAppender.append(login, name, provider);
     }
 
-    public Optional<FindUser> findUser(String email) {
-        return userFinder.findByEmail(email)
-                .map(FindUser::new);
+    public FindUser findUser(String email) {
+        return userFinder.findByEmail(email);
     }
 
     @Transactional
-    public void loginCallback(Long siteId, String remoteIp, String email,  boolean success, String failContent) {
-        FindUser findUser = this.findUser(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found in the database!!"));
+    public void loginCallback(Long siteId, String remoteIp, String email, boolean success, String failContent) {
+        FindUser findUser = this.findUser(email);
 
         if (Boolean.TRUE.equals(success)) {
             userModifier.successLogin(new UserTarget(findUser.getId()));
@@ -58,9 +55,8 @@ public class AuthService {
     }
 
     public boolean isAuthorization(String email, List<String> roles) {
-        User findUser = userFinder.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found in the database!!"));
-        return roles.contains(findUser.getRole().getCode());
+        FindUser findUser = userFinder.findByEmail(email);
+        return roles.contains(findUser.getUserRole().getCode());
     }
 
     public FindUser loadUserBySocial(String email, String name, Provider provider) {
@@ -68,9 +64,8 @@ public class AuthService {
 
         userValidator.validEmailAndProvider(new UserEmailWithProvider(email, provider));
 
-        userFinder.findByEmail(email).ifPresentOrElse(user -> {
+        userFinder.findProviderUser(new UserEmailWithProvider(email, provider)).ifPresentOrElse(user -> {
             targetBuilder.id(user.getId());
-
         }, () -> {
             long appendedId = userAppender.append(new LoginUser(email, null), name, provider);
             targetBuilder.id(appendedId);

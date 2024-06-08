@@ -18,10 +18,10 @@ import java.util.Collections;
 @Slf4j
 @Component
 public class GoogleLogin implements SocialLogin {
-    private final SocialLoginProperties socialLoginProperties;
+    private final SocialLoginProperties properties;
 
     public GoogleLogin(SocialLoginProperties socialLoginProperties) {
-        this.socialLoginProperties = socialLoginProperties;
+        this.properties = socialLoginProperties;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class GoogleLogin implements SocialLogin {
             GsonFactory gsonFactory = new GsonFactory();
 
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, gsonFactory)
-                    .setAudience(Collections.singletonList(socialLoginProperties.getGoogleClientId()))
+                    .setAudience(Collections.singletonList(properties.getGoogleClientId()))
                     .build();
 
             GoogleIdToken idToken = verifier.verify(token);

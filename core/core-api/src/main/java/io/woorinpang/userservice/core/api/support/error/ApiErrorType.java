@@ -5,8 +5,8 @@ import lombok.Getter;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.http.HttpStatus;
 
-import static io.woorinpang.userservice.core.api.support.error.ErrorCode.E400;
-import static io.woorinpang.userservice.core.api.support.error.ErrorCode.E500;
+import static io.woorinpang.userservice.core.api.support.error.ApiErrorCode.E400;
+import static io.woorinpang.userservice.core.api.support.error.ApiErrorCode.E500;
 import static org.springframework.boot.logging.LogLevel.ERROR;
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,7 +24,7 @@ public enum ApiErrorType {
 
     private final HttpStatus status;
 
-    private final ErrorCode code;
+    private final ApiErrorCode code;
 
     private final String message;
 
