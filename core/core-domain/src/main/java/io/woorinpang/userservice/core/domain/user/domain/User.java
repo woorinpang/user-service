@@ -41,7 +41,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "lastLoginDate", columnDefinition = "datetime(6) default null comment '최근 로그인 일자'")
     private LocalDateTime lastLoginDate;
 
-    @Column(name = "loginFailCount", columnDefinition = "tinyint default 0 comment '로그인 실패 횟수'")
+    @Column(name = "loginFailCount", columnDefinition = "tinyint default 0 not null comment '로그인 실패 횟수'")
     private int loginFailCount;
 
     public User(JoinUser user) {
