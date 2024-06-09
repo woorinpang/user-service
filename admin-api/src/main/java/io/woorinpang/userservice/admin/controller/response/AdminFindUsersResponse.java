@@ -1,4 +1,4 @@
-package io.woorinpang.userservice.admin.controller;
+package io.woorinpang.userservice.admin.controller.response;
 
 import io.woorinpang.userservice.admin.domain.user.AdminUser;
 import lombok.AccessLevel;
