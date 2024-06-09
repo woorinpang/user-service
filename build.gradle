@@ -38,6 +38,8 @@ subprojects {
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
 
+        runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.104.Final:osx-aarch_64'
+
         //lombok and mapstruct
 //        compileOnly 'org.projectlombok:lombok'
 //        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
