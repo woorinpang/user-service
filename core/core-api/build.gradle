@@ -2,12 +2,14 @@ bootJar.enabled = true
 jar.enabled = false
 
 dependencies {
+    runtimeOnly project(':admin-api')
+
     implementation project(':core:core-enums')
     implementation project(':core:core-domain')
 
+    implementation project(':support:logging')
+
     //web
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
