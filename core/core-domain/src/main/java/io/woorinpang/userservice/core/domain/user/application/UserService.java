@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
     private final UserFinder userFinder;
-    private final UserAppender userAppender;
     private final UserModifier userModifier;
     private final UserRemover userRemover;
-    private final UserValidator userValidator;
 
     /**
      * 사용자 정보 조회

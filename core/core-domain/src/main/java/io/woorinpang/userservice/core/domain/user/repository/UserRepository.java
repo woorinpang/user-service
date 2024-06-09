@@ -1,8 +1,7 @@
 package io.woorinpang.userservice.core.domain.user.repository;
 
-import io.woorinpang.userservice.core.domain.user.domain.FindUser;
-import io.woorinpang.userservice.core.domain.user.domain.User;
 import io.woorinpang.userservice.core.domain.user.domain.Provider;
+import io.woorinpang.userservice.core.domain.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -2,11 +2,8 @@ package io.woorinpang.userservice.core.domain.user.domain;
 
 import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
 import io.woorinpang.userservice.core.domain.support.error.DomainErrorType;
-import io.woorinpang.userservice.core.domain.user.repository.UserQueryRepository;
 import io.woorinpang.userservice.core.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +15,6 @@ import static io.woorinpang.userservice.core.domain.user.domain.UserRepositoryHe
 @RequiredArgsConstructor
 public class UserFinder {
     private final UserRepository userRepository;
-    private final UserQueryRepository userQueryRepository;
-
-    @Transactional(readOnly = true)
-    public Page<FindPageUser> findPageUser(UserSearchCondition condition, Pageable pageable) {
-        return userQueryRepository.findPageUser(condition, pageable);
-    }
 
     @Transactional(readOnly = true)
     public FindUser findUser(UserTarget target) {

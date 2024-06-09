@@ -11,9 +11,9 @@ POST {{host}}/auth/join
 Content-Type: application/json
 
 {
-  "email" : "spring2@woorinpang.com",
+  "email" : "spring3@woorinpang.com",
   "password" : "Tmvmfld1!",
-  "name" : "스프링"
+  "name" : "스프링3"
 }
 
 ### 로그인
@@ -21,7 +21,7 @@ POST {{host}}/login
 Content-Type: application/json
 
 {
-  "email" : "spring2@woorinpang.com",
+  "email" : "spring3@woorinpang.com",
   "password" : "Tmvmfld1!"
 }
 
