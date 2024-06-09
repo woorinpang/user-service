@@ -1,5 +1,5 @@
 ### 내 정보 조회
-GET {{host}}/users/16
+GET {{host}}/users/17
 Authorization: {{access_token}}
 
 ### 내 정보 수정
