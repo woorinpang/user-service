@@ -1,5 +1,10 @@
 server:
   port: 0 #random port
+  tomcat:
+    max-connections: 20000
+    threads:
+      max: 600
+      min-spare: 100
 
 spring:
   application:
