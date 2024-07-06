@@ -2,8 +2,8 @@ package io.woorinpang.userservice.admin.controller;
 
 import io.woorinpang.userservice.admin.controller.request.AdminSaveUserRequest;
 import io.woorinpang.userservice.admin.controller.response.AdminFindUsersResponse;
-import io.woorinpang.userservice.admin.domain.user.AdminUserSearchCondition;
-import io.woorinpang.userservice.admin.domain.user.AdminUserService;
+import io.woorinpang.userservice.storage.db.core.user.AdminUserSearchCondition;
+import io.woorinpang.userservice.admin.domain.AdminUserService;
 import io.woorinpang.userservice.admin.support.response.AdminApiResponse;
 import io.woorinpang.userservice.admin.support.response.AdminDefaultIdResponse;
 import lombok.RequiredArgsConstructor;

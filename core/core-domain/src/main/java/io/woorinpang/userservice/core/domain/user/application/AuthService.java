@@ -1,13 +1,12 @@
 package io.woorinpang.userservice.core.domain.user.application;
 
 import io.woorinpang.userservice.core.domain.user.domain.*;
-import io.woorinpang.userservice.core.domain.user.domain.Provider;
+import io.woorinpang.userservice.storage.db.core.user.Provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

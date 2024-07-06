@@ -1,6 +1,6 @@
 package io.woorinpang.userservice.core.domain.user.domain;
 
-import io.woorinpang.userservice.core.domain.user.repository.UserRepository;
+import io.woorinpang.userservice.storage.db.core.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

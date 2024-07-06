@@ -9,12 +9,8 @@ pluginManagement {
 rootProject.name = 'WRP-USER-SERVICE'
 
 include 'admin-api'
-
 include 'core:core-api'
 include 'core:core-domain'
-include 'core:core-enums'
-
 include 'infrastructure'
-
 include 'support:monitoring'
 include 'support:logging'

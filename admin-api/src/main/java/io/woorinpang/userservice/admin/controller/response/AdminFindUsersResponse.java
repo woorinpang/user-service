@@ -1,6 +1,6 @@
 package io.woorinpang.userservice.admin.controller.response;
 
-import io.woorinpang.userservice.admin.domain.user.AdminUser;
+import io.woorinpang.userservice.storage.db.core.user.AdminUser;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
