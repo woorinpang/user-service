@@ -15,6 +15,7 @@ spring:
       - monitoring.yml
       - logging.yml
       - core-domain.yml
+      - storage-db-core.yml
   cache:
     jcache:
       config: classpath:ehcache.xml
