@@ -15,6 +15,7 @@ spring:
       - monitoring.yml
       - logging.yml
       - core-domain.yml
+      - storage-db-core.yml
   cache:
     jcache:
       config: classpath:ehcache.xml
@@ -75,6 +76,6 @@ logging:
 
 # 2시간(7,200,000), 1일(86,400,000) jwt token
 token:
-  access_expiration_time: 7200000
+  access_expiration_time: 86400000
   refresh_expiration_time: 86400000
   secret-key: 'dGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2UtdGhpcy1pcy13b29yaW5wYW5nLXNlcnZpY2U='

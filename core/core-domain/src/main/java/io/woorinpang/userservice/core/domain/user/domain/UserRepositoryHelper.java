@@ -2,7 +2,8 @@ package io.woorinpang.userservice.core.domain.user.domain;
 
 import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
 import io.woorinpang.userservice.core.domain.support.error.DomainErrorType;
-import io.woorinpang.userservice.core.domain.user.repository.UserRepository;
+import io.woorinpang.userservice.storage.db.core.user.UserRepository;
+import io.woorinpang.userservice.storage.db.core.user.User;
 
 public final class UserRepositoryHelper {
     public static User findUserById(UserRepository repository, long userId) {

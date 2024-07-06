@@ -1,5 +1,9 @@
 package io.woorinpang.userservice.core.domain.user.domain;
 
+import io.woorinpang.userservice.storage.db.core.user.Provider;
+import io.woorinpang.userservice.storage.db.core.user.User;
+import io.woorinpang.userservice.storage.db.core.user.UserRole;
+import io.woorinpang.userservice.storage.db.core.user.UserState;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

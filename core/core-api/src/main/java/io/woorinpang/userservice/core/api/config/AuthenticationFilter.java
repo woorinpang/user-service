@@ -9,7 +9,7 @@ import io.woorinpang.userservice.core.api.support.error.CoreApiException;
 import io.woorinpang.userservice.core.api.support.util.LogUtil;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
-import io.woorinpang.userservice.core.domain.user.domain.Provider;
+import io.woorinpang.userservice.storage.db.core.user.Provider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -32,7 +32,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;

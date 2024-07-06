@@ -4,7 +4,7 @@ import io.woorinpang.userservice.core.domain.support.error.CoreDomainException;
 import io.woorinpang.userservice.core.domain.support.error.DomainErrorType;
 import io.woorinpang.userservice.core.domain.user.application.AuthService;
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
-import io.woorinpang.userservice.core.domain.user.domain.UserState;
+import io.woorinpang.userservice.storage.db.core.user.UserState;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
