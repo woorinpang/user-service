@@ -6,6 +6,8 @@ import io.jsonwebtoken.Claims;
 import io.woorinpang.userservice.core.api.config.TokenProvider;
 import io.woorinpang.userservice.core.api.config.dto.LoginUser;
 import io.woorinpang.userservice.core.domain.user.domain.FindUser;
+import io.woorinpang.userservice.storage.db.core.user.Provider;
+import io.woorinpang.userservice.storage.db.core.user.User;
 import io.woorinpang.userservice.storage.db.core.user.UserRole;
 import io.woorinpang.userservice.storage.db.core.user.UserState;
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,7 @@ class TokenProviderTest {
 
     @Test
     void createAccessToken() {
-
-        FindUser findUser = new FindUser(1L, "spring@woorinpang.com", "", "스프링", UserRole.ROLE_USER, UserState.NORMAL);
+        FindUser findUser = new FindUser(1L, "spring@woorinpang.com", Provider.WOORINPANG, "1234", "스프링", UserRole.ROLE_USER, UserState.NORMAL);
         LoginUser loginUser = new LoginUser(findUser);
         try {
             String payload = new ObjectMapper().writeValueAsString(loginUser);
